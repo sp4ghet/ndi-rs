@@ -35,6 +35,10 @@ pub fn hoge() {
             return;
         }
 
+        let name = (*p_sources).p_ndi_name;
+        let name = CString::from_raw(name as _);
+        println!("Connected to {:?}", name);
+
         NDIlib_recv_connect(ndi_recv, p_sources);
         NDIlib_find_destroy(ndi_find);
 
