@@ -4,9 +4,13 @@
 #![allow(dead_code)]
 
 use std::ffi::CString;
+use std::mem;
 use std::time::Instant;
 
 mod bindings;
+use bindings::*;
+
+const NULL: usize = 0;
 
 pub fn hoge() {
     unsafe {
@@ -14,70 +18,75 @@ pub fn hoge() {
             return;
         };
 
-        let ndi_find = bindings::NDIlib_find_create_v2(0 as _);
+        let ndi_find: NDIlib_find_instance_t = NDIlib_find_create_v2(NULL as _);
         if ndi_find.is_null() {
             return;
         }
         let mut no_sources = 0;
-        let mut p_sources: *const bindings::NDIlib_source_t = 0 as _;
+        let mut p_sources: *const NDIlib_source_t = NULL as _;
         while no_sources == 0 {
             println!("Looking for sources");
-            bindings::NDIlib_find_wait_for_sources(ndi_find, 1000);
-            p_sources = bindings::NDIlib_find_get_current_sources(ndi_find, &mut no_sources);
+            NDIlib_find_wait_for_sources(ndi_find, 1000);
+            p_sources = NDIlib_find_get_current_sources(ndi_find, &mut no_sources);
         }
-        println!("number of sources: {}", no_sources);
-        p_sources = p_sources.add((no_sources as usize) - 1);
-        let name = (*p_sources).p_ndi_name as *mut i8;
-        let name = CString::from_raw(name);
-        println!(
-            "Connected to NDI channel: {:?}",
-            name.to_str().unwrap().to_owned()
-        );
 
-        let ndi_recv = bindings::NDIlib_recv_create_v3(0 as _);
+        let ndi_recv: NDIlib_recv_instance_t = NDIlib_recv_create_v3(NULL as _);
         if ndi_recv.is_null() {
             return;
         }
 
-        bindings::NDIlib_recv_connect(ndi_recv, p_sources);
-        bindings::NDIlib_find_destroy(ndi_find);
+        NDIlib_recv_connect(ndi_recv, p_sources);
+        NDIlib_find_destroy(ndi_find);
 
         let start = Instant::now();
         while Instant::now()
             .checked_duration_since(start)
-            .map_or(true, |x| x.as_secs() < 10)
+            .map_or(true, |x| x.as_secs() < 30)
         {
-            let p_video_data = 0 as _;
-            let p_audio_data = 0 as _;
-            match bindings::NDIlib_recv_capture_v3(
+            let mut p_video_data: mem::MaybeUninit<NDIlib_video_frame_v2_t> =
+                mem::MaybeUninit::uninit();
+            let mut p_audio_data: mem::MaybeUninit<NDIlib_audio_frame_v2_t> =
+                mem::MaybeUninit::uninit();
+            let response = NDIlib_recv_capture_v2(
                 ndi_recv,
-                p_video_data,
-                p_audio_data,
+                p_video_data.as_mut_ptr(),
+                p_audio_data.as_mut_ptr(),
                 0 as _,
                 1000,
-            ) {
-                bindings::NDIlib_frame_type_e_NDIlib_frame_type_none => {
+            );
+            let p_total = NULL as _;
+            let p_dropped = NULL as _;
+            NDIlib_recv_get_performance(ndi_recv, p_total, p_dropped);
+            println!("total: {:?}  dropped: {:?}", p_total, p_dropped);
+            match response {
+                NDIlib_frame_type_e_NDIlib_frame_type_none => {
                     println!("No data received");
                 }
-                bindings::NDIlib_frame_type_e_NDIlib_frame_type_video => {
+                NDIlib_frame_type_e_NDIlib_frame_type_video => {
+                    if p_video_data.as_ptr().is_null() {
+                        continue;
+                    }
+                    let video_data = p_video_data.assume_init();
                     println!(
-                        "Video data received ({} x {})",
-                        (*p_video_data).xres,
-                        (*p_video_data).yres
+                        "Video data received: ({} x {}).",
+                        video_data.xres, video_data.yres
                     );
-                    bindings::NDIlib_recv_free_video_v2(ndi_recv, p_video_data);
+                    NDIlib_recv_free_video_v2(ndi_recv, p_video_data.as_mut_ptr());
                 }
-                bindings::NDIlib_frame_type_e_NDIlib_frame_type_audio => {
+                NDIlib_frame_type_e_NDIlib_frame_type_audio => {
+                    if p_audio_data.as_ptr().is_null() {
+                        continue;
+                    }
                     println!(
                         "Audio data received: {} samples",
-                        (*p_audio_data).no_samples
+                        p_audio_data.assume_init().no_samples
                     );
-                    bindings::NDIlib_recv_free_audio_v3(ndi_recv, p_audio_data);
+                    NDIlib_recv_free_audio_v2(ndi_recv, p_audio_data.as_mut_ptr());
                 }
-                bindings::NDIlib_frame_type_e_NDIlib_frame_type_error => {
+                NDIlib_frame_type_e_NDIlib_frame_type_error => {
                     println!("NDIlib_frame_type_error");
                 }
-                bindings::NDIlib_frame_type_e_NDIlib_frame_type_status_change => {
+                NDIlib_frame_type_e_NDIlib_frame_type_status_change => {
                     println!("Status change");
                 }
                 x => {
@@ -87,7 +96,8 @@ pub fn hoge() {
         }
 
         println!("Done");
-        bindings::NDIlib_recv_destroy(ndi_recv);
-        bindings::NDIlib_destroy();
+
+        NDIlib_recv_destroy(ndi_recv);
+        NDIlib_destroy();
     }
 }
