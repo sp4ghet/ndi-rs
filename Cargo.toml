@@ -10,7 +10,7 @@ build = "build.rs"
 [dependencies]
 
 [build-dependencies]
-bindgen = "0.53.1"
+bindgen = "0.58.1"
 
 [[example]]
 name = "main"
