@@ -6,7 +6,7 @@ fn run() -> Result<(), String> {
 
     let find = ndi::Find::new()?;
     println!("Looking for sources");
-    let sources = find.current_sources()?;
+    let sources = find.current_sources(1000)?;
 
     if sources.len() == 0 {
         return Err("No sources found".to_string());
