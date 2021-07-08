@@ -200,11 +200,11 @@ impl Recv {
     }
 }
 
-// impl Drop for Recv {
-//     fn drop(&mut self) {
-//         unsafe { NDIlib_recv_destroy(self.p_instance) };
-//     }
-// }
+impl Drop for Recv {
+    fn drop(&mut self) {
+        unsafe { NDIlib_recv_destroy(self.p_instance) };
+    }
+}
 
 pub struct Find {
     p_instance: NDIlib_find_instance_t,
@@ -244,13 +244,13 @@ impl Find {
     }
 }
 
-// // TODO: Rust seems to have issues with calling find_destroy and
-// // you get a STATUS_HEAP_CORRUPTION when used
-// impl Drop for Find {
-//     fn drop(&mut self) {
-//         unsafe { NDIlib_find_destroy(self.p_instance) };
-//     }
-// }
+// TODO: Rust seems to have issues with calling find_destroy and
+// you get a STATUS_HEAP_CORRUPTION when used
+impl Drop for Find {
+    fn drop(&mut self) {
+        unsafe { NDIlib_find_destroy(self.p_instance) };
+    }
+}
 
 pub fn initialize() -> Result<(), String> {
     if !unsafe { NDIlib_initialize() } {
