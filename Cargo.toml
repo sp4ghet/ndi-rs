@@ -1,5 +1,5 @@
 [package]
-name = "ndi-rs"
+name = "ndi"
 version = "0.1.0"
 authors = ["sp4ghet <sp4ghet@gmail.com>"]
 edition = "2018"

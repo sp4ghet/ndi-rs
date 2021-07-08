@@ -39,7 +39,7 @@ fn main() {
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let mut binding_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    binding_path.push("src");
+    binding_path.push("src/internal");
     bindings
         .write_to_file(binding_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
