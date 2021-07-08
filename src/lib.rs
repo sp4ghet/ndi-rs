@@ -1,10 +1,5 @@
-#![allow(non_upper_case_globals)]
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
-#![allow(dead_code)]
-
 use core::panic;
-use std::ffi::{CStr, CString};
+use std::ffi::CStr;
 use std::fmt::Display;
 use std::mem;
 use std::time::Instant;
@@ -88,10 +83,6 @@ impl VideoData {
         let p_instance: mem::MaybeUninit<NDIlib_video_frame_v2_t> = mem::MaybeUninit::uninit();
         Self { p_instance }
     }
-
-    pub fn ptr(&self) -> NDIlib_video_frame_v2_t {
-        unsafe { self.p_instance.assume_init() }
-    }
 }
 
 pub struct AudioData {
@@ -103,9 +94,6 @@ impl AudioData {
         let p_instance: mem::MaybeUninit<NDIlib_audio_frame_v2_t> = mem::MaybeUninit::uninit();
 
         Self { p_instance }
-    }
-    pub fn is_null(&self) -> bool {
-        self.p_instance.as_ptr().is_null()
     }
 }
 
@@ -170,6 +158,7 @@ impl Recv {
             )
         };
 
+        #[allow(non_upper_case_globals)]
         match response {
             NDIlib_frame_type_e_NDIlib_frame_type_none => FrameType::None,
             NDIlib_frame_type_e_NDIlib_frame_type_video => FrameType::Video,
@@ -191,10 +180,6 @@ impl Recv {
                 p_dropped.as_mut_ptr(),
             )
         };
-
-        if p_total.as_ptr().is_null() || p_dropped.as_ptr().is_null() {
-            return (RecvPerformance::default(), RecvPerformance::default());
-        }
 
         let total_perf = RecvPerformance::from_binding(unsafe { p_total.assume_init() });
         let dropped_perf = RecvPerformance::from_binding(unsafe { p_dropped.assume_init() });
@@ -277,97 +262,4 @@ pub fn initialize() -> Result<(), String> {
 
 pub fn cleanup() {
     unsafe { NDIlib_destroy() };
-}
-
-pub fn hoge() {
-    unsafe {
-        if !NDIlib_initialize() {
-            return;
-        };
-
-        let ndi_find: NDIlib_find_instance_t = NDIlib_find_create_v2(NULL as _);
-        if ndi_find.is_null() {
-            return;
-        }
-
-        let mut no_sources = 0;
-        let mut p_sources: *const NDIlib_source_t = NULL as _;
-        while no_sources == 0 {
-            println!("Looking for sources");
-            NDIlib_find_wait_for_sources(ndi_find, 1000);
-            p_sources = NDIlib_find_get_current_sources(ndi_find, &mut no_sources);
-        }
-
-        let ndi_recv: NDIlib_recv_instance_t = NDIlib_recv_create_v3(NULL as _);
-        if ndi_recv.is_null() {
-            return;
-        }
-
-        let name = (*p_sources).p_ndi_name;
-        let name = CString::from_raw(name as _);
-        println!("Connected to {:?}", name);
-
-        NDIlib_recv_connect(ndi_recv, p_sources);
-
-        let start = Instant::now();
-        while Instant::now().duration_since(start).as_secs() < 3 {
-            let mut p_video_data: mem::MaybeUninit<NDIlib_video_frame_v2_t> =
-                mem::MaybeUninit::uninit();
-            let mut p_audio_data: mem::MaybeUninit<NDIlib_audio_frame_v3_t> =
-                mem::MaybeUninit::uninit();
-
-            let response = NDIlib_recv_capture_v3(
-                ndi_recv,
-                p_video_data.as_mut_ptr(),
-                p_audio_data.as_mut_ptr(),
-                NULL as _,
-                1000,
-            );
-            let mut p_total: mem::MaybeUninit<NDIlib_recv_performance_t> =
-                mem::MaybeUninit::uninit();
-            let mut p_dropped: mem::MaybeUninit<NDIlib_recv_performance_t> =
-                mem::MaybeUninit::uninit();
-            NDIlib_recv_get_performance(ndi_recv, p_total.as_mut_ptr(), p_dropped.as_mut_ptr());
-            println!(
-                "total: {:?}  dropped: {:?}",
-                p_total.assume_init(),
-                p_dropped.assume_init()
-            );
-
-            match response {
-                NDIlib_frame_type_e_NDIlib_frame_type_none => {
-                    println!("No data received");
-                }
-                NDIlib_frame_type_e_NDIlib_frame_type_video => {
-                    let video_data = p_video_data.assume_init();
-
-                    println!(
-                        "Video data received: ({} x {}).",
-                        video_data.xres, video_data.yres
-                    );
-                    NDIlib_recv_free_video_v2(ndi_recv, p_video_data.as_mut_ptr());
-                }
-                NDIlib_frame_type_e_NDIlib_frame_type_audio => {
-                    println!(
-                        "Audio data received: {} samples",
-                        p_audio_data.assume_init().no_samples
-                    );
-                    NDIlib_recv_free_audio_v3(ndi_recv, p_audio_data.as_mut_ptr());
-                }
-                NDIlib_frame_type_e_NDIlib_frame_type_error => {
-                    println!("NDIlib_frame_type_error");
-                }
-                NDIlib_frame_type_e_NDIlib_frame_type_status_change => {
-                    println!("Status change");
-                }
-                x => {
-                    println!("Something else {}", x);
-                }
-            };
-        }
-        NDIlib_recv_destroy(ndi_recv);
-        println!("Done");
-
-        NDIlib_destroy();
-    }
 }
