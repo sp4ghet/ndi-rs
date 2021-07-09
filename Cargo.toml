@@ -1,9 +1,16 @@
 [package]
 name = "ndi"
 version = "0.1.0"
+description = "NewTek NDI bindings for rust"
 authors = ["sp4ghet <sp4ghet@gmail.com>"]
+homepage = "https://github.com/sp4ghet/ndi-rs"
+repository = "https://github.com/sp4ghet/ndi-rs"
 edition = "2018"
+license-file = "LICENSE"
+categories = ["ndi", "network", "video", "audio"]
+keywords = ["ndi", "newtek"]
 build = "build.rs"
+readme = "README_crate.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

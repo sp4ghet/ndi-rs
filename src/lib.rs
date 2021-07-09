@@ -1,3 +1,5 @@
+//! NewTek NDI Bindings for rust
+
 use core::panic;
 use internal::bindings::*;
 use std::{ffi::CStr, fmt::Debug};
