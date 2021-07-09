@@ -1,6 +1,7 @@
 use super::internal::bindings::*;
 use super::*;
 use core::panic;
+use std::ffi::CString;
 use std::fmt::Display;
 use std::mem;
 
@@ -29,11 +30,117 @@ impl Display for RecvPerformance {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
+#[repr(i32)]
+#[allow(non_camel_case_types)]
+pub enum RecvColorFormat {
+    BGRX_BGRA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_BGRX_BGRA,
+    UYVY_BGRA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_UYVY_BGRA,
+    RGBX_RGBA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_RGBX_RGBA,
+    UYVY_RGBA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_UYVY_RGBA,
+    Fastest = NDIlib_recv_color_format_e_NDIlib_recv_color_format_fastest,
+    Best = NDIlib_recv_color_format_e_NDIlib_recv_color_format_best,
+}
+
+#[derive(Debug, Clone, Copy)]
+#[repr(i32)]
+pub enum RecvBandwidth {
+    MetadataOnly = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_metadata_only,
+    AudioOnly = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_audio_only,
+    Lowest = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_lowest,
+    Highest = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_highest,
+}
+
+pub struct RecvBuilder {
+    pub source_to_connect_to: Option<Source>,
+    pub color_format: Option<RecvColorFormat>,
+    pub bandwidth: Option<RecvBandwidth>,
+    pub allow_video_fields: Option<bool>,
+    pub ndi_recv_name: Option<String>,
+}
+
+impl RecvBuilder {
+    pub fn new() -> Self {
+        Self {
+            source_to_connect_to: None,
+            color_format: None,
+            bandwidth: None,
+            allow_video_fields: None,
+            ndi_recv_name: None,
+        }
+    }
+
+    pub fn source_to_connect_to(mut self, source: Source) -> Self {
+        self.source_to_connect_to = Some(source);
+        self
+    }
+
+    pub fn color_format(mut self, color_format: RecvColorFormat) -> Self {
+        self.color_format = Some(color_format);
+        self
+    }
+
+    pub fn bandwidth(mut self, bandwidth: RecvBandwidth) -> Self {
+        self.bandwidth = Some(bandwidth);
+        self
+    }
+
+    pub fn allow_video_fields(mut self, allow_video_fields: bool) -> Self {
+        self.allow_video_fields = Some(allow_video_fields);
+        self
+    }
+
+    pub fn ndi_recv_name(mut self, ndi_recv_name: String) -> Self {
+        self.ndi_recv_name = Some(ndi_recv_name);
+        self
+    }
+
+    pub fn build(self) -> Result<Recv, String> {
+        // From default C++ constructor in Processing.NDI.Recv.h
+        let mut settings: NDIlib_recv_create_v3_t = NDIlib_recv_create_v3_t {
+            source_to_connect_to: Source::new().p_instance,
+            color_format: RecvColorFormat::UYVY_BGRA as _,
+            bandwidth: RecvBandwidth::Highest as _,
+            allow_video_fields: true,
+            p_ndi_recv_name: NULL as _,
+        };
+
+        if let Some(src) = self.source_to_connect_to {
+            settings.source_to_connect_to = src.p_instance;
+        }
+        if let Some(color_format) = self.color_format {
+            settings.color_format = color_format as _;
+        }
+        if let Some(bandwidth) = self.bandwidth {
+            settings.bandwidth = bandwidth as _;
+        }
+        if let Some(allow_video_fields) = self.allow_video_fields {
+            settings.allow_video_fields = allow_video_fields;
+        }
+        if let Some(ndi_recv_name) = self.ndi_recv_name {
+            let cstr = CString::new(ndi_recv_name).map_err(|x| x.to_string())?;
+            settings.p_ndi_recv_name = cstr.as_ptr();
+        }
+
+        Recv::with_settings(settings)
+    }
+}
+
 pub struct Recv {
     p_instance: NDIlib_recv_instance_t,
 }
 
 impl Recv {
+    fn with_settings(settings: NDIlib_recv_create_v3_t) -> Result<Self, String> {
+        let p_instance = unsafe { NDIlib_recv_create_v3(&settings) };
+
+        if p_instance.is_null() {
+            return Err("Failed to create NDI Recv instance".to_string());
+        }
+
+        Ok(Self { p_instance })
+    }
+
     pub fn new() -> Result<Self, String> {
         let p_instance = unsafe { NDIlib_recv_create_v3(NULL as _) };
 
@@ -51,18 +158,18 @@ impl Recv {
 
     pub fn capture(
         &self,
-        video_data: &mut VideoData,
-        audio_data: &mut AudioData,
+        video_data: &mut Option<VideoData>,
+        audio_data: &mut Option<AudioData>,
         timeout_ms: u32,
     ) -> FrameType {
         let response = unsafe {
-            let mut video = if let Some(x) = video_data.p_instance {
-                mem::MaybeUninit::new(x)
+            let mut video = if let Some(x) = video_data {
+                mem::MaybeUninit::new(x.p_instance)
             } else {
                 mem::MaybeUninit::uninit()
             };
-            let mut audio = if let Some(x) = audio_data.p_instance {
-                mem::MaybeUninit::new(x)
+            let mut audio = if let Some(x) = audio_data {
+                mem::MaybeUninit::new(x.p_instance)
             } else {
                 mem::MaybeUninit::uninit()
             };
@@ -74,8 +181,8 @@ impl Recv {
                 timeout_ms,
             );
 
-            video_data.p_instance = Some(video.assume_init());
-            audio_data.p_instance = Some(audio.assume_init());
+            *video_data = Some(VideoData::from_binding(video.assume_init()));
+            *audio_data = Some(AudioData::from_binding(audio.assume_init()));
 
             response
         };
@@ -109,19 +216,21 @@ impl Recv {
         (total_perf, dropped_perf)
     }
 
-    pub fn free_video_data(&self, video_data: VideoData) {
-        if let Some(mut x) = video_data.p_instance {
-            unsafe {
-                NDIlib_recv_free_video_v2(self.p_instance, &mut x);
-            }
+    pub fn set_tally(&mut self, tally: Tally) {
+        unsafe {
+            NDIlib_recv_set_tally(self.p_instance, &tally);
         }
     }
 
-    pub fn free_audio_data(&self, audio_data: AudioData) {
-        if let Some(mut x) = audio_data.p_instance {
-            unsafe {
-                NDIlib_recv_free_audio_v2(self.p_instance, &mut x);
-            }
+    pub fn free_video_data(&self, mut video_data: VideoData) {
+        unsafe {
+            NDIlib_recv_free_video_v2(self.p_instance, &mut video_data.p_instance);
+        }
+    }
+
+    pub fn free_audio_data(&self, mut audio_data: AudioData) {
+        unsafe {
+            NDIlib_recv_free_audio_v2(self.p_instance, &mut audio_data.p_instance);
         }
     }
 }

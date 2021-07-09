@@ -22,26 +22,34 @@ fn run() -> Result<(), String> {
     stdin.read_line(&mut buf).map_err(|e| e.to_string())?;
     let i = buf.trim_end().parse::<usize>().map_err(|e| e.to_string())?;
 
-    let recv = ndi::Recv::new()?;
+    let recv_builder = ndi::RecvBuilder::new().color_format(ndi::RecvColorFormat::RGBX_RGBA);
+    let recv = recv_builder.build()?;
     recv.connect(&sources[i]);
 
     let name = sources[i].get_name().unwrap();
     println!("Connected to NDI device {}", name);
 
     let start = Instant::now();
-    while Instant::now().duration_since(start).as_secs() < 3 {
-        let mut video_data = ndi::VideoData::new();
-        let mut audio_data = ndi::AudioData::new();
+    while Instant::now().duration_since(start).as_secs() < 5 {
+        let mut video_data = None;
+        let mut audio_data = None;
 
         let response = recv.capture(&mut video_data, &mut audio_data, 1000);
+        let video_data = video_data.ok_or("Failed to get video data from capture".to_string())?;
+        let audio_data = audio_data.ok_or("Failed to get audio data from capture".to_string())?;
 
-        // let (total, dropped) = recv.get_performance();
-        // println!("total:\n {}dropped:\n {}", total, dropped);
+        let (total, dropped) = recv.get_performance();
+        println!("total:\n {}dropped:\n {}", total, dropped);
 
         match response {
             ndi::FrameType::None => println!("Nothing"),
             ndi::FrameType::Video => {
-                println!("Got video data.");
+                println!(
+                    "Got video data: {}x{} {:?}",
+                    video_data.xres(),
+                    video_data.yres(),
+                    video_data.four_cc()
+                );
                 recv.free_video_data(video_data);
             }
             ndi::FrameType::Audio => {
