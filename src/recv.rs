@@ -53,11 +53,11 @@ pub enum RecvBandwidth {
 
 #[derive(Debug, Clone)]
 pub struct RecvBuilder {
-    pub source_to_connect_to: Option<Source>,
-    pub color_format: Option<RecvColorFormat>,
-    pub bandwidth: Option<RecvBandwidth>,
-    pub allow_video_fields: Option<bool>,
-    pub ndi_recv_name: Option<String>,
+    source_to_connect_to: Option<Source>,
+    color_format: Option<RecvColorFormat>,
+    bandwidth: Option<RecvBandwidth>,
+    allow_video_fields: Option<bool>,
+    ndi_recv_name: Option<String>,
 }
 
 impl RecvBuilder {
@@ -153,6 +153,7 @@ impl RecvQueueSize {
 }
 
 pub struct Recv {
+    pub connected: bool,
     p_instance: NDIlib_recv_instance_t,
 }
 
@@ -164,7 +165,10 @@ impl Recv {
             return Err("Failed to create NDI Recv instance".to_string());
         }
 
-        Ok(Self { p_instance })
+        Ok(Self {
+            p_instance,
+            connected: false,
+        })
     }
 
     pub fn new() -> Result<Self, String> {
@@ -173,13 +177,23 @@ impl Recv {
         if p_instance.is_null() {
             return Err("Failed to create NDI Recv instance".to_string());
         }
-
-        Ok(Self { p_instance })
+        let mut this = Self {
+            p_instance,
+            connected: false,
+        };
+        this.connected = this.get_no_connections() > 0;
+        Ok(this)
     }
 
-    pub fn connect(&self, source: &Source) {
+    pub fn connect(&mut self, source: &Source) {
         let instance: *const NDIlib_source_t = &source.p_instance;
         unsafe { NDIlib_recv_connect(self.p_instance, instance) };
+    }
+
+    pub fn disconnect(&mut self) {
+        unsafe {
+            NDIlib_recv_connect(self.p_instance, NULL as _);
+        }
     }
 
     pub fn capture(
@@ -219,7 +233,7 @@ impl Recv {
             NDIlib_frame_type_e_NDIlib_frame_type_video => FrameType::Video,
             NDIlib_frame_type_e_NDIlib_frame_type_audio => FrameType::Audio,
             NDIlib_frame_type_e_NDIlib_frame_type_status_change => FrameType::StatusChange,
-            NDIlib_frame_type_e_NDIlib_frame_type_error => FrameType::Error,
+            NDIlib_frame_type_e_NDIlib_frame_type_error => FrameType::ErrorFrame,
             NDIlib_frame_type_e_NDIlib_frame_type_metadata => FrameType::Metadata,
             x => panic!("Unknown frame type {} encountered", x),
         }
@@ -242,6 +256,20 @@ impl Recv {
         (total_perf, dropped_perf)
     }
 
+    pub fn get_queue(&self) -> RecvQueueSize {
+        let mut p_total: mem::MaybeUninit<NDIlib_recv_queue_t> = mem::MaybeUninit::uninit();
+        unsafe {
+            NDIlib_recv_get_queue(self.p_instance, p_total.as_mut_ptr());
+            let queue = RecvQueueSize::from_binding(p_total.assume_init());
+
+            queue
+        }
+    }
+
+    pub fn get_no_connections(&self) -> u32 {
+        unsafe { NDIlib_recv_get_no_connections(self.p_instance) as _ }
+    }
+
     // pub fn get_error(&self) -> String {
     //     let res = unsafe {
     //         let char_ptr = NDIlib_recv_recording_get_error(self.p_instance);
@@ -259,13 +287,21 @@ impl Recv {
         }
     }
 
-    pub fn get_queue(&self) -> RecvQueueSize {
-        let mut p_total: mem::MaybeUninit<NDIlib_recv_queue_t> = mem::MaybeUninit::uninit();
+    pub fn add_connection_metadata(&self, metadata: &MetaData) {
         unsafe {
-            NDIlib_recv_get_queue(self.p_instance, p_total.as_mut_ptr());
-            let queue = RecvQueueSize::from_binding(p_total.assume_init());
+            NDIlib_recv_add_connection_metadata(self.p_instance, &metadata.p_instance);
+        }
+    }
 
-            queue
+    pub fn send_metadata(&self, metadata: &MetaData) {
+        unsafe {
+            NDIlib_recv_send_metadata(self.p_instance, &metadata.p_instance);
+        }
+    }
+
+    pub fn recv_clear_connection_metadata(&self) {
+        unsafe {
+            NDIlib_recv_clear_connection_metadata(self.p_instance);
         }
     }
 

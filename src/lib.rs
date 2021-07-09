@@ -2,17 +2,22 @@
 
 use core::panic;
 use internal::bindings::*;
-use std::{ffi::CStr, fmt::Debug};
+use std::{convert::TryFrom, ffi::CStr, fmt::Debug};
 
 pub mod find;
 pub mod internal;
 pub mod recv;
+pub mod send;
 
 pub use find::*;
 pub use recv::*;
+pub use send::*;
 
 const NULL: usize = 0;
 
+/// A description of the type of of frame received.
+///
+/// This is usually returned by [`Recv::capture`]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy)]
 pub enum FrameType {
@@ -20,8 +25,25 @@ pub enum FrameType {
     Video = NDIlib_frame_type_e_NDIlib_frame_type_video,
     Audio = NDIlib_frame_type_e_NDIlib_frame_type_audio,
     StatusChange = NDIlib_frame_type_e_NDIlib_frame_type_status_change,
-    Error = NDIlib_frame_type_e_NDIlib_frame_type_error,
+    ErrorFrame = NDIlib_frame_type_e_NDIlib_frame_type_error,
     Metadata = NDIlib_frame_type_e_NDIlib_frame_type_metadata,
+}
+
+impl TryFrom<i32> for FrameType {
+    type Error = String;
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        #[allow(non_upper_case_globals)]
+        match value {
+            NDIlib_frame_type_e_NDIlib_frame_type_audio => Ok(FrameType::Audio),
+            NDIlib_frame_type_e_NDIlib_frame_type_video => Ok(FrameType::Video),
+            NDIlib_frame_type_e_NDIlib_frame_type_none => Ok(FrameType::None),
+            NDIlib_frame_type_e_NDIlib_frame_type_status_change => Ok(FrameType::StatusChange),
+            NDIlib_frame_type_e_NDIlib_frame_type_error => Ok(FrameType::ErrorFrame),
+            NDIlib_frame_type_e_NDIlib_frame_type_metadata => Ok(FrameType::Metadata),
+            x => Err(format!("Unknown NDI frame type encountered: {}", x)),
+        }
+    }
 }
 
 #[repr(i32)]
@@ -31,6 +53,31 @@ pub enum FrameFormatType {
     Interleaved = NDIlib_frame_format_type_e_NDIlib_frame_format_type_interleaved,
     Field0 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_0,
     Field1 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1,
+}
+
+impl TryFrom<i32> for FrameFormatType {
+    type Error = String;
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        #[allow(non_upper_case_globals)]
+        match value {
+            NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive => {
+                Ok(FrameFormatType::Progressive)
+            }
+
+            NDIlib_frame_format_type_e_NDIlib_frame_format_type_interleaved => {
+                Ok(FrameFormatType::Interleaved)
+            }
+
+            NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_0 => {
+                Ok(FrameFormatType::Field0)
+            }
+            NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1 => {
+                Ok(FrameFormatType::Field1)
+            }
+            x => Err(format!("Unknown NDI video data frame format type: {}", x)),
+        }
+    }
 }
 
 #[repr(i32)]
@@ -47,6 +94,28 @@ pub enum FourCCVideoType {
     RGBA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA,
     BGRX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX,
     RGBX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX,
+}
+
+impl TryFrom<i32> for FourCCVideoType {
+    type Error = String;
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        #[allow(non_upper_case_globals)]
+        match value {
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVY => Ok(FourCCVideoType::UYVY),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVA => Ok(FourCCVideoType::UYVA),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_P216 => Ok(FourCCVideoType::P216),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_PA16 => Ok(FourCCVideoType::PA16),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_YV12 => Ok(FourCCVideoType::YV12),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_I420 => Ok(FourCCVideoType::I420),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_NV12 => Ok(FourCCVideoType::NV12),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRA => Ok(FourCCVideoType::BGRA),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA => Ok(FourCCVideoType::RGBA),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX => Ok(FourCCVideoType::BGRX),
+            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX => Ok(FourCCVideoType::RGBX),
+            x => Err(format!("Unknown FourCC video type encountered: {}", x)),
+        }
+    }
 }
 
 #[repr(i32)]
@@ -101,6 +170,21 @@ impl Source {
 
 pub type Tally = NDIlib_tally_t;
 
+impl Tally {
+    pub fn new() -> Self {
+        Self {
+            on_program: false,
+            on_preview: false,
+        }
+    }
+}
+
+impl Default for Tally {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct VideoData {
     p_instance: NDIlib_video_frame_v2_t,
 }
@@ -119,21 +203,7 @@ impl VideoData {
     }
 
     pub fn four_cc(&self) -> FourCCVideoType {
-        #[allow(non_upper_case_globals)]
-        match self.p_instance.FourCC {
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVY => FourCCVideoType::UYVY,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVA => FourCCVideoType::UYVA,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_P216 => FourCCVideoType::P216,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_PA16 => FourCCVideoType::PA16,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_YV12 => FourCCVideoType::YV12,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_I420 => FourCCVideoType::I420,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_NV12 => FourCCVideoType::NV12,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRA => FourCCVideoType::BGRA,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA => FourCCVideoType::RGBA,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX => FourCCVideoType::BGRX,
-            NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX => FourCCVideoType::RGBX,
-            x => panic!("Unknown FourCC video type encountered: {}", x),
-        }
+        FourCCVideoType::try_from(self.p_instance.FourCC).unwrap()
     }
 
     pub fn frame_rate_n(&self) -> u32 {
@@ -148,18 +218,7 @@ impl VideoData {
         self.p_instance.picture_aspect_ratio
     }
     pub fn frame_format_type(&self) -> FrameFormatType {
-        #[allow(non_upper_case_globals)]
-        match self.p_instance.frame_format_type {
-            NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive => {
-                FrameFormatType::Progressive
-            }
-            NDIlib_frame_format_type_e_NDIlib_frame_format_type_interleaved => {
-                FrameFormatType::Interleaved
-            }
-            NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_0 => FrameFormatType::Field0,
-            NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1 => FrameFormatType::Field1,
-            x => panic!("Unknown NDI video data frame format type: {}", x),
-        }
+        FrameFormatType::try_from(self.p_instance.FourCC).unwrap()
     }
 
     pub fn timecode(&self) -> i64 {

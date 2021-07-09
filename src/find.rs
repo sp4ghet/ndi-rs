@@ -5,9 +5,9 @@ use std::time::Instant;
 
 #[derive(Debug, Clone)]
 pub struct FindBuilder {
-    pub show_local_sources: Option<bool>,
-    pub groups: Option<String>,
-    pub extra_ips: Option<String>,
+    show_local_sources: Option<bool>,
+    groups: Option<String>,
+    extra_ips: Option<String>,
 }
 
 impl FindBuilder {

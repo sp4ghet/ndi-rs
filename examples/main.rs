@@ -25,7 +25,7 @@ fn run() -> Result<(), String> {
     let recv_builder = ndi::RecvBuilder::new()
         .color_format(ndi::RecvColorFormat::RGBX_RGBA)
         .ndi_recv_name("ndi-rs".to_string());
-    let recv = recv_builder.build()?;
+    let mut recv = recv_builder.build()?;
     recv.connect(&sources[i]);
 
     let name = sources[i].get_name().unwrap();
@@ -61,7 +61,7 @@ fn run() -> Result<(), String> {
             ndi::FrameType::StatusChange => {
                 println!("Status change.")
             }
-            ndi::FrameType::Error => {
+            ndi::FrameType::ErrorFrame => {
                 println!("Error")
             }
             ndi::FrameType::Metadata => {
