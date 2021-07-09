@@ -51,6 +51,7 @@ pub enum RecvBandwidth {
     Highest = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_highest,
 }
 
+#[derive(Debug, Clone)]
 pub struct RecvBuilder {
     pub source_to_connect_to: Option<Source>,
     pub color_format: Option<RecvColorFormat>,
@@ -126,6 +127,31 @@ impl RecvBuilder {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
+pub struct RecvQueueSize {
+    pub video_frames: u32,
+    pub audio_frames: u32,
+    pub metadata_frames: u32,
+}
+
+impl RecvQueueSize {
+    pub fn new() -> Self {
+        Self {
+            video_frames: 0,
+            audio_frames: 0,
+            metadata_frames: 0,
+        }
+    }
+
+    fn from_binding(queue: NDIlib_recv_queue_t) -> Self {
+        Self {
+            video_frames: queue.video_frames as _,
+            audio_frames: queue.audio_frames as _,
+            metadata_frames: queue.metadata_frames as _,
+        }
+    }
+}
+
 pub struct Recv {
     p_instance: NDIlib_recv_instance_t,
 }
@@ -173,7 +199,7 @@ impl Recv {
             } else {
                 mem::MaybeUninit::uninit()
             };
-            let response = NDIlib_recv_capture_v2(
+            let response = NDIlib_recv_capture_v3(
                 self.p_instance,
                 video.as_mut_ptr(),
                 audio.as_mut_ptr(),
@@ -216,9 +242,36 @@ impl Recv {
         (total_perf, dropped_perf)
     }
 
+    // pub fn get_error(&self) -> String {
+    //     let res = unsafe {
+    //         let char_ptr = NDIlib_recv_recording_get_error(self.p_instance);
+    //         if char_ptr.is_null() {
+    //             return String::new();
+    //         }
+    //         CStr::from_ptr(char_ptr).to_string_lossy().to_string()
+    //     };
+    //     res
+    // }
+
     pub fn set_tally(&mut self, tally: Tally) {
         unsafe {
             NDIlib_recv_set_tally(self.p_instance, &tally);
+        }
+    }
+
+    pub fn get_queue(&self) -> RecvQueueSize {
+        let mut p_total: mem::MaybeUninit<NDIlib_recv_queue_t> = mem::MaybeUninit::uninit();
+        unsafe {
+            NDIlib_recv_get_queue(self.p_instance, p_total.as_mut_ptr());
+            let queue = RecvQueueSize::from_binding(p_total.assume_init());
+
+            queue
+        }
+    }
+
+    pub fn free_metadata(&self, mut metadata: MetaData) {
+        unsafe {
+            NDIlib_recv_free_metadata(self.p_instance, &mut metadata.p_instance);
         }
     }
 
@@ -230,7 +283,7 @@ impl Recv {
 
     pub fn free_audio_data(&self, mut audio_data: AudioData) {
         unsafe {
-            NDIlib_recv_free_audio_v2(self.p_instance, &mut audio_data.p_instance);
+            NDIlib_recv_free_audio_v3(self.p_instance, &mut audio_data.p_instance);
         }
     }
 }

@@ -1,6 +1,6 @@
 use core::panic;
 use internal::bindings::*;
-use std::ffi::CStr;
+use std::{ffi::CStr, fmt::Debug};
 
 pub mod find;
 pub mod internal;
@@ -52,8 +52,17 @@ pub enum FourCCAudioType {
     FLTP = NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP,
 }
 
+#[derive(Clone)]
 pub struct Source {
     p_instance: NDIlib_source_t,
+}
+
+impl Debug for Source {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ndi::Source")
+            .field("name", &self.get_name())
+            .finish()
+    }
 }
 
 impl Source {
@@ -176,11 +185,11 @@ impl VideoData {
 }
 
 pub struct AudioData {
-    p_instance: NDIlib_audio_frame_v2_t,
+    p_instance: NDIlib_audio_frame_v3_t,
 }
 
 impl AudioData {
-    pub fn from_binding(p_instance: NDIlib_audio_frame_v2_t) -> Self {
+    pub fn from_binding(p_instance: NDIlib_audio_frame_v3_t) -> Self {
         Self { p_instance }
     }
 
@@ -204,12 +213,24 @@ impl AudioData {
         self.p_instance.timestamp
     }
 
-    pub fn p_data(&self) -> *mut f32 {
+    pub fn p_data(&self) -> *mut u8 {
         self.p_instance.p_data
     }
 
+    pub fn four_cc(&self) -> FourCCAudioType {
+        #[allow(non_upper_case_globals)]
+        match self.p_instance.FourCC {
+            NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP => FourCCAudioType::FLTP,
+            x => panic!("Unknown NDI FourCC Audio type encountered: {}", x),
+        }
+    }
+
     pub fn channel_stride_in_bytes(&self) -> u32 {
-        self.p_instance.channel_stride_in_bytes as _
+        match self.four_cc() {
+            FourCCAudioType::FLTP => unsafe {
+                self.p_instance.__bindgen_anon_1.channel_stride_in_bytes as _
+            },
+        }
     }
 
     pub fn metadata(&self) -> String {
@@ -222,6 +243,31 @@ impl AudioData {
             .to_string_lossy()
             .to_string();
         metadata
+    }
+}
+
+#[derive(Debug)]
+pub struct MetaData {
+    p_instance: NDIlib_metadata_frame_t,
+}
+
+impl MetaData {
+    pub fn from_binding(p_instance: NDIlib_metadata_frame_t) -> Self {
+        Self { p_instance }
+    }
+
+    pub fn length(&self) -> u32 {
+        self.p_instance.length as _
+    }
+    pub fn timecode(&self) -> i64 {
+        self.p_instance.timecode
+    }
+    pub fn p_data(&self) -> String {
+        // according to the docs, metadata should be valid UTF-8 XML
+        // not sure how much it's actually followed in practice
+        let char_ptr = self.p_instance.p_data;
+        let data = unsafe { CStr::from_ptr(char_ptr).to_string_lossy().to_string() };
+        data
     }
 }
 

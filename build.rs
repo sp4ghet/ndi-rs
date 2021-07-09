@@ -29,6 +29,7 @@ fn main() {
         // bindings for.
         .header("wrapper.h")
         .clang_args(["-I", "./thirdparty/Include"].iter())
+        .clang_arg("-fdeclspec")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))

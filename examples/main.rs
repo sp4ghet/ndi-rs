@@ -22,7 +22,9 @@ fn run() -> Result<(), String> {
     stdin.read_line(&mut buf).map_err(|e| e.to_string())?;
     let i = buf.trim_end().parse::<usize>().map_err(|e| e.to_string())?;
 
-    let recv_builder = ndi::RecvBuilder::new().color_format(ndi::RecvColorFormat::RGBX_RGBA);
+    let recv_builder = ndi::RecvBuilder::new()
+        .color_format(ndi::RecvColorFormat::RGBX_RGBA)
+        .ndi_recv_name("ndi-rs".to_string());
     let recv = recv_builder.build()?;
     recv.connect(&sources[i]);
 
