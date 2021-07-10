@@ -29,7 +29,7 @@ const NULL: usize = 0;
 
 /// A description of the type of of frame received.
 ///
-/// This is usually returned by [`Recv::capture`]
+/// This is usually returned by [`Recv::capture_all()`]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy)]
 pub enum FrameType {
@@ -42,11 +42,11 @@ pub enum FrameType {
     /// Received a metadata frame
     Metadata = NDIlib_frame_type_e_NDIlib_frame_type_metadata,
     /// This indicates that the settings on this input have changed.
-    /// For instance, this value will be returned from [`recv::Recv::capture`].
+    /// For instance, this value will be returned from [`recv::Recv::capture_all()`].
     /// when the device is known to have new settings, for instance the web URL has changed or the device
     /// is now known to be a PTZ camera.
     StatusChange = NDIlib_frame_type_e_NDIlib_frame_type_status_change,
-    /// error occured (undocumented)
+    /// error occured (disconnected)
     ErrorFrame = NDIlib_frame_type_e_NDIlib_frame_type_error,
 }
 

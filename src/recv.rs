@@ -428,7 +428,7 @@ impl Recv {
     ///
     /// If someone is already connected then this string will be sent to them immediately.
     /// Connection based metadata is data that is sent automatically each time a new connection is received.
-    /// To reset them you need to clear them all and set them up again using [`recv_clear_connection_metadata()`]
+    /// To reset them you need to clear them all and set them up again using [`Recv::recv_clear_connection_metadata()`]
     pub fn add_connection_metadata(&self, metadata: &MetaData) {
         unsafe {
             NDIlib_recv_add_connection_metadata(self.p_instance, &metadata.p_instance);
