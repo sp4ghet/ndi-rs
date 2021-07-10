@@ -263,15 +263,21 @@ impl Recv {
         }
     }
 
-    /// Capture NDI frame
-    pub fn capture(
+    /// Receive video, audio and metadata frames.
+    ///
+    /// This call can be called simultaneously on separate threads,
+    /// so it is entirely possible to receive audio, video, metadata all on separate threads.
+    /// This function will return [`FrameType::None`] if no data is received within the specified timeout
+    /// and [`FrameType::ErrorFrame`] if the connection is lost.
+    /// Buffers captured with this must be freed with the appropriate free function.
+    pub fn capture_all(
         &self,
         video_data: &mut Option<VideoData>,
         audio_data: &mut Option<AudioData>,
         meta_data: &mut Option<MetaData>,
         timeout_ms: u32,
     ) -> FrameType {
-        let response = unsafe {
+        unsafe {
             let mut video = if let Some(x) = video_data {
                 mem::MaybeUninit::new(x.p_instance)
             } else {
@@ -299,18 +305,70 @@ impl Recv {
             *audio_data = Some(AudioData::from_binding(audio.assume_init()));
             *meta_data = Some(MetaData::from_binding(metadata.assume_init()));
 
-            response
-        };
+            FrameType::try_from(response).unwrap()
+        }
+    }
 
-        #[allow(non_upper_case_globals)]
-        match response {
-            NDIlib_frame_type_e_NDIlib_frame_type_none => FrameType::None,
-            NDIlib_frame_type_e_NDIlib_frame_type_video => FrameType::Video,
-            NDIlib_frame_type_e_NDIlib_frame_type_audio => FrameType::Audio,
-            NDIlib_frame_type_e_NDIlib_frame_type_status_change => FrameType::StatusChange,
-            NDIlib_frame_type_e_NDIlib_frame_type_error => FrameType::ErrorFrame,
-            NDIlib_frame_type_e_NDIlib_frame_type_metadata => FrameType::Metadata,
-            x => panic!("Unknown frame type {} encountered", x),
+    /// Receive video frame
+    pub fn capture_video(&self, video_data: &mut Option<VideoData>, timeout_ms: u32) -> FrameType {
+        unsafe {
+            let mut video = if let Some(x) = video_data {
+                mem::MaybeUninit::new(x.p_instance)
+            } else {
+                mem::MaybeUninit::uninit()
+            };
+            let response = NDIlib_recv_capture_v3(
+                self.p_instance,
+                video.as_mut_ptr(),
+                NULL as _,
+                NULL as _,
+                timeout_ms,
+            );
+
+            *video_data = Some(VideoData::from_binding(video.assume_init()));
+            FrameType::try_from(response).unwrap()
+        }
+    }
+
+    /// Receive audio frame
+    pub fn capture_audio(&self, audio_data: &mut Option<AudioData>, timeout_ms: u32) -> FrameType {
+        unsafe {
+            let mut audio = if let Some(x) = audio_data {
+                mem::MaybeUninit::new(x.p_instance)
+            } else {
+                mem::MaybeUninit::uninit()
+            };
+            let response = NDIlib_recv_capture_v3(
+                self.p_instance,
+                NULL as _,
+                audio.as_mut_ptr(),
+                NULL as _,
+                timeout_ms,
+            );
+
+            *audio_data = Some(AudioData::from_binding(audio.assume_init()));
+            FrameType::try_from(response).unwrap()
+        }
+    }
+
+    /// Receive metadata frame
+    pub fn capture_metadata(&self, meta_data: &mut Option<MetaData>, timeout_ms: u32) -> FrameType {
+        unsafe {
+            let mut metadata = if let Some(x) = meta_data {
+                mem::MaybeUninit::new(x.p_instance)
+            } else {
+                mem::MaybeUninit::uninit()
+            };
+            let response = NDIlib_recv_capture_v3(
+                self.p_instance,
+                NULL as _,
+                NULL as _,
+                metadata.as_mut_ptr(),
+                timeout_ms,
+            );
+
+            *meta_data = Some(MetaData::from_binding(metadata.assume_init()));
+            FrameType::try_from(response).unwrap()
         }
     }
 

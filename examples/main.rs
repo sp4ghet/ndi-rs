@@ -36,7 +36,7 @@ fn run() -> Result<(), String> {
         let mut video_data = None;
         let mut audio_data = None;
         let mut meta_data = None;
-        let response = recv.capture(&mut video_data, &mut audio_data, &mut meta_data, 1000);
+        let response = recv.capture_all(&mut video_data, &mut audio_data, &mut meta_data, 1000);
         let video_data = video_data.ok_or("Failed to get video data from capture".to_string())?;
         let audio_data = audio_data.ok_or("Failed to get audio data from capture".to_string())?;
         let meta_data = meta_data.ok_or("Failed to get meta data from capture".to_string())?;
