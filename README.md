@@ -21,3 +21,9 @@ cargo build
 ```sh
 cargo run --example main
 ```
+
+
+-----
+
+NDI® is a registered trademark of NewTek, Inc.
+http://ndi.tv/

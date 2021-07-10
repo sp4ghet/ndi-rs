@@ -4,6 +4,7 @@ use std::ffi::CString;
 use super::internal::bindings::*;
 use super::*;
 
+/// Builder struct for [`Send`]
 #[derive(Debug, Clone)]
 pub struct SendBuilder {
     ndi_name: Option<String>,
@@ -13,6 +14,7 @@ pub struct SendBuilder {
 }
 
 impl SendBuilder {
+    /// Create new builder instance
     pub fn new() -> Self {
         Self {
             ndi_name: None,
@@ -22,26 +24,55 @@ impl SendBuilder {
         }
     }
 
+    /// This is the name of the NDI source to create.
+    ///
+    /// This will be the name of the NDI source on the network.
+    /// For instance, if your network machine name is called “MyMachine” and you
+    /// specify this parameter as “My Video”, the NDI source on the network would be “MyMachine (My Video)”.
     pub fn ndi_name(mut self, ndi_name: String) -> Self {
         self.ndi_name = Some(ndi_name);
         self
     }
 
+    /// Specify the groups that this NDI sender should place itself into.
+    ///
+    /// Groups are sets of NDI sources. Any source can be part of any
+    /// number of groups, and groups are comma-separated. For instance
+    /// "cameras,studio 1,10am show" would place a source in the three groups named.
     pub fn groups(mut self, groups: String) -> Self {
         self.groups = Some(groups);
         self
     }
 
+    /// Specify whether video "clock" themself.
+    ///
+    /// When it is clocked, video frames added will be rate-limited to
+    /// match the current framerate they are submitted at.
+    /// In general, if you are submitting video and audio off a single thread you should only clock one of them
+    /// If you are submitting audio and video of separate threads then having both clocked can be useful.
+    /// A simplified view of the how works is that, when you submit a frame, it will
+    /// keep track of the time the next frame would be required at. If you submit a
+    /// frame before this time, the call will wait until that time. This ensures that, if
+    /// you sit in a tight loop and render frames as fast as you can go, they will be
+    /// clocked at the framerate that you desire.
+    ///
+    /// Note that combining clocked video and audio submission combined with
+    /// asynchronous frame submission (see below) allows you to write very simple
+    /// loops to render and submit NDI frames.
     pub fn clock_video(mut self, clock_video: bool) -> Self {
         self.clock_video = Some(clock_video);
         self
     }
 
+    /// specify whether audio "clock" themself.
+    ///
+    /// See above in `clock_video`
     pub fn clock_audio(mut self, clock_audio: bool) -> Self {
         self.clock_audio = Some(clock_audio);
         self
     }
 
+    /// Build the [`Send`] instance
     pub fn build(self) -> Result<Send, String> {
         let mut settings = NDIlib_send_create_t {
             p_ndi_name: NULL as _,
@@ -72,11 +103,15 @@ impl SendBuilder {
     }
 }
 
+/// A sender struct for sending NDI
 pub struct Send {
     p_instance: NDIlib_send_instance_t,
 }
 
 impl Send {
+    /// Create a new instance with default parameters
+    ///
+    /// It is recommended to use [`SendBuilder`] instead
     pub fn new() -> Result<Self, String> {
         let p_instance = unsafe { NDIlib_send_create(NULL as _) };
 
@@ -86,7 +121,8 @@ impl Send {
 
         Ok(Self { p_instance })
     }
-    pub fn with_settings(settings: NDIlib_send_create_t) -> Result<Self, String> {
+
+    fn with_settings(settings: NDIlib_send_create_t) -> Result<Self, String> {
         let p_instance = unsafe { NDIlib_send_create(&settings) };
 
         if p_instance.is_null() {
@@ -101,11 +137,14 @@ impl Send {
     /// the return value is whether Tally was actually updated or not
     pub fn get_tally(&self, tally: &mut Tally, timeout_ms: u32) -> bool {
         unsafe {
-            let is_updated = NDIlib_send_get_tally(self.p_instance, tally, timeout_ms);
+            let p_tally = *tally;
+            let is_updated =
+                NDIlib_send_get_tally(self.p_instance, &mut p_tally.into(), timeout_ms);
             is_updated
         }
     }
 
+    /// This allows you to receive metadata from the other end of the connection
     pub fn capture(&self, metadata: &mut MetaData, timeout_ms: u32) -> FrameType {
         unsafe {
             let frametype =
@@ -117,39 +156,64 @@ impl Send {
         }
     }
 
+    /// Retrieve the source information for the given sender instance.
     pub fn get_source(&self) -> Source {
         let instance = unsafe { *NDIlib_send_get_source_name(self.p_instance) };
         Source::from_binding(instance)
     }
 
+    /// This will add a metadata frame
     pub fn send_metadata(&self, metadata: &MetaData) {
         unsafe {
             NDIlib_send_send_metadata(self.p_instance, &metadata.p_instance);
         }
     }
 
+    /// This will add an audio frame
     pub fn send_audio(&self, audio_data: &AudioData) {
         unsafe {
             NDIlib_send_send_audio_v3(self.p_instance, &audio_data.p_instance);
         }
     }
 
+    /// This will add a video frame
     pub fn send_video(&self, video_data: &VideoData) {
         unsafe {
             NDIlib_send_send_video_v2(self.p_instance, &video_data.p_instance);
         }
     }
 
+    /// This will add a video frame and will return immediately, having scheduled the frame to be displayed.
+    ///
+    /// All processing and sending of the video will occur asynchronously. The memory accessed by NDIlib_video_frame_t
+    /// cannot be freed or re-used by the caller until a synchronizing event has occurred. In general the API is better
+    /// able to take advantage of asynchronous processing than you might be able to by simple having a separate thread
+    /// to submit frames.
+    ///
+    /// This call is particularly beneficial when processing BGRA video since it allows any color conversion, compression
+    /// and network sending to all be done on separate threads from your main rendering thread.
+    ///
+    /// Synchronizing events are :
+    /// - a call to `send_video`
+    /// - a call to `send_video_async` with another frame to be sent
+    /// - a call to `send_video` with p_video_data=NULL
+    /// - Dropping a [`Send`] instance
     pub fn send_video_async(&self, video_data: &VideoData) {
         unsafe {
             NDIlib_send_send_video_async_v2(self.p_instance, &video_data.p_instance);
         }
     }
 
+    /// Get the current number of receivers connected to this source.
+    ///
+    /// This can be used to avoid even rendering when nothing is connected to the video source.
+    /// which can significantly improve the efficiency if you want to make a lot of sources available on the network.
+    /// If you specify a timeout that is not 0 then it will wait until there are connections for this amount of time.
     pub fn get_no_connections(&self, timeout_ms: u32) -> u32 {
         unsafe { NDIlib_send_get_no_connections(self.p_instance, timeout_ms) as _ }
     }
 
+    /// Free the buffers returned by capture for metadata
     pub fn free_metadata(&self, metadata: MetaData) {
         unsafe {
             NDIlib_send_free_metadata(self.p_instance, &metadata.p_instance);

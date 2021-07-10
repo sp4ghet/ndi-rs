@@ -1,16 +1,28 @@
-//! NewTek NDI Bindings for rust
+#![warn(missing_docs)]
+//! NewTek NDI®[^tm] Bindings for rust
+//!
+//! [^tm]: NDI® is a registered trademark of NewTek, Inc.
+//! http://ndi.tv/
+//!
 
 use core::panic;
 use internal::bindings::*;
 use std::{convert::TryFrom, ffi::CStr, fmt::Debug};
 
+/// The [`Find`] struct and related constructs for finding NDI sources
 pub mod find;
+#[doc(hidden)]
 pub mod internal;
+/// The [`Recv`] struct and related constructs for receiving NDI
 pub mod recv;
+/// The [`Send`] struct and related constructs for sending NDI
 pub mod send;
 
+#[doc(hidden)]
 pub use find::*;
+#[doc(hidden)]
 pub use recv::*;
+#[doc(hidden)]
 pub use send::*;
 
 const NULL: usize = 0;
@@ -21,12 +33,21 @@ const NULL: usize = 0;
 #[repr(i32)]
 #[derive(Debug, Clone, Copy)]
 pub enum FrameType {
+    /// nothing changed, usually due to timeout
     None = NDIlib_frame_type_e_NDIlib_frame_type_none,
+    /// Received a video frame
     Video = NDIlib_frame_type_e_NDIlib_frame_type_video,
+    /// Received an audio frame
     Audio = NDIlib_frame_type_e_NDIlib_frame_type_audio,
-    StatusChange = NDIlib_frame_type_e_NDIlib_frame_type_status_change,
-    ErrorFrame = NDIlib_frame_type_e_NDIlib_frame_type_error,
+    /// Received a metadata frame
     Metadata = NDIlib_frame_type_e_NDIlib_frame_type_metadata,
+    /// This indicates that the settings on this input have changed.
+    /// For instance, this value will be returned from [`recv::Recv::capture`].
+    /// when the device is known to have new settings, for instance the web URL has changed or the device
+    /// is now known to be a PTZ camera.
+    StatusChange = NDIlib_frame_type_e_NDIlib_frame_type_status_change,
+    /// error occured (undocumented)
+    ErrorFrame = NDIlib_frame_type_e_NDIlib_frame_type_error,
 }
 
 impl TryFrom<i32> for FrameType {
@@ -46,12 +67,38 @@ impl TryFrom<i32> for FrameType {
     }
 }
 
+/// A description of the frome format of a frame
+///
+/// This is usually part of a [`VideoData`] frame.
+///
+/// To make everything as easy to use as possible, the SDK always assumes that fields are ‘top field first’.
+/// This is, in fact, the case for every modern format, but does create a problem
+/// for two specific older video formats as discussed below:
+///
+/// #### NTSC 486 LINES
+/// The best way to handle this format is simply to offset the image vertically by one line (`p_uyvy_data + uyvy_stride_in_bytes`)
+/// and reduce the vertical resolution to 480 lines. This can all be done without modification
+/// of the data being passed in at all; simply change the data and resolution pointers.
+///
+/// #### DV NTSC
+/// This format is a relatively rare these days, although still used from time to time. There is no entirely trivial way to
+/// handle this other than to move the image down one line and add a black line at the bottom.
 #[repr(i32)]
 #[derive(Debug, Clone, Copy)]
 pub enum FrameFormatType {
+    /// This is a progressive video frame
     Progressive = NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive,
+    /// This is a frame of video that is comprised of two fields.
+    ///
+    ///  The upper field comes first, and the lower comes second (see [`FrameFormatType`])
     Interleaved = NDIlib_frame_format_type_e_NDIlib_frame_format_type_interleaved,
+    /// This is an individual field 0 from a fielded video frame.
+    ///
+    /// This is the first temporal, upper field. (see [`FrameFormatType`])
     Field0 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_0,
+    /// This is an individual field 1 from a fielded video frame.
+    ///
+    /// This is the second temporal, lower field (see [`FrameFormatType`])
     Field1 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1,
 }
 
@@ -80,19 +127,115 @@ impl TryFrom<i32> for FrameFormatType {
     }
 }
 
+/// The [FourCC](https://www.fourcc.org/) type of a [`VideoData`] frame
+///
+/// When running in a YUV color space, the following standards are applied:
+///
+/// | Resolution | Standard |
+/// | -------- | ------- |
+/// | SD Resolutions | BT.601 |
+/// | HD resolutions >(720,576) | Rec.709 |
+/// | UHD resolutions > (1920,1080) | Rec.2020 |
+/// | Alpha | Full range for data type (2^8 for 8-bit, 2^16 for 16-bit) |
 #[repr(i32)]
 #[derive(Debug, Clone, Copy)]
 pub enum FourCCVideoType {
+    /// A buffer in the “UYVY” FourCC and represents a 4:2:2 image in YUV color space.
+    ///
+    /// There is a Y sample at every pixel, and U and V sampled at
+    /// every second pixel horizontally on each line. A macro-pixel contains 2
+    /// pixels in 1 DWORD. The ordering of these pixels is U0, Y0, V0, Y1.
     UYVY = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVY,
+
+    /// A buffer that represents a 4:2:2:4 image in YUV color space.
+    ///
+    /// There is a Y sample at every pixels with U,V sampled at every second pixel
+    /// horizontally. There are two planes in memory, the first being the UYVY
+    /// color plane, and the second the alpha plane that immediately follows the first.
+    /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
+    /// ```c++
+    /// uint8_t *p_uyvy = (uint8_t*)p_data;
+    /// uint8_t *p_alpha = p_uyvy + stride*yres;
+    /// ```
     UYVA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVA,
+    /// A 4:2:2 buffer in semi-planar format with full 16bpp color precision.
+    ///
+    /// This is formed from two buffers in memory, the first is a 16bpp
+    /// luminance buffer and the second is a buffer of U,V pairs in memory. This
+    /// can be considered as a 16bpp version of NV12.
+    ///
+    /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
+    /// ```c++
+    /// uint16_t *p_y = (uint16_t*)p_data;
+    /// uint16_t *p_uv = (uint16_t*)(p_data + stride*yres);
+    /// ```
+    /// As a matter of illustration, a completely packed image would have stride as `xres*sizeof(uint16_t)`.
     P216 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_P216,
+    /// A 4:2:2:4 buffer in semi-planar format with full 16bpp color and alpha precision.
+    ///
+    /// This is formed from three buffers in memory. The first is
+    /// a 16bpp luminance buffer, and the second is a buffer of U,V pairs in
+    /// memory. A single plane alpha channel at 16bpp follows the U,V pairs.
+    ///
+    /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
+    /// ```c++
+    /// uint16_t *p_y = (uint16_t*)p_data;
+    /// uint16_t *p_uv = p_y + stride*yres;
+    /// uint16_t *p_alpha = p_uv + stride*yres;
+    /// ```
+    /// To illustrate, a completely packed image would have stride as `xres*sizeof(uint16_t)`.
     PA16 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_PA16,
+    /// A planar 4:2:0 in Y, U, V planes in memory.
+    ///
+    /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
+    /// ```c++
+    /// uint8_t *p_y = (uint8_t*)p_data;
+    /// uint8_t *p_u = p_y + stride*yres;
+    /// uint8_t *p_v = p_u + (stride/2)*(yres/2);
+    /// As a matter of illustration, a completely packed image would have stride as `xres*sizeof(uint8_t)`.
     YV12 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_YV12,
+    /// A planar 4:2:0 in Y, U, V planes in memory with the U, V planes reversed from the YV12 format.
+    ///
+    /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
+    /// ```c++
+    /// uint8_t *p_y = (uint8_t*)p_data;
+    /// uint8_t *p_v = p_y + stride*yres;
+    /// uint8_t *p_u = p_v + (stride/2)*(yres/2);
+    /// ```
+    /// To illustrate, a completely packed image would have stride as `xres*sizeof(uint8_t)`.
     I420 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_I420,
+    /// A semi planar 4:2:0 in Y, UV planes in memory.
+    ///
+    /// The luminance plane is at the lowest memory address with the UV pairs immediately following them.
+    ///
+    /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
+    /// ```c++
+    /// uint8_t *p_y = (uint8_t*)p_data;
+    /// uint8_t *p_uv = p_y + stride*yres;
+    /// ```
+    /// To illustrate, a completely packed image would have stride as `xres*sizeof(uint8_t)`.
     NV12 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_NV12,
+    /// A 4:4:4:4, 8-bit image of red, green, blue and alpha components
+    ///
+    /// in memory order blue, green, red, alpha. This data is not pre-multiplied.
     BGRA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRA,
-    RGBA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA,
+    /// A 4:4:4, 8-bit image of red, green, blue components
+    ///  in memory order blue, green, red, 255. This data is not pre-multiplied.
+    ///
+    /// This is identical to BGRA, but is provided as a hint that all alpha channel
+    /// values are 255, meaning that alpha compositing may be avoided. The lack
+    /// of an alpha channel is used by the SDK to improve performance when possible.
     BGRX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX,
+    /// A 4:4:4:4, 8-bit image of red, green, blue and alpha components
+    ///
+    /// in memory order red, green, blue, alpha. This data is not pre-multiplied.
+    RGBA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA,
+    /// A 4:4:4, 8-bit image of red, green, blue components
+    ///
+    /// in memory order red, green, blue, 255. This data is not pre-multiplied.
+    ///This is identical to RGBA, but is provided as a hint that all alpha channel
+    ///values are 255, meaning that alpha compositing may be avoided. The lack
+    ///of an alpha channel is used by the SDK to improve performance when possible.
     RGBX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX,
 }
 
@@ -118,11 +261,15 @@ impl TryFrom<i32> for FourCCVideoType {
     }
 }
 
+/// The [FourCC](https://www.fourcc.org/) type of a [`AudioData`] frame
+#[derive(Debug, Clone, Copy)]
 #[repr(i32)]
 pub enum FourCCAudioType {
+    /// This format stands for floating-point audio.
     FLTP = NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP,
 }
 
+/// A descriptor of a NDI source available on the network.
 #[derive(Clone)]
 pub struct Source {
     p_instance: NDIlib_source_t,
@@ -141,7 +288,7 @@ impl Source {
         Self { p_instance: source }
     }
 
-    pub fn new() -> Self {
+    fn new() -> Self {
         // From the default c++ constructor in Processing.NDI.structs.h
         let p_instance = NDIlib_source_t {
             p_ndi_name: NULL as _,
@@ -152,6 +299,13 @@ impl Source {
         Self { p_instance }
     }
 
+    /// A UTF8 string that provides a user readable name for this source.
+    ///
+    /// This can be used for serialization, etc... and comprises the machine
+    /// name and the source name on that machine. In the form
+    ///     MACHINE_NAME (NDI_SOURCE_NAME)
+    /// If the parameter was passed either as NULL, or an EMPTY string then
+    /// the specific IP address and port number from below is used.
     pub fn get_name(&self) -> Result<String, String> {
         let name_char_ptr: *mut std::os::raw::c_char = self.p_instance.p_ndi_name as _;
         if name_char_ptr.is_null() {
@@ -168,9 +322,18 @@ impl Source {
     }
 }
 
-pub type Tally = NDIlib_tally_t;
+/// Tally information
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Tally {
+    /// Is this currently on program output
+    pub on_program: bool,
+    /// Is this currently on preview output
+    pub on_preview: bool,
+}
 
 impl Tally {
+    /// Create a new [`Tally`] instance.
     pub fn new() -> Self {
         Self {
             on_program: false,
@@ -185,49 +348,132 @@ impl Default for Tally {
     }
 }
 
+impl From<NDIlib_tally_t> for Tally {
+    fn from(x: NDIlib_tally_t) -> Self {
+        Self {
+            on_preview: x.on_preview,
+            on_program: x.on_program,
+        }
+    }
+}
+
+impl Into<NDIlib_tally_t> for Tally {
+    fn into(self) -> NDIlib_tally_t {
+        NDIlib_tally_t {
+            on_preview: self.on_preview,
+            on_program: self.on_program,
+        }
+    }
+}
+
+/// Describes a video frame
 pub struct VideoData {
     p_instance: NDIlib_video_frame_v2_t,
 }
 
 impl VideoData {
-    pub fn from_binding(p_instance: NDIlib_video_frame_v2_t) -> Self {
+    fn from_binding(p_instance: NDIlib_video_frame_v2_t) -> Self {
         Self { p_instance }
     }
 
+    /// The width of the frame expressed in pixels.
+    ///
+    /// Note that, because data is internally all considered
+    /// in 4:2:2 formats, image width values
+    /// should be divisible by two.
     pub fn xres(&self) -> u32 {
         self.p_instance.xres as _
     }
 
+    /// The height of the frame expressed in pixels.
     pub fn yres(&self) -> u32 {
         self.p_instance.yres as _
     }
 
+    /// The FourCC pixel format for this buffer.
+    ///
+    /// See [`FourCCVideoType`] for details on possible values
     pub fn four_cc(&self) -> FourCCVideoType {
         FourCCVideoType::try_from(self.p_instance.FourCC).unwrap()
     }
+
+    /// The numerator of the framerate of the current frame.
+    ///
+    /// The framerate is specified as a
+    /// numerator and denominator, such that the following is valid:
+    /// ```
+    /// # let frame_rate_N = 0 as u32;
+    /// # let frame_rate_D = 1 as u32;
+    /// let frame_rate = (frame_rate_N as f32) / (frame_rate_D as f32);
+    /// ```
 
     pub fn frame_rate_n(&self) -> u32 {
         self.p_instance.frame_rate_N as _
     }
 
+    /// The denominator of the framerate of the current frame.
+    ///
+    /// The framerate is specified as a
+    /// numerator and denominator, such that the following is valid:
+    /// ```
+    /// # let frame_rate_N = 0 as u32;
+    /// # let frame_rate_D = 1 as u32;
+    /// let frame_rate = (frame_rate_N as f32) / (frame_rate_D as f32);
+    /// ```
     pub fn frame_rate_d(&self) -> u32 {
         self.p_instance.frame_rate_D as _
     }
 
+    /// The SDK defines picture aspect ratio (as opposed to pixel aspect ratios).
+    ///
+    /// When the aspect ratio is 0.0 it is interpreted as xres/yres,
+    ///  or square pixel; for most modern video types this is a default that can be used.
     pub fn picture_aspect_ratio(&self) -> f32 {
         self.p_instance.picture_aspect_ratio
     }
+
+    /// The frame format type of a video
     pub fn frame_format_type(&self) -> FrameFormatType {
         FrameFormatType::try_from(self.p_instance.FourCC).unwrap()
     }
 
+    /// The timecode of this frame in 100 ns intervals.
+    ///
+    /// This is generally not used internally by the SDK
+    ///  but is passed through to applications, which may interpret it as they wish.
+    /// See [`Send`] for details
     pub fn timecode(&self) -> i64 {
         self.p_instance.timecode
     }
+
+    /// The video data itself laid out linearly in memory
+    ///
+    /// The memory is laid out in the FourCC format returned by `four_cc()`.
+    /// The number of bytes defined between lines is specified in `line_stride_in_bytes()`
     pub fn p_data(&self) -> *mut u8 {
         self.p_instance.p_data
     }
 
+    /// This is the inter-line stride of the video data, in bytes.
+    pub fn line_stride_in_bytes(&self) -> Option<u32> {
+        // TODO: detect whether it is a compressed type
+
+        // If the FourCC is not a compressed type, then this will be the
+        // inter-line stride of the video data in bytes. If the stride is 0,
+        // then it will default to sizeof(one pixel)*xres.
+        unsafe { Some(self.p_instance.__bindgen_anon_1.line_stride_in_bytes as _) }
+    }
+
+    /// The size of the p_data buffer in bytes.
+    pub fn data_size_in_bytes(&self) -> Option<u32> {
+        // If the FourCC is a compressed type, then this will be the size of the
+        // p_data buffer in bytes.
+        unsafe { Some(self.p_instance.__bindgen_anon_1.data_size_in_bytes as _) }
+    }
+
+    /// A per frame metadata stream that should be XML
+    ///
+    /// It is sent and received with the frame.
     pub fn metadata(&self) -> String {
         let metadata_char_ptr = self.p_instance.p_metadata;
         if metadata_char_ptr.is_null() {
@@ -240,44 +486,82 @@ impl VideoData {
         metadata
     }
 
-    pub fn timestamp(&self) -> i64 {
-        self.p_instance.timestamp
+    /// A per-frame timestamp filled in by the NDI SDK using a high precision clock.
+    ///
+    /// This is only valid when receiving a frame.
+    /// It represents the time (in 100 ns intervals measured in UTC time,
+    /// since the Unix Time Epoch 1/1/1970 00:00 of
+    /// the exact moment that the frame was submitted by the sending side
+    /// If this value is None then this value is not available.
+    pub fn timestamp(&self) -> Option<i64> {
+        let timestamp = self.p_instance.timestamp;
+        if timestamp == NDIlib_recv_timestamp_undefined {
+            None
+        } else {
+            Some(timestamp)
+        }
     }
 }
 
+/// An audio frame
 pub struct AudioData {
     p_instance: NDIlib_audio_frame_v3_t,
 }
 
 impl AudioData {
-    pub fn from_binding(p_instance: NDIlib_audio_frame_v3_t) -> Self {
+    fn from_binding(p_instance: NDIlib_audio_frame_v3_t) -> Self {
         Self { p_instance }
     }
 
+    /// The sample-rate of this buffer
     pub fn sample_rate(&self) -> u32 {
         self.p_instance.sample_rate as _
     }
 
+    /// The number of audio channels
     pub fn no_channels(&self) -> u32 {
         self.p_instance.no_channels as _
     }
 
+    /// The number of audio samples per channel
     pub fn no_samples(&self) -> u32 {
         self.p_instance.no_samples as _
     }
 
+    /// The timecode of this frame in 100ns intervals
     pub fn timecode(&self) -> i64 {
         self.p_instance.timecode
     }
 
-    pub fn timestamp(&self) -> i64 {
-        self.p_instance.timestamp
+    /// A per-frame timestamp filled in by the NDI SDK using a high precision clock.
+    ///
+    /// This is only valid when receiving a frame.
+    /// It represents the time (in 100 ns intervals measured in UTC time,
+    /// since the Unix Time Epoch 1/1/1970 00:00 of
+    /// the exact moment that the frame was submitted by the sending side
+    /// If this value is None then this value is not available.
+    pub fn timestamp(&self) -> Option<i64> {
+        let timestamp = self.p_instance.timestamp;
+        if timestamp == NDIlib_recv_timestamp_undefined {
+            None
+        } else {
+            Some(timestamp)
+        }
     }
 
+    /// A pointer to the audio data
+    ///
+    /// If FourCC is NDIlib_FourCC_type_FLTP, then this is the floating-point
+    /// audio data in planar format, with each audio channel stored
+    /// together with a stride between channels specified by
+    /// channel_stride_in_bytes.
     pub fn p_data(&self) -> *mut u8 {
         self.p_instance.p_data
     }
 
+    /// What FourCC type is for this frame
+    ///
+    /// There is currently one supported format: FLTP.
     pub fn four_cc(&self) -> FourCCAudioType {
         #[allow(non_upper_case_globals)]
         match self.p_instance.FourCC {
@@ -286,6 +570,11 @@ impl AudioData {
         }
     }
 
+    /// The stride in bytes for a single channel.
+    ///
+    /// This is the number of bytes that are used to step from one audio
+    /// channel to another.
+    ///
     pub fn channel_stride_in_bytes(&self) -> u32 {
         match self.four_cc() {
             FourCCAudioType::FLTP => unsafe {
@@ -294,6 +583,9 @@ impl AudioData {
         }
     }
 
+    /// This is a per frame metadata stream in XML
+    ///
+    /// It is sent and received with the frame.
     pub fn metadata(&self) -> String {
         let metadata_char_ptr = self.p_instance.p_metadata;
         if metadata_char_ptr.is_null() {
@@ -307,31 +599,46 @@ impl AudioData {
     }
 }
 
-#[derive(Debug)]
+/// The data description for metadata
 pub struct MetaData {
     p_instance: NDIlib_metadata_frame_t,
 }
 
 impl MetaData {
-    pub fn from_binding(p_instance: NDIlib_metadata_frame_t) -> Self {
+    fn from_binding(p_instance: NDIlib_metadata_frame_t) -> Self {
         Self { p_instance }
     }
 
+    /// The length of the string in UTF8 characters. This includes the NULL terminating character.
+    /// If this is 0, then the length is assumed to be the length of a NULL terminated string.
     pub fn length(&self) -> u32 {
         self.p_instance.length as _
     }
+
+    /// The timecode of this frame in 100ns intervals
     pub fn timecode(&self) -> i64 {
         self.p_instance.timecode
     }
+
+    /// The metadata as a UTF8 XML string. This is a NULL terminated string.
     pub fn p_data(&self) -> String {
-        // according to the docs, metadata should be valid UTF-8 XML
-        // not sure how much it's actually followed in practice
+        //! according to the docs, metadata should be valid UTF-8 XML
+        //! not sure how much it's actually followed in practice
         let char_ptr = self.p_instance.p_data;
         let data = unsafe { CStr::from_ptr(char_ptr).to_string_lossy().to_string() };
         data
     }
 }
 
+/// Start the library
+///
+/// This is not actually required, but will start the libraries which might get
+/// you slightly better performance in some cases.In general it is more "correct" to
+/// call this although it is not required. There is no way to call this that would have
+/// an adverse impact on anything.
+/// This will return Err if the CPU is not sufficiently capable to run NDILib
+/// currently NDILib requires SSE4.2 instructions (see documentation). You can verify
+/// a specific CPU against the library with a call to [`is_supported_CPU()`]
 pub fn initialize() -> Result<(), String> {
     if !unsafe { NDIlib_initialize() } {
         return Err("Failed to initialize NDIlib".to_string());
@@ -340,6 +647,19 @@ pub fn initialize() -> Result<(), String> {
     Ok(())
 }
 
+/// Destroy everything associated with the library
+///
+/// This is not actually required, but will end the libraries which might get
+/// you slightly better performance in some cases.In general it is more "correct" to
+/// call this although it is not required. There is no way to call this that would have
+/// an adverse impact on anything.(even calling destroy before you've deleted all your
+/// objects).
 pub fn cleanup() {
     unsafe { NDIlib_destroy() };
+}
+
+/// Recover whether the current CPU in the system is capable of running NDILib.
+#[allow(non_snake_case)]
+pub fn is_supported_CPU() -> bool {
+    unsafe { NDIlib_is_supported_CPU() }
 }

@@ -35,10 +35,11 @@ fn run() -> Result<(), String> {
     while Instant::now().duration_since(start).as_secs() < 5 {
         let mut video_data = None;
         let mut audio_data = None;
-
-        let response = recv.capture(&mut video_data, &mut audio_data, 1000);
+        let mut meta_data = None;
+        let response = recv.capture(&mut video_data, &mut audio_data, &mut meta_data, 1000);
         let video_data = video_data.ok_or("Failed to get video data from capture".to_string())?;
         let audio_data = audio_data.ok_or("Failed to get audio data from capture".to_string())?;
+        let meta_data = meta_data.ok_or("Failed to get meta data from capture".to_string())?;
 
         let (total, dropped) = recv.get_performance();
         println!("total:\n {}dropped:\n {}", total, dropped);
@@ -55,7 +56,12 @@ fn run() -> Result<(), String> {
                 recv.free_video_data(video_data);
             }
             ndi::FrameType::Audio => {
-                println!("Got audio data.");
+                println!(
+                    "Got audio data. Channels: {}, Samples: {}, Stride: {}",
+                    audio_data.no_channels(),
+                    audio_data.no_samples(),
+                    audio_data.channel_stride_in_bytes()
+                );
                 recv.free_audio_data(audio_data);
             }
             ndi::FrameType::StatusChange => {
@@ -65,7 +71,7 @@ fn run() -> Result<(), String> {
                 println!("Error")
             }
             ndi::FrameType::Metadata => {
-                println!("Got metadata.")
+                println!("Got metadata. {:?}", meta_data.length())
             }
         }
     }
