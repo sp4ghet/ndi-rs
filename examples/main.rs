@@ -1,7 +1,7 @@
 use std::io;
 use std::time::Instant;
 
-fn run() -> Result<(), String> {
+fn main() -> Result<(), String> {
     ndi::initialize()?;
 
     let find = ndi::Find::new()?;
@@ -53,7 +53,6 @@ fn run() -> Result<(), String> {
                     video_data.yres(),
                     video_data.four_cc()
                 );
-                recv.free_video_data(video_data);
             }
             ndi::FrameType::Audio => {
                 println!(
@@ -62,7 +61,6 @@ fn run() -> Result<(), String> {
                     audio_data.no_samples(),
                     audio_data.channel_stride_in_bytes()
                 );
-                recv.free_audio_data(audio_data);
             }
             ndi::FrameType::StatusChange => {
                 println!("Status change.")
@@ -76,13 +74,14 @@ fn run() -> Result<(), String> {
         }
     }
 
+    let meta_str = "Hello World".to_owned();
+    let meta = ndi::MetaData::new(0, 0, meta_str);
+
+    println!("{}", meta.p_data());
+
     println!("Done");
 
     ndi::cleanup();
 
     Ok(())
-}
-
-fn main() {
-    run().unwrap();
 }
