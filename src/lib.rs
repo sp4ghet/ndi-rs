@@ -9,8 +9,9 @@ use core::panic;
 use internal::bindings::*;
 use std::{
     convert::TryFrom,
+    error,
     ffi::{CStr, CString},
-    fmt::Debug,
+    fmt::{Debug, Display},
     sync::Arc,
 };
 
@@ -31,6 +32,22 @@ pub use recv::*;
 pub use send::*;
 
 const NULL: usize = 0;
+
+/// Various Errors that the library could return
+#[derive(Debug)]
+pub enum NDIError {
+    /// The system is not compatible with NDI
+    NotSupported,
+    InvalidEnum(i32, &'static str),
+}
+
+impl Display for NDIError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        todo!()
+    }
+}
+
+impl error::Error for NDIError {}
 
 /// A description of the type of of frame received.
 ///
@@ -56,7 +73,7 @@ pub enum FrameType {
 }
 
 impl TryFrom<i32> for FrameType {
-    type Error = String;
+    type Error = NDIError;
 
     fn try_from(value: i32) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
@@ -67,7 +84,7 @@ impl TryFrom<i32> for FrameType {
             NDIlib_frame_type_e_NDIlib_frame_type_status_change => Ok(FrameType::StatusChange),
             NDIlib_frame_type_e_NDIlib_frame_type_error => Ok(FrameType::ErrorFrame),
             NDIlib_frame_type_e_NDIlib_frame_type_metadata => Ok(FrameType::Metadata),
-            x => Err(format!("Unknown NDI frame type encountered: {}", x)),
+            x => Err(NDIError::InvalidEnum(x, "FrameType")),
         }
     }
 }
@@ -108,7 +125,7 @@ pub enum FrameFormatType {
 }
 
 impl TryFrom<i32> for FrameFormatType {
-    type Error = String;
+    type Error = NDIError;
 
     fn try_from(value: i32) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
@@ -127,7 +144,7 @@ impl TryFrom<i32> for FrameFormatType {
             NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1 => {
                 Ok(FrameFormatType::Field1)
             }
-            x => Err(format!("Unknown NDI video data frame format type: {}", x)),
+            x => Err(NDIError::InvalidEnum(x, "FrameFormatType")),
         }
     }
 }
@@ -245,7 +262,7 @@ pub enum FourCCVideoType {
 }
 
 impl TryFrom<i32> for FourCCVideoType {
-    type Error = String;
+    type Error = NDIError;
 
     fn try_from(value: i32) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
@@ -261,7 +278,7 @@ impl TryFrom<i32> for FourCCVideoType {
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA => Ok(FourCCVideoType::RGBA),
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX => Ok(FourCCVideoType::BGRX),
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX => Ok(FourCCVideoType::RGBX),
-            x => Err(format!("Unknown FourCC video type encountered: {}", x)),
+            x => Err(NDIError::InvalidEnum(x, "FourCCVideoType")),
         }
     }
 }
@@ -272,6 +289,18 @@ impl TryFrom<i32> for FourCCVideoType {
 pub enum FourCCAudioType {
     /// This format stands for floating-point audio.
     FLTP = NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP,
+}
+
+impl TryFrom<i32> for FourCCAudioType {
+    type Error = NDIError;
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        #[allow(non_upper_case_globals)]
+        match value {
+            NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP => Ok(FourCCAudioType::FLTP),
+            x => Err(NDIError::InvalidEnum(x, "FourCCAudioType")),
+        }
+    }
 }
 
 /// A descriptor of a NDI source available on the network.
@@ -311,7 +340,7 @@ impl Source {
     ///     MACHINE_NAME (NDI_SOURCE_NAME)
     /// If the parameter was passed either as NULL, or an EMPTY string then
     /// the specific IP address and port number from below is used.
-    pub fn get_name(&self) -> Result<String, String> {
+    pub fn get_name(&self) -> Result<String, std::str::Utf8Error> {
         let name_char_ptr: *mut std::os::raw::c_char = self.p_instance.p_ndi_name as _;
         if name_char_ptr.is_null() {
             return Ok(String::new());
@@ -319,8 +348,7 @@ impl Source {
         let name = unsafe {
             CStr::from_ptr(name_char_ptr)
                 .to_owned()
-                .to_str()
-                .map_err(|e| e.to_string())?
+                .to_str()?
                 .to_string()
         };
         Ok(name)
@@ -753,9 +781,9 @@ impl Drop for MetaData {
 /// This will return Err if the CPU is not sufficiently capable to run NDILib
 /// currently NDILib requires SSE4.2 instructions (see documentation). You can verify
 /// a specific CPU against the library with a call to [`is_supported_CPU()`]
-pub fn initialize() -> Result<(), String> {
+pub fn initialize() -> Result<(), NDIError> {
     if !unsafe { NDIlib_initialize() } {
-        return Err("Failed to initialize NDIlib".to_string());
+        return Err(NDIError::NotSupported);
     };
 
     Ok(())
@@ -765,11 +793,10 @@ pub fn initialize() -> Result<(), String> {
 ///
 /// This is not actually required, but will end the libraries which might get
 /// you slightly better performance in some cases.In general it is more "correct" to
-/// call this although it is not required. There is no way to call this that would have
-/// an adverse impact on anything.(even calling destroy before you've deleted all your
-/// objects).
-pub fn cleanup() {
-    unsafe { NDIlib_destroy() };
+/// call this although it is not required.
+/// This will destroy everything associated with the library so use it with due caution.
+pub unsafe fn cleanup() {
+    NDIlib_destroy();
 }
 
 /// Recover whether the current CPU in the system is capable of running NDILib.

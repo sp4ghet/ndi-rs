@@ -437,17 +437,6 @@ impl Recv {
         unsafe { NDIlib_recv_get_no_connections(*self.p_instance) as _ }
     }
 
-    // pub fn get_error(&self) -> String {
-    //     let res = unsafe {
-    //         let char_ptr = NDIlib_recv_recording_get_error(self.p_instance);
-    //         if char_ptr.is_null() {
-    //             return String::new();
-    //         }
-    //         CStr::from_ptr(char_ptr).to_string_lossy().to_string()
-    //     };
-    //     res
-    // }
-
     /// Set tally info for sender
     pub fn set_tally(&mut self, tally: Tally) {
         let _lock = self.guard.lock().unwrap();
@@ -483,30 +472,6 @@ impl Recv {
             NDIlib_recv_clear_connection_metadata(*self.p_instance);
         }
     }
-
-    // /// Free the memory for [`MetaData`]s internal data
-    // pub(crate) fn free_metadata(&self, metadata: &mut MetaData) {
-    //     let _lock = self.guard.lock().unwrap();
-    //     unsafe {
-    //         NDIlib_recv_free_metadata(*self.p_instance, &mut metadata.p_instance);
-    //     }
-    // }
-
-    // /// Free the memory for [`VideoData`]s internal data
-    // pub(crate) fn free_video_data(&self, video_data: &mut VideoData) {
-    //     let _lock = self.guard.lock().unwrap();
-    //     unsafe {
-    //         NDIlib_recv_free_video_v2(*self.p_instance, &mut video_data.p_instance);
-    //     }
-    // }
-
-    // /// Free the memory for [`AudioData`]s internal data
-    // pub(crate) fn free_audio_data(&self, audio_data: &mut AudioData) {
-    //     let _lock = self.guard.lock().unwrap();
-    //     unsafe {
-    //         NDIlib_recv_free_audio_v3(*self.p_instance, &mut audio_data.p_instance);
-    //     }
-    // }
 }
 
 impl Drop for Recv {
