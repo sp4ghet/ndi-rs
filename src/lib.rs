@@ -7,7 +7,12 @@
 
 use core::panic;
 use internal::bindings::*;
-use std::{convert::TryFrom, ffi::CStr, fmt::Debug};
+use std::{
+    convert::TryFrom,
+    ffi::{CStr, CString},
+    fmt::Debug,
+    sync::Arc,
+};
 
 /// The [`Find`] struct and related constructs for finding NDI sources
 pub mod find;
@@ -31,7 +36,7 @@ const NULL: usize = 0;
 ///
 /// This is usually returned by [`Recv::capture_all()`]
 #[repr(i32)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FrameType {
     /// nothing changed, usually due to timeout
     None = NDIlib_frame_type_e_NDIlib_frame_type_none,
@@ -84,7 +89,7 @@ impl TryFrom<i32> for FrameType {
 /// This format is a relatively rare these days, although still used from time to time. There is no entirely trivial way to
 /// handle this other than to move the image down one line and add a black line at the bottom.
 #[repr(i32)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FrameFormatType {
     /// This is a progressive video frame
     Progressive = NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive,
@@ -138,7 +143,7 @@ impl TryFrom<i32> for FrameFormatType {
 /// | UHD resolutions > (1920,1080) | Rec.2020 |
 /// | Alpha | Full range for data type (2^8 for 8-bit, 2^16 for 16-bit) |
 #[repr(i32)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FourCCVideoType {
     /// A buffer in the “UYVY” FourCC and represents a 4:2:2 image in YUV color space.
     ///
@@ -322,6 +327,9 @@ impl Source {
     }
 }
 
+unsafe impl core::marker::Send for Source {}
+unsafe impl core::marker::Sync for Source {}
+
 /// Tally information
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -366,14 +374,29 @@ impl Into<NDIlib_tally_t> for Tally {
     }
 }
 
+enum VideoParent {
+    Recv(Arc<NDIlib_recv_instance_t>),
+    Owned,
+}
+
 /// Describes a video frame
 pub struct VideoData {
     p_instance: NDIlib_video_frame_v2_t,
+    parent: VideoParent,
 }
 
+unsafe impl core::marker::Send for VideoData {}
+unsafe impl core::marker::Sync for VideoData {}
+
 impl VideoData {
-    fn from_binding(p_instance: NDIlib_video_frame_v2_t) -> Self {
-        Self { p_instance }
+    fn from_binding_recv(
+        recv: Arc<NDIlib_recv_instance_t>,
+        p_instance: NDIlib_video_frame_v2_t,
+    ) -> Self {
+        Self {
+            p_instance,
+            parent: VideoParent::Recv(recv),
+        }
     }
 
     /// The width of the frame expressed in pixels.
@@ -503,14 +526,40 @@ impl VideoData {
     }
 }
 
+impl Drop for VideoData {
+    fn drop(&mut self) {
+        match &self.parent {
+            VideoParent::Recv(recv) => unsafe {
+                NDIlib_recv_free_video_v2(**recv, &mut self.p_instance);
+            },
+            VideoParent::Owned => {}
+        }
+    }
+}
+
+enum AudioParent {
+    Recv(Arc<NDIlib_recv_instance_t>),
+    Owned,
+}
+
 /// An audio frame
 pub struct AudioData {
     p_instance: NDIlib_audio_frame_v3_t,
+    parent: AudioParent,
 }
 
+unsafe impl core::marker::Send for AudioData {}
+unsafe impl core::marker::Sync for AudioData {}
+
 impl AudioData {
-    fn from_binding(p_instance: NDIlib_audio_frame_v3_t) -> Self {
-        Self { p_instance }
+    fn from_binding_recv(
+        recv: Arc<NDIlib_recv_instance_t>,
+        p_instance: NDIlib_audio_frame_v3_t,
+    ) -> Self {
+        Self {
+            p_instance,
+            parent: AudioParent::Recv(recv),
+        }
     }
 
     /// The sample-rate of this buffer
@@ -599,14 +648,65 @@ impl AudioData {
     }
 }
 
+impl Drop for AudioData {
+    fn drop(&mut self) {
+        match &self.parent {
+            AudioParent::Recv(recv) => unsafe {
+                NDIlib_recv_free_audio_v3(**recv, &self.p_instance);
+            },
+            AudioParent::Owned => {}
+        }
+    }
+}
+
+enum MetaDataParent {
+    Recv(Arc<NDIlib_recv_instance_t>),
+    Send(Arc<NDIlib_send_instance_t>),
+    Owned,
+}
+
 /// The data description for metadata
 pub struct MetaData {
     p_instance: NDIlib_metadata_frame_t,
+    parent: MetaDataParent,
 }
 
+unsafe impl core::marker::Send for MetaData {}
+unsafe impl core::marker::Sync for MetaData {}
+
 impl MetaData {
-    fn from_binding(p_instance: NDIlib_metadata_frame_t) -> Self {
-        Self { p_instance }
+    fn from_binding_recv(
+        recv: Arc<NDIlib_recv_instance_t>,
+        p_instance: NDIlib_metadata_frame_t,
+    ) -> Self {
+        Self {
+            p_instance,
+            parent: MetaDataParent::Recv(recv),
+        }
+    }
+
+    fn from_binding_send(
+        send: Arc<NDIlib_send_instance_t>,
+        p_instance: NDIlib_metadata_frame_t,
+    ) -> Self {
+        Self {
+            p_instance,
+            parent: MetaDataParent::Send(send),
+        }
+    }
+
+    /// Create new metadata struct
+    pub fn new(length: u32, timecode: i64, data: String) -> Self {
+        let p_data = CString::new(data).unwrap().into_raw();
+        let p_instance = NDIlib_metadata_frame_t {
+            length: length as _,
+            timecode,
+            p_data,
+        };
+        Self {
+            p_instance,
+            parent: MetaDataParent::Owned,
+        }
     }
 
     /// The length of the string in UTF8 characters. This includes the NULL terminating character.
@@ -627,6 +727,20 @@ impl MetaData {
         let char_ptr = self.p_instance.p_data;
         let data = unsafe { CStr::from_ptr(char_ptr).to_string_lossy().to_string() };
         data
+    }
+}
+
+impl Drop for MetaData {
+    fn drop(&mut self) {
+        match &self.parent {
+            MetaDataParent::Recv(recv) => unsafe {
+                NDIlib_recv_free_metadata(**recv, &mut self.p_instance);
+            },
+            MetaDataParent::Send(send) => unsafe {
+                NDIlib_send_free_metadata(**send, &mut self.p_instance);
+            },
+            MetaDataParent::Owned => {}
+        }
     }
 }
 

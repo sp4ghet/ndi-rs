@@ -67,12 +67,12 @@ impl FindBuilder {
 
         if let Some(groups) = self.groups {
             let cstr = CString::new(groups).map_err(|x| x.to_string())?;
-            settings.p_groups = cstr.as_ptr();
+            settings.p_groups = cstr.into_raw();
         }
 
         if let Some(extra_ips) = self.extra_ips {
             let cstr = CString::new(extra_ips).map_err(|x| x.to_string())?;
-            settings.p_extra_ips = cstr.as_ptr();
+            settings.p_extra_ips = cstr.into_raw();
         }
 
         Find::with_settings(settings)
@@ -88,6 +88,9 @@ impl FindBuilder {
 pub struct Find {
     p_instance: NDIlib_find_instance_t,
 }
+
+unsafe impl core::marker::Send for Find {}
+unsafe impl core::marker::Sync for Find {}
 
 impl Find {
     /// Create a new instance with default constructor

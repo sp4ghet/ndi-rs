@@ -1,9 +1,9 @@
 use super::internal::bindings::*;
 use super::*;
-use core::panic;
 use std::ffi::CString;
 use std::fmt::Display;
 use std::mem;
+use std::sync::Mutex;
 
 /// Current performance levels of the receiving.
 ///
@@ -176,7 +176,8 @@ impl RecvBuilder {
         }
         if let Some(ndi_recv_name) = self.ndi_recv_name {
             let cstr = CString::new(ndi_recv_name).map_err(|x| x.to_string())?;
-            settings.p_ndi_recv_name = cstr.as_ptr();
+
+            settings.p_ndi_recv_name = cstr.into_raw();
         }
 
         Recv::with_settings(settings)
@@ -217,8 +218,12 @@ impl RecvQueueSize {
 pub struct Recv {
     /// whether the Recv is currently connected
     pub connected: bool,
-    p_instance: NDIlib_recv_instance_t,
+    p_instance: Arc<NDIlib_recv_instance_t>,
+    guard: Mutex<()>,
 }
+
+unsafe impl core::marker::Send for Recv {}
+unsafe impl core::marker::Sync for Recv {}
 
 impl Recv {
     fn with_settings(settings: NDIlib_recv_create_v3_t) -> Result<Self, String> {
@@ -227,9 +232,11 @@ impl Recv {
         if p_instance.is_null() {
             return Err("Failed to create NDI Recv instance".to_string());
         }
+        let guard = Mutex::new(());
         let mut this = Self {
-            p_instance,
+            p_instance: Arc::new(p_instance),
             connected: false,
+            guard,
         };
         this.connected = this.get_no_connections() > 0;
         Ok(this)
@@ -244,22 +251,25 @@ impl Recv {
         if p_instance.is_null() {
             return Err("Failed to create NDI Recv instance".to_string());
         }
+
+        let guard = Mutex::new(());
         Ok(Self {
-            p_instance,
+            p_instance: Arc::new(p_instance),
             connected: false,
+            guard,
         })
     }
 
     /// Connect to a source
     pub fn connect(&mut self, source: &Source) {
         let instance: *const NDIlib_source_t = &source.p_instance;
-        unsafe { NDIlib_recv_connect(self.p_instance, instance) };
+        unsafe { NDIlib_recv_connect(*self.p_instance, instance) };
     }
 
     /// Disconnect from all sources
     pub fn disconnect(&mut self) {
         unsafe {
-            NDIlib_recv_connect(self.p_instance, NULL as _);
+            NDIlib_recv_connect(*self.p_instance, NULL as _);
         }
     }
 
@@ -281,29 +291,38 @@ impl Recv {
             let mut video = if let Some(x) = video_data {
                 mem::MaybeUninit::new(x.p_instance)
             } else {
-                mem::MaybeUninit::uninit()
+                mem::MaybeUninit::zeroed()
             };
             let mut audio = if let Some(x) = audio_data {
                 mem::MaybeUninit::new(x.p_instance)
             } else {
-                mem::MaybeUninit::uninit()
+                mem::MaybeUninit::zeroed()
             };
             let mut metadata = if let Some(x) = meta_data {
                 mem::MaybeUninit::new(x.p_instance)
             } else {
-                mem::MaybeUninit::uninit()
+                mem::MaybeUninit::zeroed()
             };
             let response = NDIlib_recv_capture_v3(
-                self.p_instance,
+                *self.p_instance,
                 video.as_mut_ptr(),
                 audio.as_mut_ptr(),
                 metadata.as_mut_ptr(),
                 timeout_ms,
             );
 
-            *video_data = Some(VideoData::from_binding(video.assume_init()));
-            *audio_data = Some(AudioData::from_binding(audio.assume_init()));
-            *meta_data = Some(MetaData::from_binding(metadata.assume_init()));
+            *video_data = Some(VideoData::from_binding_recv(
+                self.p_instance.clone(),
+                video.assume_init(),
+            ));
+            *audio_data = Some(AudioData::from_binding_recv(
+                self.p_instance.clone(),
+                audio.assume_init(),
+            ));
+            *meta_data = Some(MetaData::from_binding_recv(
+                self.p_instance.clone(),
+                metadata.assume_init(),
+            ));
 
             FrameType::try_from(response).unwrap()
         }
@@ -315,17 +334,20 @@ impl Recv {
             let mut video = if let Some(x) = video_data {
                 mem::MaybeUninit::new(x.p_instance)
             } else {
-                mem::MaybeUninit::uninit()
+                mem::MaybeUninit::zeroed()
             };
             let response = NDIlib_recv_capture_v3(
-                self.p_instance,
+                *self.p_instance,
                 video.as_mut_ptr(),
                 NULL as _,
                 NULL as _,
                 timeout_ms,
             );
 
-            *video_data = Some(VideoData::from_binding(video.assume_init()));
+            *video_data = Some(VideoData::from_binding_recv(
+                self.p_instance.clone(),
+                video.assume_init(),
+            ));
             FrameType::try_from(response).unwrap()
         }
     }
@@ -336,17 +358,20 @@ impl Recv {
             let mut audio = if let Some(x) = audio_data {
                 mem::MaybeUninit::new(x.p_instance)
             } else {
-                mem::MaybeUninit::uninit()
+                mem::MaybeUninit::zeroed()
             };
             let response = NDIlib_recv_capture_v3(
-                self.p_instance,
+                *self.p_instance,
                 NULL as _,
                 audio.as_mut_ptr(),
                 NULL as _,
                 timeout_ms,
             );
 
-            *audio_data = Some(AudioData::from_binding(audio.assume_init()));
+            *audio_data = Some(AudioData::from_binding_recv(
+                self.p_instance.clone(),
+                audio.assume_init(),
+            ));
             FrameType::try_from(response).unwrap()
         }
     }
@@ -357,28 +382,32 @@ impl Recv {
             let mut metadata = if let Some(x) = meta_data {
                 mem::MaybeUninit::new(x.p_instance)
             } else {
-                mem::MaybeUninit::uninit()
+                mem::MaybeUninit::zeroed()
             };
             let response = NDIlib_recv_capture_v3(
-                self.p_instance,
+                *self.p_instance,
                 NULL as _,
                 NULL as _,
                 metadata.as_mut_ptr(),
                 timeout_ms,
             );
 
-            *meta_data = Some(MetaData::from_binding(metadata.assume_init()));
+            *meta_data = Some(MetaData::from_binding_recv(
+                self.p_instance.clone(),
+                metadata.assume_init(),
+            ));
             FrameType::try_from(response).unwrap()
         }
     }
 
     /// Get the performance metrics (total, dropped)
     pub fn get_performance(&self) -> (RecvPerformance, RecvPerformance) {
+        let _lock = self.guard.lock().unwrap();
         let mut p_total: mem::MaybeUninit<NDIlib_recv_performance_t> = mem::MaybeUninit::uninit();
         let mut p_dropped: mem::MaybeUninit<NDIlib_recv_performance_t> = mem::MaybeUninit::uninit();
         unsafe {
             NDIlib_recv_get_performance(
-                self.p_instance,
+                *self.p_instance,
                 p_total.as_mut_ptr(),
                 p_dropped.as_mut_ptr(),
             )
@@ -392,9 +421,10 @@ impl Recv {
 
     /// Get the current queue sizes
     pub fn get_queue(&self) -> RecvQueueSize {
+        let _lock = self.guard.lock().unwrap();
         let mut p_total: mem::MaybeUninit<NDIlib_recv_queue_t> = mem::MaybeUninit::uninit();
         unsafe {
-            NDIlib_recv_get_queue(self.p_instance, p_total.as_mut_ptr());
+            NDIlib_recv_get_queue(*self.p_instance, p_total.as_mut_ptr());
             let queue = RecvQueueSize::from_binding(p_total.assume_init());
 
             queue
@@ -403,7 +433,8 @@ impl Recv {
 
     /// Get the current number of sources connected to
     pub fn get_no_connections(&self) -> u32 {
-        unsafe { NDIlib_recv_get_no_connections(self.p_instance) as _ }
+        let _lock = self.guard.lock().unwrap();
+        unsafe { NDIlib_recv_get_no_connections(*self.p_instance) as _ }
     }
 
     // pub fn get_error(&self) -> String {
@@ -419,8 +450,9 @@ impl Recv {
 
     /// Set tally info for sender
     pub fn set_tally(&mut self, tally: Tally) {
+        let _lock = self.guard.lock().unwrap();
         unsafe {
-            NDIlib_recv_set_tally(self.p_instance, &tally.into());
+            NDIlib_recv_set_tally(*self.p_instance, &tally.into());
         }
     }
 
@@ -430,8 +462,9 @@ impl Recv {
     /// Connection based metadata is data that is sent automatically each time a new connection is received.
     /// To reset them you need to clear them all and set them up again using [`Recv::recv_clear_connection_metadata()`]
     pub fn add_connection_metadata(&self, metadata: &MetaData) {
+        let _lock = self.guard.lock().unwrap();
         unsafe {
-            NDIlib_recv_add_connection_metadata(self.p_instance, &metadata.p_instance);
+            NDIlib_recv_add_connection_metadata(*self.p_instance, &metadata.p_instance);
         }
     }
 
@@ -439,40 +472,45 @@ impl Recv {
     ///
     /// This returns `false` if we are not currently connected to anything.
     pub fn send_metadata(&self, metadata: &MetaData) -> bool {
-        unsafe { NDIlib_recv_send_metadata(self.p_instance, &metadata.p_instance) }
+        let _lock = self.guard.lock().unwrap();
+        unsafe { NDIlib_recv_send_metadata(*self.p_instance, &metadata.p_instance) }
     }
 
     /// Clear all connection metadata
     pub fn recv_clear_connection_metadata(&self) {
+        let _lock = self.guard.lock().unwrap();
         unsafe {
-            NDIlib_recv_clear_connection_metadata(self.p_instance);
+            NDIlib_recv_clear_connection_metadata(*self.p_instance);
         }
     }
 
-    /// Free the memory for [`MetaData`]s internal data
-    pub fn free_metadata(&self, mut metadata: MetaData) {
-        unsafe {
-            NDIlib_recv_free_metadata(self.p_instance, &mut metadata.p_instance);
-        }
-    }
+    // /// Free the memory for [`MetaData`]s internal data
+    // pub(crate) fn free_metadata(&self, metadata: &mut MetaData) {
+    //     let _lock = self.guard.lock().unwrap();
+    //     unsafe {
+    //         NDIlib_recv_free_metadata(*self.p_instance, &mut metadata.p_instance);
+    //     }
+    // }
 
-    /// Free the memory for [`VideoData`]s internal data
-    pub fn free_video_data(&self, mut video_data: VideoData) {
-        unsafe {
-            NDIlib_recv_free_video_v2(self.p_instance, &mut video_data.p_instance);
-        }
-    }
+    // /// Free the memory for [`VideoData`]s internal data
+    // pub(crate) fn free_video_data(&self, video_data: &mut VideoData) {
+    //     let _lock = self.guard.lock().unwrap();
+    //     unsafe {
+    //         NDIlib_recv_free_video_v2(*self.p_instance, &mut video_data.p_instance);
+    //     }
+    // }
 
-    /// Free the memory for [`AudioData`]s internal data
-    pub fn free_audio_data(&self, mut audio_data: AudioData) {
-        unsafe {
-            NDIlib_recv_free_audio_v3(self.p_instance, &mut audio_data.p_instance);
-        }
-    }
+    // /// Free the memory for [`AudioData`]s internal data
+    // pub(crate) fn free_audio_data(&self, audio_data: &mut AudioData) {
+    //     let _lock = self.guard.lock().unwrap();
+    //     unsafe {
+    //         NDIlib_recv_free_audio_v3(*self.p_instance, &mut audio_data.p_instance);
+    //     }
+    // }
 }
 
 impl Drop for Recv {
     fn drop(&mut self) {
-        unsafe { NDIlib_recv_destroy(self.p_instance) };
+        unsafe { NDIlib_recv_destroy(*self.p_instance) };
     }
 }
