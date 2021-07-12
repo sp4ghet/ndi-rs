@@ -4,7 +4,7 @@ use std::env;
 use std::path::{Path, PathBuf};
 
 fn get_output_path() -> PathBuf {
-    //<root or manifest path>/target/<profile>/
+    // TODO: find a better path to this stuff
     Path::new(&env::var("OUT_DIR").unwrap()).join("../../../deps")
 }
 
