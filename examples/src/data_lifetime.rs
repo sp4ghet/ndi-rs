@@ -1,6 +1,18 @@
+#[macro_use]
+extern crate error_chain;
 use std::thread;
 
-fn get_frame(source: &ndi::Source) -> Result<ndi::VideoData, String> {
+mod errors {
+    error_chain! {
+        foreign_links {
+            NDI(ndi::NDIError);
+        }
+    }
+}
+
+use errors::*;
+
+fn get_frame(source: &ndi::Source) -> Result<ndi::VideoData> {
     let mut recv = ndi::RecvBuilder::new().build()?;
     recv.connect(source);
 
@@ -12,10 +24,10 @@ fn get_frame(source: &ndi::Source) -> Result<ndi::VideoData, String> {
         }
     }
 
-    video_data.ok_or("No video".to_string())
+    Ok(video_data.ok_or("No video Data")?)
 }
 
-fn main() -> Result<(), String> {
+fn main() -> Result<()> {
     ndi::initialize()?;
 
     let find = ndi::FindBuilder::new().build()?;

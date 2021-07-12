@@ -53,7 +53,7 @@ impl FindBuilder {
     }
 
     /// Build an instance of [`Find`]
-    pub fn build(self) -> Result<Find, String> {
+    pub fn build(self) -> Result<Find, NDIError> {
         // from default c++ constructor in Processing.NDI.Find.h
         let mut settings = NDIlib_find_create_t {
             show_local_sources: true,
@@ -66,12 +66,12 @@ impl FindBuilder {
         }
 
         if let Some(groups) = self.groups {
-            let cstr = CString::new(groups).map_err(|x| x.to_string())?;
+            let cstr = CString::new(groups).unwrap();
             settings.p_groups = cstr.into_raw();
         }
 
         if let Some(extra_ips) = self.extra_ips {
-            let cstr = CString::new(extra_ips).map_err(|x| x.to_string())?;
+            let cstr = CString::new(extra_ips).unwrap();
             settings.p_extra_ips = cstr.into_raw();
         }
 
@@ -94,33 +94,33 @@ unsafe impl core::marker::Sync for Find {}
 
 impl Find {
     /// Create a new instance with default constructor
-    pub fn new() -> Result<Self, String> {
+    pub fn new() -> Result<Self, NDIError> {
         let p_instance = unsafe { NDIlib_find_create_v2(NULL as _) };
         if p_instance.is_null() {
-            return Err("Failed to create new NDI Find instance.".to_string());
+            return Err(NDIError::FindCreateError);
         };
 
         Ok(Self { p_instance })
     }
 
-    fn with_settings(settings: NDIlib_find_create_t) -> Result<Self, String> {
+    fn with_settings(settings: NDIlib_find_create_t) -> Result<Self, NDIError> {
         let p_instance = unsafe { NDIlib_find_create_v2(&settings) };
         if p_instance.is_null() {
-            return Err("Failed to create new NDI Find instance.".to_string());
+            return Err(NDIError::FindCreateError);
         };
 
         Ok(Self { p_instance })
     }
 
     /// List current sources
-    pub fn current_sources(&self, timeout_ms: u128) -> Result<Vec<Source>, String> {
+    pub fn current_sources(&self, timeout_ms: u128) -> Result<Vec<Source>, NDIError> {
         let mut no_sources = 0;
         let mut p_sources: *const NDIlib_source_t = NULL as _;
         let start = Instant::now();
         while no_sources == 0 {
             // timeout if it takes an unreasonable amount of time
             if Instant::now().duration_since(start).as_millis() > timeout_ms {
-                return Err("Timeout on finding NDI sources".to_string());
+                return Err(NDIError::FindSourcesTimeout);
             }
 
             p_sources =

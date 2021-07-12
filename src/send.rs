@@ -74,7 +74,7 @@ impl SendBuilder {
     }
 
     /// Build the [`Send`] instance
-    pub fn build(self) -> Result<Send, String> {
+    pub fn build(self) -> Result<Send, NDIError> {
         let mut settings = NDIlib_send_create_t {
             p_ndi_name: NULL as _,
             p_groups: NULL as _,
@@ -83,12 +83,12 @@ impl SendBuilder {
         };
 
         if let Some(ndi_name) = self.ndi_name {
-            let cstr = CString::new(ndi_name).map_err(|e| e.to_string())?;
+            let cstr = CString::new(ndi_name).unwrap();
             settings.p_ndi_name = cstr.as_ptr();
         }
 
         if let Some(groups) = self.groups {
-            let cstr = CString::new(groups).map_err(|e| e.to_string())?;
+            let cstr = CString::new(groups).unwrap();
             settings.p_groups = cstr.as_ptr();
         }
 
@@ -113,11 +113,11 @@ impl Send {
     /// Create a new instance with default parameters
     ///
     /// It is recommended to use [`SendBuilder`] instead
-    pub fn new() -> Result<Self, String> {
+    pub fn new() -> Result<Self, NDIError> {
         let p_instance = unsafe { NDIlib_send_create(NULL as _) };
 
         if p_instance.is_null() {
-            return Err("Failed to create NDI Send instance".to_string());
+            return Err(NDIError::SendCreateError);
         }
 
         Ok(Self {
@@ -125,11 +125,11 @@ impl Send {
         })
     }
 
-    fn with_settings(settings: NDIlib_send_create_t) -> Result<Self, String> {
+    fn with_settings(settings: NDIlib_send_create_t) -> Result<Self, NDIError> {
         let p_instance = unsafe { NDIlib_send_create(&settings) };
 
         if p_instance.is_null() {
-            return Err("Failed to create NDI Send instance".to_string());
+            return Err(NDIError::SendCreateError);
         }
 
         Ok(Self {
