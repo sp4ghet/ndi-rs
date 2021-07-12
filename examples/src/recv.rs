@@ -1,7 +1,20 @@
+#[macro_use]
+extern crate error_chain;
+
 use std::io;
 use std::time::Instant;
 
-fn main() -> Result<(), String> {
+mod errors {
+    error_chain! {
+        foreign_links {
+            NDI(ndi::NDIError);
+            Other(std::str::Utf8Error);
+        }
+    }
+}
+use errors::*;
+
+fn main() -> Result<()> {
     ndi::initialize()?;
 
     let find = ndi::Find::new()?;
@@ -9,7 +22,7 @@ fn main() -> Result<(), String> {
     let sources = find.current_sources(1000)?;
 
     if sources.len() == 0 {
-        return Err("No sources found".to_string());
+        bail!("No sources found");
     }
 
     println!("Select device:");
@@ -81,7 +94,9 @@ fn main() -> Result<(), String> {
 
     println!("Done");
 
-    ndi::cleanup();
+    unsafe {
+        ndi::cleanup();
+    }
 
     Ok(())
 }

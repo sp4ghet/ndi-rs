@@ -5,12 +5,7 @@ use std::path::{Path, PathBuf};
 
 fn get_output_path() -> PathBuf {
     //<root or manifest path>/target/<profile>/
-    let manifest_dir_string = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let build_type = env::var("PROFILE").unwrap();
-    let path = Path::new(&manifest_dir_string)
-        .join("target")
-        .join(build_type);
-    return PathBuf::from(path);
+    Path::new(&env::var("OUT_DIR").unwrap()).join("../../../deps")
 }
 
 fn main() {
@@ -55,7 +50,6 @@ fn main() {
     );
 
     // copy dll to OUT_DIR
-
     let out_path = get_output_path();
     let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
         .join("thirdparty\\Bin\\Processing.NDI.Lib.x64.dll");

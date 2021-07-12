@@ -14,10 +14,10 @@ readme = "README_crate.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+
 [dependencies]
+
 
 [build-dependencies]
 bindgen = "0.58.1"
-
-[[example]]
-name = "main"

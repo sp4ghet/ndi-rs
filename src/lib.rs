@@ -9,12 +9,13 @@ use core::panic;
 use internal::bindings::*;
 use std::{
     convert::TryFrom,
-    error,
     ffi::{CStr, CString},
     fmt::{Debug, Display},
     sync::Arc,
 };
 
+/// The error type used in this crate
+pub mod error;
 /// The [`Find`] struct and related constructs for finding NDI sources
 pub mod find;
 #[doc(hidden)]
@@ -25,6 +26,8 @@ pub mod recv;
 pub mod send;
 
 #[doc(hidden)]
+pub use error::*;
+#[doc(hidden)]
 pub use find::*;
 #[doc(hidden)]
 pub use recv::*;
@@ -32,22 +35,6 @@ pub use recv::*;
 pub use send::*;
 
 const NULL: usize = 0;
-
-/// Various Errors that the library could return
-#[derive(Debug)]
-pub enum NDIError {
-    /// The system is not compatible with NDI
-    NotSupported,
-    InvalidEnum(i32, &'static str),
-}
-
-impl Display for NDIError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
-    }
-}
-
-impl error::Error for NDIError {}
 
 /// A description of the type of of frame received.
 ///

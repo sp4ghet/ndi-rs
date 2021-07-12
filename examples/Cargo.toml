@@ -1,0 +1,21 @@
+[package]
+name = "ndi-examples"
+version = "0.0.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "recv"
+path = "src/recv.rs"
+
+[[bin]]
+name = "multithread"
+path = "src/multithread.rs"
+
+[[bin]]
+name = "data_lifetime"
+path = "src/data_lifetime.rs"
+
+[dependencies]
+ndi = {path = ".."}
+error-chain = "0.12.4"

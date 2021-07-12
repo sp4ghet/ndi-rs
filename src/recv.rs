@@ -152,7 +152,7 @@ impl RecvBuilder {
     }
 
     /// Build the [`Recv`]
-    pub fn build(self) -> Result<Recv, String> {
+    pub fn build(self) -> Result<Recv, NDIError> {
         // From default C++ constructor in Processing.NDI.Recv.h
         let mut settings: NDIlib_recv_create_v3_t = NDIlib_recv_create_v3_t {
             source_to_connect_to: Source::new().p_instance,
@@ -175,7 +175,8 @@ impl RecvBuilder {
             settings.allow_video_fields = allow_video_fields;
         }
         if let Some(ndi_recv_name) = self.ndi_recv_name {
-            let cstr = CString::new(ndi_recv_name).map_err(|x| x.to_string())?;
+            // String shouldn't contain a 0-byte
+            let cstr = CString::new(ndi_recv_name).unwrap();
 
             settings.p_ndi_recv_name = cstr.into_raw();
         }
@@ -226,11 +227,11 @@ unsafe impl core::marker::Send for Recv {}
 unsafe impl core::marker::Sync for Recv {}
 
 impl Recv {
-    fn with_settings(settings: NDIlib_recv_create_v3_t) -> Result<Self, String> {
+    fn with_settings(settings: NDIlib_recv_create_v3_t) -> Result<Self, NDIError> {
         let p_instance = unsafe { NDIlib_recv_create_v3(&settings) };
 
         if p_instance.is_null() {
-            return Err("Failed to create NDI Recv instance".to_string());
+            return Err(NDIError::RecvCreateError);
         }
         let guard = Mutex::new(());
         let mut this = Self {
@@ -245,11 +246,11 @@ impl Recv {
     /// Create new receiver which isn't connected to any sources
     ///
     /// It is recommended that you use [`RecvBuilder`] instead if possible
-    pub fn new() -> Result<Self, String> {
+    pub fn new() -> Result<Self, NDIError> {
         let p_instance = unsafe { NDIlib_recv_create_v3(NULL as _) };
 
         if p_instance.is_null() {
-            return Err("Failed to create NDI Recv instance".to_string());
+            return Err(NDIError::RecvCreateError);
         }
 
         let guard = Mutex::new(());

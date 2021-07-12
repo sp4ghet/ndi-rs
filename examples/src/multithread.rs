@@ -1,10 +1,22 @@
+#[macro_use]
+extern crate error_chain;
+
 use std::{
     sync::{mpsc::channel, Arc},
     thread,
     time::Instant,
 };
 
-fn main() -> Result<(), String> {
+mod errors {
+    error_chain! {
+        foreign_links {
+            NDI(ndi::NDIError);
+        }
+    }
+}
+use errors::*;
+
+fn main() -> Result<()> {
     ndi::initialize()?;
     let find = ndi::FindBuilder::new().build()?;
 
@@ -18,7 +30,7 @@ fn main() -> Result<(), String> {
     let audio_arc = video_arc.clone();
 
     let (video_tx, video_rx) = channel();
-    thread::spawn(move || -> Result<(), String> {
+    thread::spawn(move || -> Result<()> {
         println!("Running video capture in thread 1");
         let start = Instant::now();
         while Instant::now().duration_since(start).as_millis() < 10000 {
@@ -26,7 +38,9 @@ fn main() -> Result<(), String> {
             let response = video_arc.capture_video(&mut video_data, 1000);
             if response == ndi::FrameType::Video {
                 if let Some(video) = video_data {
-                    video_tx.send(video).map_err(|e| e.to_string())?;
+                    video_tx
+                        .send(video)
+                        .map_err(|e| Error::from(e.to_string()))?;
                 }
             }
         }
@@ -34,7 +48,7 @@ fn main() -> Result<(), String> {
     });
 
     let (audio_tx, audio_rx) = channel();
-    thread::spawn(move || -> Result<(), String> {
+    thread::spawn(move || -> Result<()> {
         let recv = audio_arc.clone();
         println!("Running audio capture in thread 2");
         let start = Instant::now();
@@ -43,7 +57,9 @@ fn main() -> Result<(), String> {
             let response = recv.capture_audio(&mut audio_data, 1000);
             if response == ndi::FrameType::Audio {
                 if let Some(audio) = audio_data {
-                    audio_tx.send(audio).map_err(|e| e.to_string())?;
+                    audio_tx
+                        .send(audio)
+                        .map_err(|e| Error::from(e.to_string()))?;
                 }
             }
         }
@@ -68,7 +84,9 @@ fn main() -> Result<(), String> {
         }
     }
 
-    ndi::cleanup();
+    unsafe {
+        ndi::cleanup();
+    }
 
     Ok(())
 }
