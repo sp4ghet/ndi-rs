@@ -45,23 +45,22 @@ impl Display for RecvPerformance {
 
 ///
 #[derive(Debug, Clone, Copy)]
-#[repr(i32)]
 #[allow(non_camel_case_types)]
 pub enum RecvColorFormat {
     /// BGRX or BGRA
-    BGRX_BGRA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_BGRX_BGRA,
+    BGRX_BGRA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_BGRX_BGRA as _,
     /// UYVY or BGRA
-    UYVY_BGRA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_UYVY_BGRA,
+    UYVY_BGRA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_UYVY_BGRA as _,
     /// RGBX or RGBA
-    RGBX_RGBA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_RGBX_RGBA,
+    RGBX_RGBA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_RGBX_RGBA as _,
     /// UYVY or RGBA
-    UYVY_RGBA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_UYVY_RGBA,
+    UYVY_RGBA = NDIlib_recv_color_format_e_NDIlib_recv_color_format_UYVY_RGBA as _,
     /// Normally UYVY, see [`RecvColorFormat`]
     ///
     /// If you specify the color option [`RecvColorFormat::Fastest`], the SDK will provide buffers in the format
     /// that it processes internally without performing any conversions before they are passed to you.
     /// The `allow_video_fields` option is assumed to be true in this mode.
-    Fastest = NDIlib_recv_color_format_e_NDIlib_recv_color_format_fastest,
+    Fastest = NDIlib_recv_color_format_e_NDIlib_recv_color_format_fastest as _,
     /// Varies, see [`RecvColorFormat`]
     ///
     /// If you specify the color option [`RecvColorFormat::Best`], the SDK will provide you buffers in the format
@@ -69,7 +68,7 @@ pub enum RecvColorFormat {
     /// In many cases this is both high-performance and high-quality and results in the best quality.
     /// Like [`RecvColorFormat::Fastest`] this format will always deliver individual fields,
     /// implicitly assuming the `allow_video_fields option` as true.
-    Best = NDIlib_recv_color_format_e_NDIlib_recv_color_format_best,
+    Best = NDIlib_recv_color_format_e_NDIlib_recv_color_format_best as _,
 }
 
 /// Specify whether this connection is in high or low bandwidth mode.
@@ -80,16 +79,15 @@ pub enum RecvColorFormat {
 /// medium quality stream that takes significantly reduced bandwidth.
 
 #[derive(Debug, Clone, Copy)]
-#[repr(i32)]
 pub enum RecvBandwidth {
     /// Receive metadata only.
-    MetadataOnly = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_metadata_only,
+    MetadataOnly = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_metadata_only as _,
     /// Receive metadata + audio.
-    AudioOnly = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_audio_only,
+    AudioOnly = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_audio_only as _,
     /// Receive metadata, audio, video at a lower bandwidth and resolution.
-    Lowest = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_lowest,
+    Lowest = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_lowest as _,
     /// Receive metadata, audio, video at full resolution.
-    Highest = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_highest,
+    Highest = NDIlib_recv_bandwidth_e_NDIlib_recv_bandwidth_highest as _,
 }
 
 /// Builder struct for [`Recv`]

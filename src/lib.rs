@@ -39,30 +39,30 @@ const NULL: usize = 0;
 /// A description of the type of of frame received.
 ///
 /// This is usually returned by [`Recv::capture_all()`]
-#[repr(i32)]
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FrameType {
     /// nothing changed, usually due to timeout
-    None = NDIlib_frame_type_e_NDIlib_frame_type_none,
+    None = NDIlib_frame_type_e_NDIlib_frame_type_none as _,
     /// Received a video frame
-    Video = NDIlib_frame_type_e_NDIlib_frame_type_video,
+    Video = NDIlib_frame_type_e_NDIlib_frame_type_video as _,
     /// Received an audio frame
-    Audio = NDIlib_frame_type_e_NDIlib_frame_type_audio,
+    Audio = NDIlib_frame_type_e_NDIlib_frame_type_audio as _,
     /// Received a metadata frame
-    Metadata = NDIlib_frame_type_e_NDIlib_frame_type_metadata,
+    Metadata = NDIlib_frame_type_e_NDIlib_frame_type_metadata as _,
     /// This indicates that the settings on this input have changed.
     /// For instance, this value will be returned from [`recv::Recv::capture_all()`].
     /// when the device is known to have new settings, for instance the web URL has changed or the device
     /// is now known to be a PTZ camera.
-    StatusChange = NDIlib_frame_type_e_NDIlib_frame_type_status_change,
+    StatusChange = NDIlib_frame_type_e_NDIlib_frame_type_status_change as _,
     /// error occured (disconnected)
-    ErrorFrame = NDIlib_frame_type_e_NDIlib_frame_type_error,
+    ErrorFrame = NDIlib_frame_type_e_NDIlib_frame_type_error as _,
 }
 
-impl TryFrom<i32> for FrameType {
+impl TryFrom<NDIlib_frame_type_e> for FrameType {
     type Error = NDIError;
 
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
+    fn try_from(value: NDIlib_frame_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
         match value {
             NDIlib_frame_type_e_NDIlib_frame_type_audio => Ok(FrameType::Audio),
@@ -92,29 +92,28 @@ impl TryFrom<i32> for FrameType {
 /// #### DV NTSC
 /// This format is a relatively rare these days, although still used from time to time. There is no entirely trivial way to
 /// handle this other than to move the image down one line and add a black line at the bottom.
-#[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FrameFormatType {
     /// This is a progressive video frame
-    Progressive = NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive,
+    Progressive = NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive as _,
     /// This is a frame of video that is comprised of two fields.
     ///
     ///  The upper field comes first, and the lower comes second (see [`FrameFormatType`])
-    Interleaved = NDIlib_frame_format_type_e_NDIlib_frame_format_type_interleaved,
+    Interleaved = NDIlib_frame_format_type_e_NDIlib_frame_format_type_interleaved as _,
     /// This is an individual field 0 from a fielded video frame.
     ///
     /// This is the first temporal, upper field. (see [`FrameFormatType`])
-    Field0 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_0,
+    Field0 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_0 as _,
     /// This is an individual field 1 from a fielded video frame.
     ///
     /// This is the second temporal, lower field (see [`FrameFormatType`])
-    Field1 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1,
+    Field1 = NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1 as _,
 }
 
-impl TryFrom<i32> for FrameFormatType {
+impl TryFrom<NDIlib_frame_format_type_e> for FrameFormatType {
     type Error = NDIError;
 
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
+    fn try_from(value: NDIlib_frame_format_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
         match value {
             NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive => {
@@ -146,7 +145,6 @@ impl TryFrom<i32> for FrameFormatType {
 /// | HD resolutions >(720,576) | Rec.709 |
 /// | UHD resolutions > (1920,1080) | Rec.2020 |
 /// | Alpha | Full range for data type (2^8 for 8-bit, 2^16 for 16-bit) |
-#[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FourCCVideoType {
     /// A buffer in the “UYVY” FourCC and represents a 4:2:2 image in YUV color space.
@@ -154,7 +152,7 @@ pub enum FourCCVideoType {
     /// There is a Y sample at every pixel, and U and V sampled at
     /// every second pixel horizontally on each line. A macro-pixel contains 2
     /// pixels in 1 DWORD. The ordering of these pixels is U0, Y0, V0, Y1.
-    UYVY = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVY,
+    UYVY = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVY as _,
 
     /// A buffer that represents a 4:2:2:4 image in YUV color space.
     ///
@@ -166,7 +164,7 @@ pub enum FourCCVideoType {
     /// uint8_t *p_uyvy = (uint8_t*)p_data;
     /// uint8_t *p_alpha = p_uyvy + stride*yres;
     /// ```
-    UYVA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVA,
+    UYVA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVA as _,
     /// A 4:2:2 buffer in semi-planar format with full 16bpp color precision.
     ///
     /// This is formed from two buffers in memory, the first is a 16bpp
@@ -179,7 +177,7 @@ pub enum FourCCVideoType {
     /// uint16_t *p_uv = (uint16_t*)(p_data + stride*yres);
     /// ```
     /// As a matter of illustration, a completely packed image would have stride as `xres*sizeof(uint16_t)`.
-    P216 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_P216,
+    P216 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_P216 as _,
     /// A 4:2:2:4 buffer in semi-planar format with full 16bpp color and alpha precision.
     ///
     /// This is formed from three buffers in memory. The first is
@@ -193,7 +191,7 @@ pub enum FourCCVideoType {
     /// uint16_t *p_alpha = p_uv + stride*yres;
     /// ```
     /// To illustrate, a completely packed image would have stride as `xres*sizeof(uint16_t)`.
-    PA16 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_PA16,
+    PA16 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_PA16 as _,
     /// A planar 4:2:0 in Y, U, V planes in memory.
     ///
     /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
@@ -202,7 +200,7 @@ pub enum FourCCVideoType {
     /// uint8_t *p_u = p_y + stride*yres;
     /// uint8_t *p_v = p_u + (stride/2)*(yres/2);
     /// As a matter of illustration, a completely packed image would have stride as `xres*sizeof(uint8_t)`.
-    YV12 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_YV12,
+    YV12 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_YV12 as _,
     /// A planar 4:2:0 in Y, U, V planes in memory with the U, V planes reversed from the YV12 format.
     ///
     /// For instance, if you have an image with p_data and stride, then the planes are located as follows:
@@ -212,7 +210,7 @@ pub enum FourCCVideoType {
     /// uint8_t *p_u = p_v + (stride/2)*(yres/2);
     /// ```
     /// To illustrate, a completely packed image would have stride as `xres*sizeof(uint8_t)`.
-    I420 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_I420,
+    I420 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_I420 as _,
     /// A semi planar 4:2:0 in Y, UV planes in memory.
     ///
     /// The luminance plane is at the lowest memory address with the UV pairs immediately following them.
@@ -223,35 +221,35 @@ pub enum FourCCVideoType {
     /// uint8_t *p_uv = p_y + stride*yres;
     /// ```
     /// To illustrate, a completely packed image would have stride as `xres*sizeof(uint8_t)`.
-    NV12 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_NV12,
+    NV12 = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_NV12 as _,
     /// A 4:4:4:4, 8-bit image of red, green, blue and alpha components
     ///
     /// in memory order blue, green, red, alpha. This data is not pre-multiplied.
-    BGRA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRA,
+    BGRA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRA as _,
     /// A 4:4:4, 8-bit image of red, green, blue components
     ///  in memory order blue, green, red, 255. This data is not pre-multiplied.
     ///
     /// This is identical to BGRA, but is provided as a hint that all alpha channel
     /// values are 255, meaning that alpha compositing may be avoided. The lack
     /// of an alpha channel is used by the SDK to improve performance when possible.
-    BGRX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX,
+    BGRX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX as _,
     /// A 4:4:4:4, 8-bit image of red, green, blue and alpha components
     ///
     /// in memory order red, green, blue, alpha. This data is not pre-multiplied.
-    RGBA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA,
+    RGBA = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA as _,
     /// A 4:4:4, 8-bit image of red, green, blue components
     ///
     /// in memory order red, green, blue, 255. This data is not pre-multiplied.
     ///This is identical to RGBA, but is provided as a hint that all alpha channel
     ///values are 255, meaning that alpha compositing may be avoided. The lack
     ///of an alpha channel is used by the SDK to improve performance when possible.
-    RGBX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX,
+    RGBX = NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX as _,
 }
 
-impl TryFrom<i32> for FourCCVideoType {
+impl TryFrom<NDIlib_FourCC_video_type_e> for FourCCVideoType {
     type Error = NDIError;
 
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
+    fn try_from(value: NDIlib_FourCC_video_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
         match value {
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_UYVY => Ok(FourCCVideoType::UYVY),
