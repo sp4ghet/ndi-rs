@@ -388,6 +388,7 @@ impl Into<NDIlib_tally_t> for Tally {
 
 enum VideoParent {
     Recv(Arc<NDIlib_recv_instance_t>),
+    #[allow(unused)]
     Owned,
 }
 
@@ -551,6 +552,7 @@ impl Drop for VideoData {
 
 enum AudioParent {
     Recv(Arc<NDIlib_recv_instance_t>),
+    #[allow(unused)]
     Owned,
 }
 

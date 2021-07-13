@@ -17,5 +17,5 @@ name = "data_lifetime"
 path = "src/data_lifetime.rs"
 
 [dependencies]
-ndi = {path = ".."}
+ndi = {path = "../ndi"}
 error-chain = "0.12.4"
