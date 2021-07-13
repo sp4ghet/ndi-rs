@@ -8,6 +8,42 @@ fn get_output_path() -> PathBuf {
     Path::new(&env::var("OUT_DIR").unwrap()).join("../../../deps")
 }
 
+#[cfg(target_os = "windows")]
+fn win_link_and_load() {
+    println!("cargo:rustc-link-lib=Processing.NDI.Lib.x64");
+    let mut lib_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    lib_path.push("thirdparty\\Lib");
+    println!(
+        "cargo:rustc-link-search={}",
+        lib_path.to_str().unwrap().to_string()
+    );
+
+    // copy dll to OUT_DIR
+    let out_path = get_output_path();
+    let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
+        .join("thirdparty\\Bin\\Processing.NDI.Lib.x64.dll");
+    let dst = Path::join(&out_path, "Processing.NDI.Lib.x64.dll");
+    std::fs::copy(src, dst).unwrap();
+}
+
+#[cfg(target_os = "linux")]
+fn lin_link_and_load() {
+    println!("cargo:rustc-link-lib=ndi",);
+    let mut lib_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    lib_path.push("thirdparty/Linux/Lib");
+    println!(
+        "cargo:rustc-link-search={}",
+        lib_path.to_str().unwrap().to_string()
+    );
+
+    // copy dll to OUT_DIR
+    let out_path = get_output_path();
+    let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
+        .join("thirdparty/Linux/Lib/libndi.so.4");
+    let dst = Path::join(&out_path, "libndi.so.4");
+    std::fs::copy(src, dst).unwrap();
+}
+
 fn main() {
     // Tell cargo to tell rustc to link the system bzip2
     // shared library.
@@ -19,11 +55,17 @@ fn main() {
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
     // the resulting bindings.
+    #[cfg(target_os = "windows")]
+    let headers = "./thirdparty/Include";
+
+    #[cfg(target_os = "linux")]
+    let headers = "./thirdparty/Linux/Include";
+
     let bindings = bindgen::Builder::default()
         // The input header we would like to generate
         // bindings for.
         .header("wrapper.h")
-        .clang_args(["-I", "./thirdparty/Include"].iter())
+        .clang_args(["-I", headers].iter())
         .clang_arg("-fdeclspec")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
@@ -40,19 +82,9 @@ fn main() {
         .write_to_file(binding_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
 
-    // tell cargo where the static lib is
-    println!("cargo:rustc-link-lib=Processing.NDI.Lib.x64");
-    let mut lib_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    lib_path.push("thirdparty\\Lib");
-    println!(
-        "cargo:rustc-link-search={}",
-        lib_path.to_str().unwrap().to_string()
-    );
+    #[cfg(target_os = "windows")]
+    win_link_and_load();
 
-    // copy dll to OUT_DIR
-    let out_path = get_output_path();
-    let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
-        .join("thirdparty\\Bin\\Processing.NDI.Lib.x64.dll");
-    let dst = Path::join(&out_path, "Processing.NDI.Lib.x64.dll");
-    std::fs::copy(src, dst).unwrap();
+    #[cfg(target_os = "linux")]
+    lin_link_and_load();
 }

@@ -71,7 +71,7 @@ impl TryFrom<NDIlib_frame_type_e> for FrameType {
             NDIlib_frame_type_e_NDIlib_frame_type_status_change => Ok(FrameType::StatusChange),
             NDIlib_frame_type_e_NDIlib_frame_type_error => Ok(FrameType::ErrorFrame),
             NDIlib_frame_type_e_NDIlib_frame_type_metadata => Ok(FrameType::Metadata),
-            x => Err(NDIError::InvalidEnum(x, "FrameType")),
+            x => Err(NDIError::InvalidEnum(x as _, "FrameType")),
         }
     }
 }
@@ -130,7 +130,7 @@ impl TryFrom<NDIlib_frame_format_type_e> for FrameFormatType {
             NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1 => {
                 Ok(FrameFormatType::Field1)
             }
-            x => Err(NDIError::InvalidEnum(x, "FrameFormatType")),
+            x => Err(NDIError::InvalidEnum(x as _, "FrameFormatType")),
         }
     }
 }
@@ -263,27 +263,26 @@ impl TryFrom<NDIlib_FourCC_video_type_e> for FourCCVideoType {
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA => Ok(FourCCVideoType::RGBA),
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX => Ok(FourCCVideoType::BGRX),
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX => Ok(FourCCVideoType::RGBX),
-            x => Err(NDIError::InvalidEnum(x, "FourCCVideoType")),
+            x => Err(NDIError::InvalidEnum(x as _, "FourCCVideoType")),
         }
     }
 }
 
 /// The [FourCC](https://www.fourcc.org/) type of a [`AudioData`] frame
 #[derive(Debug, Clone, Copy)]
-#[repr(i32)]
 pub enum FourCCAudioType {
     /// This format stands for floating-point audio.
-    FLTP = NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP,
+    FLTP = NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP as _,
 }
 
-impl TryFrom<i32> for FourCCAudioType {
+impl TryFrom<NDIlib_FourCC_audio_type_e> for FourCCAudioType {
     type Error = NDIError;
 
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
+    fn try_from(value: NDIlib_FourCC_audio_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
         match value {
             NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP => Ok(FourCCAudioType::FLTP),
-            x => Err(NDIError::InvalidEnum(x, "FourCCAudioType")),
+            x => Err(NDIError::InvalidEnum(x as _, "FourCCAudioType")),
         }
     }
 }

@@ -7,9 +7,13 @@ pub enum NDIError {
     NotSupported,
     /// Failed to convert a c `int` into an `enum`
     InvalidEnum(i32, &'static str),
+    /// Failed to create an instance of Recv
     RecvCreateError,
+    /// Failed to create an instance of Find
     FindCreateError,
+    /// Failed to create an instance of Send
     SendCreateError,
+    /// Findng the current sources timed out
     FindSourcesTimeout,
 }
 
