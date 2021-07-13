@@ -10,7 +10,7 @@ fn get_output_path() -> PathBuf {
 fn win_link_and_load() {
     println!("cargo:rustc-link-lib=Processing.NDI.Lib.x64");
     let mut lib_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    lib_path.push("thirdparty\\Lib");
+    lib_path.push("thirdparty\\Windows\\Lib");
     println!(
         "cargo:rustc-link-search={}",
         lib_path.to_str().unwrap().to_string()
@@ -19,7 +19,7 @@ fn win_link_and_load() {
     // copy dll to OUT_DIR
     let out_path = get_output_path();
     let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
-        .join("thirdparty\\Bin\\Processing.NDI.Lib.x64.dll");
+        .join("thirdparty\\Windows\\Bin\\Processing.NDI.Lib.x64.dll");
     let dst = Path::join(&out_path, "Processing.NDI.Lib.x64.dll");
     std::fs::copy(src, dst).unwrap();
 }

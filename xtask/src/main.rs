@@ -3,15 +3,11 @@ use std::env;
 mod flags;
 
 fn run_bindgen() {
-    println!("Running bindgen...(not really)");
-
-    println!("cwd: {:?}", env::current_dir());
-
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
     // the resulting bindings.
     #[cfg(target_os = "windows")]
-    let headers = "ndi/thirdparty/Include";
+    let headers = "ndi/thirdparty/Windows/Include";
 
     #[cfg(target_os = "linux")]
     let headers = "ndi/thirdparty/Linux/Include";
@@ -22,9 +18,6 @@ fn run_bindgen() {
         .header("ndi/wrapper.h")
         .clang_args(["-I", headers].iter())
         .clang_arg("-fdeclspec")
-        // Tell cargo to invalidate the built crate whenever any of the
-        // included header files changed.
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
@@ -33,8 +26,15 @@ fn run_bindgen() {
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let mut binding_path = env::current_dir().unwrap();
     binding_path.push("ndi/src/internal");
+
+    #[cfg(target_os = "windows")]
+    binding_path.push("bindings_windows.rs");
+
+    #[cfg(target_os = "linux")]
+    binding_path.push("bindings_linux.rs");
+
     bindings
-        .write_to_file(binding_path.join("bindings.rs"))
+        .write_to_file(binding_path)
         .expect("Couldn't write bindings!");
 }
 
