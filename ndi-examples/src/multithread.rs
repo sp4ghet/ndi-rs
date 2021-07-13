@@ -23,7 +23,11 @@ fn main() -> Result<()> {
     let sources = find.current_sources(1000)?;
 
     let mut recv = ndi::RecvBuilder::new().build()?;
-    recv.connect(&sources[2]);
+    println!(
+        "Connecting to the first source: {}",
+        sources[0].get_name().map_err(|e| e.to_string())?
+    );
+    recv.connect(&sources[0]);
 
     let recv_arc = Arc::new(recv);
     let video_arc = recv_arc.clone();

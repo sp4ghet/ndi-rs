@@ -1,5 +1,9 @@
 # ndi-rs
 
+[![Crate at crates.io](https://img.shields.io/crates/v/ndi.svg)](https://crates.io/crates/ndi)
+[![Documentation at docs.rs](https://shields.io/docsrs/ndi)](https://docs.rs/ndi/)
+
+
 NewTek NDI® bindings for rust.
 
 very WIP (as of 7/7/2021) and I have no idea what I'm doing.

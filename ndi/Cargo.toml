@@ -7,8 +7,8 @@ homepage = "https://github.com/sp4ghet/ndi-rs"
 repository = "https://github.com/sp4ghet/ndi-rs"
 edition = "2018"
 license-file = "LICENSE"
-categories = ["ndi", "network", "video", "audio"]
-keywords = ["ndi", "newtek"]
+categories = ["multimedia"]
+keywords = ["ndi", "newtek", "network", "video", "audio"]
 build = "build.rs"
 readme = "README.md"
 
