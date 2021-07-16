@@ -470,7 +470,7 @@ impl VideoData {
 
     /// The frame format type of a video
     pub fn frame_format_type(&self) -> FrameFormatType {
-        FrameFormatType::try_from(self.p_instance.FourCC).unwrap()
+        FrameFormatType::try_from(self.p_instance.frame_format_type).unwrap()
     }
 
     /// The timecode of this frame in 100 ns intervals.
