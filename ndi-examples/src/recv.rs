@@ -50,9 +50,6 @@ fn main() -> Result<()> {
         let mut audio_data = None;
         let mut meta_data = None;
         let response = recv.capture_all(&mut video_data, &mut audio_data, &mut meta_data, 1000);
-        let video_data = video_data.ok_or("Failed to get video data from capture".to_string())?;
-        let audio_data = audio_data.ok_or("Failed to get audio data from capture".to_string())?;
-        let meta_data = meta_data.ok_or("Failed to get meta data from capture".to_string())?;
 
         let (total, dropped) = recv.get_performance();
         println!("total:\n {}dropped:\n {}", total, dropped);
@@ -60,6 +57,8 @@ fn main() -> Result<()> {
         match response {
             ndi::FrameType::None => println!("Nothing"),
             ndi::FrameType::Video => {
+                let video_data =
+                    video_data.ok_or("Failed to get video data from capture".to_string())?;
                 println!(
                     "Got video data: {}x{} {:?}",
                     video_data.xres(),
@@ -68,6 +67,8 @@ fn main() -> Result<()> {
                 );
             }
             ndi::FrameType::Audio => {
+                let audio_data =
+                    audio_data.ok_or("Failed to get audio data from capture".to_string())?;
                 println!(
                     "Got audio data. Channels: {}, Samples: {}, Stride: {}",
                     audio_data.no_channels(),
@@ -82,6 +83,8 @@ fn main() -> Result<()> {
                 println!("Error")
             }
             ndi::FrameType::Metadata => {
+                let meta_data =
+                    meta_data.ok_or("Failed to get meta data from capture".to_string())?;
                 println!("Got metadata. {:?}", meta_data.length())
             }
         }
@@ -90,7 +93,7 @@ fn main() -> Result<()> {
     let meta_str = "Hello World".to_owned();
     let meta = ndi::MetaData::new(0, 0, meta_str);
 
-    println!("{}", meta.p_data());
+    println!("{}", meta.data());
 
     println!("Done");
 

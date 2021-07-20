@@ -310,18 +310,25 @@ impl Recv {
                 timeout_ms,
             );
 
-            *video_data = Some(VideoData::from_binding_recv(
-                self.p_instance.clone(),
-                video.assume_init(),
-            ));
-            *audio_data = Some(AudioData::from_binding_recv(
-                self.p_instance.clone(),
-                audio.assume_init(),
-            ));
-            *meta_data = Some(MetaData::from_binding_recv(
-                self.p_instance.clone(),
-                metadata.assume_init(),
-            ));
+            if video.as_ptr() != NULL as _ {
+                *video_data = Some(VideoData::from_binding_recv(
+                    self.p_instance.clone(),
+                    video.assume_init(),
+                ));
+            }
+            if audio.as_ptr() != NULL as _ {
+                *audio_data = Some(AudioData::from_binding_recv(
+                    self.p_instance.clone(),
+                    audio.assume_init(),
+                ));
+            }
+
+            if metadata.as_ptr() != NULL as _ {
+                *meta_data = Some(MetaData::from_binding_recv(
+                    self.p_instance.clone(),
+                    metadata.assume_init(),
+                ));
+            }
 
             FrameType::try_from(response).unwrap()
         }
@@ -343,10 +350,13 @@ impl Recv {
                 timeout_ms,
             );
 
-            *video_data = Some(VideoData::from_binding_recv(
-                self.p_instance.clone(),
-                video.assume_init(),
-            ));
+            if video.as_ptr() != NULL as _ {
+                *video_data = Some(VideoData::from_binding_recv(
+                    self.p_instance.clone(),
+                    video.assume_init(),
+                ));
+            }
+
             FrameType::try_from(response).unwrap()
         }
     }
@@ -367,10 +377,12 @@ impl Recv {
                 timeout_ms,
             );
 
-            *audio_data = Some(AudioData::from_binding_recv(
-                self.p_instance.clone(),
-                audio.assume_init(),
-            ));
+            if audio.as_ptr() != NULL as _ {
+                *audio_data = Some(AudioData::from_binding_recv(
+                    self.p_instance.clone(),
+                    audio.assume_init(),
+                ));
+            }
             FrameType::try_from(response).unwrap()
         }
     }
@@ -391,10 +403,12 @@ impl Recv {
                 timeout_ms,
             );
 
-            *meta_data = Some(MetaData::from_binding_recv(
-                self.p_instance.clone(),
-                metadata.assume_init(),
-            ));
+            if metadata.as_ptr() != NULL as _ {
+                *meta_data = Some(MetaData::from_binding_recv(
+                    self.p_instance.clone(),
+                    metadata.assume_init(),
+                ));
+            }
             FrameType::try_from(response).unwrap()
         }
     }

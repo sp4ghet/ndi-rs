@@ -401,6 +401,31 @@ pub struct VideoData {
 unsafe impl core::marker::Send for VideoData {}
 unsafe impl core::marker::Sync for VideoData {}
 
+impl Debug for VideoData {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("VideoData")
+            .field("xres", &self.xres())
+            .field("yres", &self.yres())
+            .field("line_stride_in_bytes", &self.line_stride_in_bytes())
+            .field("data_size", &self.data_size_in_bytes())
+            .field("fourcc", &self.four_cc())
+            .field("frame_format_type", &self.frame_format_type())
+            .field(
+                "frame_rate",
+                &format!(
+                    "{}/{} = {}",
+                    self.frame_rate_n(),
+                    self.frame_rate_d(),
+                    self.frame_rate_n() as f32 / self.frame_rate_d() as f32
+                ),
+            )
+            .field("timestamp", &self.timestamp())
+            .field("timecode", &self.timecode())
+            .field("metadata", &self.metadata())
+            .finish()
+    }
+}
+
 impl VideoData {
     fn from_binding_recv(
         recv: Arc<NDIlib_recv_instance_t>,
@@ -409,6 +434,29 @@ impl VideoData {
         Self {
             p_instance,
             parent: VideoParent::Recv(recv),
+        }
+    }
+
+    /// Create an empty video frame
+    pub fn new() -> Self {
+        Self {
+            p_instance: NDIlib_video_frame_v2_t {
+                xres: 0,
+                yres: 0,
+                FourCC: FourCCVideoType::UYVY as _,
+                frame_rate_N: 60,
+                frame_rate_D: 0,
+                picture_aspect_ratio: 0f32,
+                frame_format_type: FrameFormatType::Progressive as _,
+                timecode: 0,
+                p_data: NULL as _,
+                __bindgen_anon_1: NDIlib_video_frame_v2_t__bindgen_ty_1 {
+                    line_stride_in_bytes: 0,
+                },
+                p_metadata: NULL as _,
+                timestamp: 0,
+            },
+            parent: VideoParent::Owned,
         }
     }
 
@@ -565,6 +613,20 @@ pub struct AudioData {
 unsafe impl core::marker::Send for AudioData {}
 unsafe impl core::marker::Sync for AudioData {}
 
+impl Debug for AudioData {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AudioData")
+            .field("sample_rate", &self.sample_rate())
+            .field("no_samples", &self.no_samples())
+            .field("no_channels", &self.no_channels())
+            .field("timestamp", &self.timestamp())
+            .field("timecode", &self.timecode())
+            .field("fourcc", &self.four_cc())
+            .field("metadata", &self.metadata())
+            .finish()
+    }
+}
+
 impl AudioData {
     fn from_binding_recv(
         recv: Arc<NDIlib_recv_instance_t>,
@@ -573,6 +635,26 @@ impl AudioData {
         Self {
             p_instance,
             parent: AudioParent::Recv(recv),
+        }
+    }
+
+    /// Create new instance of AudioData
+    pub fn new() -> Self {
+        Self {
+            p_instance: NDIlib_audio_frame_v3_t {
+                sample_rate: 0,
+                no_channels: 0,
+                no_samples: 0,
+                timecode: 0,
+                FourCC: FourCCAudioType::FLTP as _,
+                p_data: NULL as _,
+                __bindgen_anon_1: NDIlib_audio_frame_v3_t__bindgen_ty_1 {
+                    channel_stride_in_bytes: 0,
+                },
+                p_metadata: "".as_ptr() as _,
+                timestamp: 0,
+            },
+            parent: AudioParent::Owned,
         }
     }
 
@@ -688,6 +770,16 @@ pub struct MetaData {
 unsafe impl core::marker::Send for MetaData {}
 unsafe impl core::marker::Sync for MetaData {}
 
+impl Debug for MetaData {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("MetaData")
+            .field("length", &self.length())
+            .field("data", &self.data())
+            .field("timecode", &self.timecode())
+            .finish()
+    }
+}
+
 impl MetaData {
     fn from_binding_recv(
         recv: Arc<NDIlib_recv_instance_t>,
@@ -735,7 +827,7 @@ impl MetaData {
     }
 
     /// The metadata as a UTF8 XML string. This is a NULL terminated string.
-    pub fn p_data(&self) -> String {
+    pub fn data(&self) -> String {
         //! according to the docs, metadata should be valid UTF-8 XML
         //! not sure how much it's actually followed in practice
         let char_ptr = self.p_instance.p_data;

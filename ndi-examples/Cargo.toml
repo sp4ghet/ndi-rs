@@ -16,6 +16,11 @@ path = "src/multithread.rs"
 name = "data_lifetime"
 path = "src/data_lifetime.rs"
 
+[[bin]]
+name = "save_recv"
+path = "src/save_recv.rs"
+
 [dependencies]
 ndi = {path = "../ndi"}
 error-chain = "0.12.4"
+image = "0.23"
