@@ -1,16 +1,17 @@
 #![warn(missing_docs)]
+#![warn(unsafe_op_in_unsafe_fn)]
 //! NewTek NDI®[^tm] Bindings for rust
 //!
 //! [^tm]: NDI® is a registered trademark of NewTek, Inc.
 //! http://ndi.tv/
 //!
 
-use core::panic;
 use internal::bindings::*;
 use std::{
     convert::TryFrom,
     ffi::{CStr, CString},
     fmt::{Debug, Display},
+    ptr::{null, null_mut},
     sync::Arc,
 };
 
@@ -34,12 +35,9 @@ pub use recv::*;
 #[doc(hidden)]
 pub use send::*;
 
-const NULL: usize = 0;
-
 /// A description of the type of of frame received.
 ///
 /// This is usually returned by [`Recv::capture_all()`]
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FrameType {
     /// nothing changed, usually due to timeout
@@ -60,7 +58,7 @@ pub enum FrameType {
 }
 
 impl TryFrom<NDIlib_frame_type_e> for FrameType {
-    type Error = NDIError;
+    type Error = InvalidEnum;
 
     fn try_from(value: NDIlib_frame_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
@@ -71,7 +69,7 @@ impl TryFrom<NDIlib_frame_type_e> for FrameType {
             NDIlib_frame_type_e_NDIlib_frame_type_status_change => Ok(FrameType::StatusChange),
             NDIlib_frame_type_e_NDIlib_frame_type_error => Ok(FrameType::ErrorFrame),
             NDIlib_frame_type_e_NDIlib_frame_type_metadata => Ok(FrameType::Metadata),
-            x => Err(NDIError::InvalidEnum(x as _, "FrameType")),
+            x => Err(InvalidEnum(x as _, "FrameType")),
         }
     }
 }
@@ -98,7 +96,7 @@ pub enum FrameFormatType {
     Progressive = NDIlib_frame_format_type_e_NDIlib_frame_format_type_progressive as _,
     /// This is a frame of video that is comprised of two fields.
     ///
-    ///  The upper field comes first, and the lower comes second (see [`FrameFormatType`])
+    /// The upper field comes first, and the lower comes second (see [`FrameFormatType`])
     Interleaved = NDIlib_frame_format_type_e_NDIlib_frame_format_type_interleaved as _,
     /// This is an individual field 0 from a fielded video frame.
     ///
@@ -111,7 +109,7 @@ pub enum FrameFormatType {
 }
 
 impl TryFrom<NDIlib_frame_format_type_e> for FrameFormatType {
-    type Error = NDIError;
+    type Error = InvalidEnum;
 
     fn try_from(value: NDIlib_frame_format_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
@@ -130,7 +128,7 @@ impl TryFrom<NDIlib_frame_format_type_e> for FrameFormatType {
             NDIlib_frame_format_type_e_NDIlib_frame_format_type_field_1 => {
                 Ok(FrameFormatType::Field1)
             }
-            x => Err(NDIError::InvalidEnum(x as _, "FrameFormatType")),
+            x => Err(InvalidEnum(x as _, "FrameFormatType")),
         }
     }
 }
@@ -247,7 +245,7 @@ pub enum FourCCVideoType {
 }
 
 impl TryFrom<NDIlib_FourCC_video_type_e> for FourCCVideoType {
-    type Error = NDIError;
+    type Error = InvalidEnum;
 
     fn try_from(value: NDIlib_FourCC_video_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
@@ -263,7 +261,7 @@ impl TryFrom<NDIlib_FourCC_video_type_e> for FourCCVideoType {
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBA => Ok(FourCCVideoType::RGBA),
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_BGRX => Ok(FourCCVideoType::BGRX),
             NDIlib_FourCC_video_type_e_NDIlib_FourCC_type_RGBX => Ok(FourCCVideoType::RGBX),
-            x => Err(NDIError::InvalidEnum(x as _, "FourCCVideoType")),
+            x => Err(InvalidEnum(x as _, "FourCCVideoType")),
         }
     }
 }
@@ -276,13 +274,13 @@ pub enum FourCCAudioType {
 }
 
 impl TryFrom<NDIlib_FourCC_audio_type_e> for FourCCAudioType {
-    type Error = NDIError;
+    type Error = InvalidEnum;
 
     fn try_from(value: NDIlib_FourCC_audio_type_e) -> Result<Self, Self::Error> {
         #[allow(non_upper_case_globals)]
         match value {
             NDIlib_FourCC_audio_type_e_NDIlib_FourCC_type_FLTP => Ok(FourCCAudioType::FLTP),
-            x => Err(NDIError::InvalidEnum(x as _, "FourCCAudioType")),
+            x => Err(InvalidEnum(x as _, "FourCCAudioType")),
         }
     }
 }
@@ -309,9 +307,9 @@ impl Source {
     fn new() -> Self {
         // From the default c++ constructor in Processing.NDI.structs.h
         let p_instance = NDIlib_source_t {
-            p_ndi_name: NULL as _,
+            p_ndi_name: null(),
             __bindgen_anon_1: NDIlib_source_t__bindgen_ty_1 {
-                p_ip_address: NULL as _,
+                p_ip_address: null(),
             },
         };
         Self { p_instance }
@@ -388,7 +386,6 @@ impl Into<NDIlib_tally_t> for Tally {
 
 enum VideoParent {
     Recv(Arc<NDIlib_recv_instance_t>),
-    #[allow(unused)]
     Owned,
 }
 
@@ -449,11 +446,11 @@ impl VideoData {
                 picture_aspect_ratio: 0f32,
                 frame_format_type: FrameFormatType::Progressive as _,
                 timecode: 0,
-                p_data: NULL as _,
+                p_data: null_mut(),
                 __bindgen_anon_1: NDIlib_video_frame_v2_t__bindgen_ty_1 {
                     line_stride_in_bytes: 0,
                 },
-                p_metadata: NULL as _,
+                p_metadata: null(),
                 timestamp: 0,
             },
             parent: VideoParent::Owned,
@@ -600,7 +597,6 @@ impl Drop for VideoData {
 
 enum AudioParent {
     Recv(Arc<NDIlib_recv_instance_t>),
-    #[allow(unused)]
     Owned,
 }
 
@@ -647,7 +643,7 @@ impl AudioData {
                 no_samples: 0,
                 timecode: 0,
                 FourCC: FourCCAudioType::FLTP as _,
-                p_data: NULL as _,
+                p_data: null_mut(),
                 __bindgen_anon_1: NDIlib_audio_frame_v3_t__bindgen_ty_1 {
                     channel_stride_in_bytes: 0,
                 },
@@ -853,15 +849,15 @@ impl Drop for MetaData {
 /// Start the library
 ///
 /// This is not actually required, but will start the libraries which might get
-/// you slightly better performance in some cases.In general it is more "correct" to
+/// you slightly better performance in some cases. In general it is more "correct" to
 /// call this although it is not required. There is no way to call this that would have
 /// an adverse impact on anything.
 /// This will return Err if the CPU is not sufficiently capable to run NDILib
 /// currently NDILib requires SSE4.2 instructions (see documentation). You can verify
 /// a specific CPU against the library with a call to [`is_supported_CPU()`]
-pub fn initialize() -> Result<(), NDIError> {
+pub fn initialize() -> Result<(), NotSupported> {
     if !unsafe { NDIlib_initialize() } {
-        return Err(NDIError::NotSupported);
+        return Err(NotSupported);
     };
 
     Ok(())
@@ -874,7 +870,7 @@ pub fn initialize() -> Result<(), NDIError> {
 /// call this although it is not required.
 /// This will destroy everything associated with the library so use it with due caution.
 pub unsafe fn cleanup() {
-    NDIlib_destroy();
+    unsafe { NDIlib_destroy() };
 }
 
 /// Recover whether the current CPU in the system is capable of running NDILib.

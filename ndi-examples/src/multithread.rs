@@ -1,31 +1,19 @@
-#[macro_use]
-extern crate error_chain;
-
 use std::{
     sync::{mpsc::channel, Arc},
     thread,
     time::Instant,
 };
 
-mod errors {
-    error_chain! {
-        foreign_links {
-            NDI(ndi::NDIError);
-        }
-    }
-}
-use errors::*;
+fn main() {
+    ndi::initialize().unwrap();
+    let find = ndi::FindBuilder::new().build().unwrap();
 
-fn main() -> Result<()> {
-    ndi::initialize()?;
-    let find = ndi::FindBuilder::new().build()?;
+    let sources = find.current_sources(1000).unwrap();
 
-    let sources = find.current_sources(1000)?;
-
-    let mut recv = ndi::RecvBuilder::new().build()?;
+    let mut recv = ndi::RecvBuilder::new().build().unwrap();
     println!(
         "Connecting to the first source: {}",
-        sources[0].get_name().map_err(|e| e.to_string())?
+        sources[0].get_name().unwrap_or("[invalid-name]".into())
     );
     recv.connect(&sources[0]);
 
@@ -34,7 +22,7 @@ fn main() -> Result<()> {
     let audio_arc = video_arc.clone();
 
     let (video_tx, video_rx) = channel();
-    thread::spawn(move || -> Result<()> {
+    thread::spawn(move || {
         println!("Running video capture in thread 1");
         let start = Instant::now();
         while Instant::now().duration_since(start).as_millis() < 10000 {
@@ -42,17 +30,14 @@ fn main() -> Result<()> {
             let response = video_arc.capture_video(&mut video_data, 1000);
             if response == ndi::FrameType::Video {
                 if let Some(video) = video_data {
-                    video_tx
-                        .send(video)
-                        .map_err(|e| Error::from(e.to_string()))?;
+                    video_tx.send(video).unwrap()
                 }
             }
         }
-        Ok(())
     });
 
     let (audio_tx, audio_rx) = channel();
-    thread::spawn(move || -> Result<()> {
+    thread::spawn(move || {
         let recv = audio_arc.clone();
         println!("Running audio capture in thread 2");
         let start = Instant::now();
@@ -61,13 +46,10 @@ fn main() -> Result<()> {
             let response = recv.capture_audio(&mut audio_data, 1000);
             if response == ndi::FrameType::Audio {
                 if let Some(audio) = audio_data {
-                    audio_tx
-                        .send(audio)
-                        .map_err(|e| Error::from(e.to_string()))?;
+                    audio_tx.send(audio).unwrap()
                 }
             }
         }
-        Ok(())
     });
 
     let start = Instant::now();
@@ -91,6 +73,4 @@ fn main() -> Result<()> {
     unsafe {
         ndi::cleanup();
     }
-
-    Ok(())
 }

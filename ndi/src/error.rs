@@ -1,26 +1,43 @@
 use super::*;
 
-/// Various Errors that the library could return
+macro_rules! impl_error {
+    ($name:ident) => {
+        impl Display for $name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                <Self as Debug>::fmt(&self, f)
+            }
+        }
+
+        impl std::error::Error for $name {}
+    };
+}
+
+/// The system is not compatible with NDI
 #[derive(Debug)]
-pub enum NDIError {
-    /// The system is not compatible with NDI
-    NotSupported,
-    /// Failed to convert a c `int` into an `enum`
-    InvalidEnum(i32, &'static str),
-    /// Failed to create an instance of Recv
-    RecvCreateError,
-    /// Failed to create an instance of Find
-    FindCreateError,
-    /// Failed to create an instance of Send
-    SendCreateError,
-    /// Findng the current sources timed out
-    FindSourcesTimeout,
-}
+pub struct NotSupported;
+impl_error!(NotSupported);
 
-impl Display for NDIError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        <Self as Debug>::fmt(&self, f)
-    }
-}
+/// Failed to convert a c `int` into an `enum`
+#[derive(Debug)]
+pub struct InvalidEnum(pub i32, pub &'static str);
+impl_error!(InvalidEnum);
 
-impl std::error::Error for NDIError {}
+/// Failed to create an instance of Recv
+#[derive(Debug)]
+pub struct RecvCreateError;
+impl_error!(RecvCreateError);
+
+/// Failed to create an instance of Find
+#[derive(Debug)]
+pub struct FindCreateError;
+impl_error!(FindCreateError);
+
+/// Failed to create an instance of Send
+#[derive(Debug)]
+pub struct SendCreateError;
+impl_error!(SendCreateError);
+
+/// Findng the current sources timed out
+#[derive(Debug)]
+pub struct FindSourcesTimeout;
+impl_error!(FindSourcesTimeout);

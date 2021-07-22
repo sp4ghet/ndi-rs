@@ -1,9 +1,5 @@
-use std::convert::TryFrom;
-use std::ffi::CString;
-use std::mem::MaybeUninit;
-
-use super::internal::bindings::*;
 use super::*;
+use std::{convert::TryFrom, ffi::CString, mem::MaybeUninit};
 
 /// Builder struct for [`Send`]
 #[derive(Debug, Clone)]
@@ -74,10 +70,10 @@ impl SendBuilder {
     }
 
     /// Build the [`Send`] instance
-    pub fn build(self) -> Result<Send, NDIError> {
+    pub fn build(self) -> Result<Send, SendCreateError> {
         let mut settings = NDIlib_send_create_t {
-            p_ndi_name: NULL as _,
-            p_groups: NULL as _,
+            p_ndi_name: null(),
+            p_groups: null(),
             clock_video: true,
             clock_audio: true,
         };
@@ -113,11 +109,11 @@ impl Send {
     /// Create a new instance with default parameters
     ///
     /// It is recommended to use [`SendBuilder`] instead
-    pub fn new() -> Result<Self, NDIError> {
-        let p_instance = unsafe { NDIlib_send_create(NULL as _) };
+    pub fn new() -> Result<Self, SendCreateError> {
+        let p_instance = unsafe { NDIlib_send_create(null()) };
 
         if p_instance.is_null() {
-            return Err(NDIError::SendCreateError);
+            return Err(SendCreateError);
         }
 
         Ok(Self {
@@ -125,11 +121,11 @@ impl Send {
         })
     }
 
-    fn with_settings(settings: NDIlib_send_create_t) -> Result<Self, NDIError> {
+    fn with_settings(settings: NDIlib_send_create_t) -> Result<Self, SendCreateError> {
         let p_instance = unsafe { NDIlib_send_create(&settings) };
 
         if p_instance.is_null() {
-            return Err(NDIError::SendCreateError);
+            return Err(SendCreateError);
         }
 
         Ok(Self {

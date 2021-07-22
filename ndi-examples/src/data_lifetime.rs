@@ -1,19 +1,7 @@
-#[macro_use]
-extern crate error_chain;
 use std::thread;
 
-mod errors {
-    error_chain! {
-        foreign_links {
-            NDI(ndi::NDIError);
-        }
-    }
-}
-
-use errors::*;
-
-fn get_frame(source: &ndi::Source) -> Result<ndi::VideoData> {
-    let mut recv = ndi::RecvBuilder::new().build()?;
+fn get_frame(source: &ndi::Source) -> ndi::VideoData {
+    let mut recv = ndi::RecvBuilder::new().build().unwrap();
     recv.connect(source);
 
     let mut video_data = None;
@@ -24,20 +12,18 @@ fn get_frame(source: &ndi::Source) -> Result<ndi::VideoData> {
         }
     }
 
-    Ok(video_data.ok_or("No video Data")?)
+    video_data.expect("no video data")
 }
 
-fn main() -> Result<()> {
-    ndi::initialize()?;
+fn main() {
+    ndi::initialize().unwrap();
 
-    let find = ndi::FindBuilder::new().build()?;
-    let sources = find.current_sources(1000)?;
+    let find = ndi::FindBuilder::new().build().unwrap();
+    let sources = find.current_sources(1000).unwrap();
 
-    let frame = get_frame(&sources[0])?;
+    let frame = get_frame(&sources[0]);
 
     thread::sleep(std::time::Duration::from_millis(1000));
 
     println!("Frame received: {}x{}", frame.xres(), frame.yres());
-
-    Ok(())
 }
