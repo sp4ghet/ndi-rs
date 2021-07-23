@@ -1,9 +1,5 @@
-use super::internal::bindings::*;
 use super::*;
-use std::ffi::CString;
-use std::fmt::Display;
-use std::mem;
-use std::sync::Mutex;
+use std::{ffi::CString, fmt::Display, mem, sync::Mutex};
 
 /// Current performance levels of the receiving.
 ///
@@ -150,14 +146,14 @@ impl RecvBuilder {
     }
 
     /// Build the [`Recv`]
-    pub fn build(self) -> Result<Recv, NDIError> {
+    pub fn build(self) -> Result<Recv, RecvCreateError> {
         // From default C++ constructor in Processing.NDI.Recv.h
         let mut settings: NDIlib_recv_create_v3_t = NDIlib_recv_create_v3_t {
             source_to_connect_to: Source::new().p_instance,
             color_format: RecvColorFormat::UYVY_BGRA as _,
             bandwidth: RecvBandwidth::Highest as _,
             allow_video_fields: true,
-            p_ndi_recv_name: NULL as _,
+            p_ndi_recv_name: null(),
         };
 
         if let Some(src) = self.source_to_connect_to {
@@ -225,11 +221,11 @@ unsafe impl core::marker::Send for Recv {}
 unsafe impl core::marker::Sync for Recv {}
 
 impl Recv {
-    fn with_settings(settings: NDIlib_recv_create_v3_t) -> Result<Self, NDIError> {
+    fn with_settings(settings: NDIlib_recv_create_v3_t) -> Result<Self, RecvCreateError> {
         let p_instance = unsafe { NDIlib_recv_create_v3(&settings) };
 
         if p_instance.is_null() {
-            return Err(NDIError::RecvCreateError);
+            return Err(RecvCreateError);
         }
         let guard = Mutex::new(());
         let mut this = Self {
@@ -244,11 +240,11 @@ impl Recv {
     /// Create new receiver which isn't connected to any sources
     ///
     /// It is recommended that you use [`RecvBuilder`] instead if possible
-    pub fn new() -> Result<Self, NDIError> {
-        let p_instance = unsafe { NDIlib_recv_create_v3(NULL as _) };
+    pub fn new() -> Result<Self, RecvCreateError> {
+        let p_instance = unsafe { NDIlib_recv_create_v3(null()) };
 
         if p_instance.is_null() {
-            return Err(NDIError::RecvCreateError);
+            return Err(RecvCreateError);
         }
 
         let guard = Mutex::new(());
@@ -268,7 +264,7 @@ impl Recv {
     /// Disconnect from all sources
     pub fn disconnect(&mut self) {
         unsafe {
-            NDIlib_recv_connect(*self.p_instance, NULL as _);
+            NDIlib_recv_connect(*self.p_instance, null());
         }
     }
 
@@ -286,52 +282,56 @@ impl Recv {
         meta_data: &mut Option<MetaData>,
         timeout_ms: u32,
     ) -> FrameType {
-        unsafe {
-            let mut video = if let Some(x) = video_data {
-                mem::MaybeUninit::new(x.p_instance)
-            } else {
-                mem::MaybeUninit::zeroed()
-            };
-            let mut audio = if let Some(x) = audio_data {
-                mem::MaybeUninit::new(x.p_instance)
-            } else {
-                mem::MaybeUninit::zeroed()
-            };
-            let mut metadata = if let Some(x) = meta_data {
-                mem::MaybeUninit::new(x.p_instance)
-            } else {
-                mem::MaybeUninit::zeroed()
-            };
-            let response = NDIlib_recv_capture_v3(
+        let mut video = if let Some(x) = video_data {
+            mem::MaybeUninit::new(x.p_instance)
+        } else {
+            mem::MaybeUninit::zeroed()
+        };
+
+        let mut audio = if let Some(x) = audio_data {
+            mem::MaybeUninit::new(x.p_instance)
+        } else {
+            mem::MaybeUninit::zeroed()
+        };
+
+        let mut metadata = if let Some(x) = meta_data {
+            mem::MaybeUninit::new(x.p_instance)
+        } else {
+            mem::MaybeUninit::zeroed()
+        };
+
+        let response = unsafe {
+            NDIlib_recv_capture_v3(
                 *self.p_instance,
                 video.as_mut_ptr(),
                 audio.as_mut_ptr(),
                 metadata.as_mut_ptr(),
                 timeout_ms,
-            );
+            )
+        };
 
-            if video.as_ptr() != NULL as _ {
-                *video_data = Some(VideoData::from_binding_recv(
-                    self.p_instance.clone(),
-                    video.assume_init(),
-                ));
-            }
-            if audio.as_ptr() != NULL as _ {
-                *audio_data = Some(AudioData::from_binding_recv(
-                    self.p_instance.clone(),
-                    audio.assume_init(),
-                ));
-            }
-
-            if metadata.as_ptr() != NULL as _ {
-                *meta_data = Some(MetaData::from_binding_recv(
-                    self.p_instance.clone(),
-                    metadata.assume_init(),
-                ));
-            }
-
-            FrameType::try_from(response).unwrap()
+        if !video.as_ptr().is_null() {
+            *video_data = Some(VideoData::from_binding_recv(
+                self.p_instance.clone(),
+                unsafe { video.assume_init() },
+            ));
         }
+
+        if !audio.as_ptr().is_null() {
+            *audio_data = Some(AudioData::from_binding_recv(
+                self.p_instance.clone(),
+                unsafe { audio.assume_init() },
+            ));
+        }
+
+        if !metadata.as_ptr().is_null() {
+            *meta_data = Some(MetaData::from_binding_recv(
+                self.p_instance.clone(),
+                unsafe { metadata.assume_init() },
+            ));
+        }
+
+        FrameType::try_from(response).unwrap()
     }
 
     /// Receive video frame
@@ -342,15 +342,16 @@ impl Recv {
             } else {
                 mem::MaybeUninit::zeroed()
             };
+
             let response = NDIlib_recv_capture_v3(
                 *self.p_instance,
                 video.as_mut_ptr(),
-                NULL as _,
-                NULL as _,
+                null_mut(),
+                null_mut(),
                 timeout_ms,
             );
 
-            if video.as_ptr() != NULL as _ {
+            if !video.as_ptr().is_null() {
                 *video_data = Some(VideoData::from_binding_recv(
                     self.p_instance.clone(),
                     video.assume_init(),
@@ -371,13 +372,13 @@ impl Recv {
             };
             let response = NDIlib_recv_capture_v3(
                 *self.p_instance,
-                NULL as _,
+                null_mut(),
                 audio.as_mut_ptr(),
-                NULL as _,
+                null_mut(),
                 timeout_ms,
             );
 
-            if audio.as_ptr() != NULL as _ {
+            if !audio.as_ptr().is_null() {
                 *audio_data = Some(AudioData::from_binding_recv(
                     self.p_instance.clone(),
                     audio.assume_init(),
@@ -397,13 +398,13 @@ impl Recv {
             };
             let response = NDIlib_recv_capture_v3(
                 *self.p_instance,
-                NULL as _,
-                NULL as _,
+                null_mut(),
+                null_mut(),
                 metadata.as_mut_ptr(),
                 timeout_ms,
             );
 
-            if metadata.as_ptr() != NULL as _ {
+            if !metadata.as_ptr().is_null() {
                 *meta_data = Some(MetaData::from_binding_recv(
                     self.p_instance.clone(),
                     metadata.assume_init(),

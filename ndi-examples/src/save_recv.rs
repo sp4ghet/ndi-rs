@@ -1,29 +1,16 @@
-#[macro_use]
-extern crate error_chain;
 extern crate ndi;
 use std::iter::FromIterator;
 
-mod errors {
+fn main() {
+    ndi::initialize().unwrap();
 
-    error_chain! {
-        foreign_links {
-            NDI(ndi::NDIError);
-            Utf8(std::str::Utf8Error);
-            Image(image::error::ImageError);
-        }
-    }
-}
-use errors::*;
-
-fn main() -> Result<()> {
-    ndi::initialize()?;
-
-    let find = ndi::FindBuilder::new().build()?;
-    let sources = find.current_sources(1000)?;
+    let find = ndi::FindBuilder::new().build().unwrap();
+    let sources = find.current_sources(1000).unwrap();
 
     let mut recv = ndi::RecvBuilder::new()
         .color_format(ndi::RecvColorFormat::RGBX_RGBA)
-        .build()?;
+        .build()
+        .unwrap();
     recv.connect(&sources[0]);
 
     let mut video_data = None;
@@ -47,10 +34,10 @@ fn main() -> Result<()> {
         frame.yres(),
         frame_vec,
     )
-    .ok_or("Failed to create image")?;
+    .ok_or("Failed to create image")
+    .unwrap();
 
-    buf.save("save_recv.png")?;
+    buf.save("save_recv.png").unwrap();
+
     println!("Done");
-
-    Ok(())
 }

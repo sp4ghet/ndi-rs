@@ -1,6 +1,5 @@
 use super::*;
-use std::ffi::CString;
-use std::time::Instant;
+use std::{ffi::CString, thread::yield_now, time::Instant};
 
 /// Builder for [`Find`] struct
 #[derive(Debug, Clone)]
@@ -52,12 +51,12 @@ impl FindBuilder {
     }
 
     /// Build an instance of [`Find`]
-    pub fn build(self) -> Result<Find, NDIError> {
+    pub fn build(self) -> Result<Find, FindCreateError> {
         // from default c++ constructor in Processing.NDI.Find.h
         let mut settings = NDIlib_find_create_t {
             show_local_sources: true,
-            p_groups: NULL as _,
-            p_extra_ips: NULL as _,
+            p_groups: null(),
+            p_extra_ips: null(),
         };
 
         if let Some(show_local_sources) = self.show_local_sources {
@@ -93,43 +92,47 @@ unsafe impl core::marker::Sync for Find {}
 
 impl Find {
     /// Create a new instance with default constructor
-    pub fn new() -> Result<Self, NDIError> {
-        let p_instance = unsafe { NDIlib_find_create_v2(NULL as _) };
+    pub fn new() -> Result<Self, FindCreateError> {
+        let p_instance = unsafe { NDIlib_find_create_v2(null()) };
         if p_instance.is_null() {
-            return Err(NDIError::FindCreateError);
+            return Err(FindCreateError);
         };
 
         Ok(Self { p_instance })
     }
 
-    fn with_settings(settings: NDIlib_find_create_t) -> Result<Self, NDIError> {
+    fn with_settings(settings: NDIlib_find_create_t) -> Result<Self, FindCreateError> {
         let p_instance = unsafe { NDIlib_find_create_v2(&settings) };
         if p_instance.is_null() {
-            return Err(NDIError::FindCreateError);
+            return Err(FindCreateError);
         };
 
         Ok(Self { p_instance })
     }
 
     /// List current sources
-    pub fn current_sources(&self, timeout_ms: u128) -> Result<Vec<Source>, NDIError> {
+    pub fn current_sources(&self, timeout_ms: u128) -> Result<Vec<Source>, FindSourcesTimeout> {
         let mut no_sources = 0;
-        let mut p_sources: *const NDIlib_source_t = NULL as _;
         let start = Instant::now();
-        while no_sources == 0 {
+        let p_sources = loop {
             // timeout if it takes an unreasonable amount of time
-            if Instant::now().duration_since(start).as_millis() > timeout_ms {
-                return Err(NDIError::FindSourcesTimeout);
+            if start.elapsed().as_millis() > timeout_ms {
+                return Err(FindSourcesTimeout);
             }
 
-            p_sources =
+            let p_sources =
                 unsafe { NDIlib_find_get_current_sources(self.p_instance, &mut no_sources) };
-        }
+
+            if no_sources != 0 {
+                break p_sources;
+            } else {
+                yield_now();
+            }
+        };
 
         let mut sources: Vec<Source> = vec![];
-        for _ in 0..no_sources {
-            sources.push(Source::from_binding(unsafe { *p_sources }));
-            p_sources = unsafe { p_sources.add(1) };
+        for k in 0..no_sources {
+            sources.push(Source::from_binding(unsafe { *p_sources.offset(k as _) }));
         }
 
         Ok(sources)

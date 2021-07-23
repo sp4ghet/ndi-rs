@@ -1,44 +1,35 @@
-#[macro_use]
-extern crate error_chain;
-
 use std::io;
 use std::time::Instant;
 
-mod errors {
-    error_chain! {
-        foreign_links {
-            NDI(ndi::NDIError);
-            Other(std::str::Utf8Error);
-        }
-    }
-}
-use errors::*;
+fn main() {
+    ndi::initialize().unwrap();
 
-fn main() -> Result<()> {
-    ndi::initialize()?;
-
-    let find = ndi::Find::new()?;
+    let find = ndi::Find::new().unwrap();
     println!("Looking for sources");
-    let sources = find.current_sources(1000)?;
+    let sources = find.current_sources(1000).unwrap();
 
     if sources.len() == 0 {
-        bail!("No sources found");
+        panic!("No sources found");
     }
 
     println!("Select device:");
     for (i, source) in sources.iter().enumerate() {
-        println!("  {}: {}", i, source.get_name()?);
+        println!(
+            "  {}: {}",
+            i,
+            source.get_name().unwrap_or("[invalid-name]".into())
+        );
     }
 
     let stdin = io::stdin();
     let mut buf = String::new();
-    stdin.read_line(&mut buf).map_err(|e| e.to_string())?;
-    let i = buf.trim_end().parse::<usize>().map_err(|e| e.to_string())?;
+    stdin.read_line(&mut buf).unwrap();
+    let i = buf.trim_end().parse::<usize>().unwrap();
 
     let recv_builder = ndi::RecvBuilder::new()
         .color_format(ndi::RecvColorFormat::RGBX_RGBA)
         .ndi_recv_name("ndi-rs".to_string());
-    let mut recv = recv_builder.build()?;
+    let mut recv = recv_builder.build().unwrap();
     recv.connect(&sources[i]);
 
     let name = sources[i].get_name().unwrap();
@@ -57,8 +48,7 @@ fn main() -> Result<()> {
         match response {
             ndi::FrameType::None => println!("Nothing"),
             ndi::FrameType::Video => {
-                let video_data =
-                    video_data.ok_or("Failed to get video data from capture".to_string())?;
+                let video_data = video_data.expect("Failed to get video data from capture");
                 println!(
                     "Got video data: {}x{} {:?}",
                     video_data.xres(),
@@ -67,8 +57,7 @@ fn main() -> Result<()> {
                 );
             }
             ndi::FrameType::Audio => {
-                let audio_data =
-                    audio_data.ok_or("Failed to get audio data from capture".to_string())?;
+                let audio_data = audio_data.expect("Failed to get audio data from capture");
                 println!(
                     "Got audio data. Channels: {}, Samples: {}, Stride: {}",
                     audio_data.no_channels(),
@@ -83,8 +72,7 @@ fn main() -> Result<()> {
                 println!("Error")
             }
             ndi::FrameType::Metadata => {
-                let meta_data =
-                    meta_data.ok_or("Failed to get meta data from capture".to_string())?;
+                let meta_data = meta_data.expect("Failed to get meta data from capture");
                 println!("Got metadata. {:?}", meta_data.length())
             }
         }
@@ -100,6 +88,4 @@ fn main() -> Result<()> {
     unsafe {
         ndi::cleanup();
     }
-
-    Ok(())
 }

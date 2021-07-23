@@ -2,8 +2,6 @@
 name = "ndi-examples"
 version = "0.0.0"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [[bin]]
 name = "recv"
 path = "src/recv.rs"
@@ -22,5 +20,4 @@ path = "src/save_recv.rs"
 
 [dependencies]
 ndi = {path = "../ndi"}
-error-chain = "0.12.4"
 image = "0.23"
