@@ -322,18 +322,18 @@ impl Source {
     ///     MACHINE_NAME (NDI_SOURCE_NAME)
     /// If the parameter was passed either as NULL, or an EMPTY string then
     /// the specific IP address and port number from below is used.
-    pub fn get_name(&self) -> Result<String, std::str::Utf8Error> {
+    pub fn get_name(&self) -> String {
         let name_char_ptr: *mut std::os::raw::c_char = self.p_instance.p_ndi_name as _;
         if name_char_ptr.is_null() {
-            return Ok(String::new());
+            return String::new();
         }
         let name = unsafe {
             CStr::from_ptr(name_char_ptr)
                 .to_owned()
-                .to_str()?
+                .to_string_lossy()
                 .to_string()
         };
-        Ok(name)
+        name
     }
 }
 
