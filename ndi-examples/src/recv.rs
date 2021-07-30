@@ -17,7 +17,7 @@ fn main() {
         println!(
             "  {}: {}",
             i,
-            source.get_name().unwrap_or("[invalid-name]".into())
+            source.get_name()
         );
     }
 
@@ -32,7 +32,7 @@ fn main() {
     let mut recv = recv_builder.build().unwrap();
     recv.connect(&sources[i]);
 
-    let name = sources[i].get_name().unwrap();
+    let name = sources[i].get_name();
     println!("Connected to NDI device {}", name);
 
     let start = Instant::now();
@@ -51,8 +51,8 @@ fn main() {
                 let video_data = video_data.expect("Failed to get video data from capture");
                 println!(
                     "Got video data: {}x{} {:?}",
-                    video_data.xres(),
-                    video_data.yres(),
+                    video_data.width(),
+                    video_data.height(),
                     video_data.four_cc()
                 );
             }

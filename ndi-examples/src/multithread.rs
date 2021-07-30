@@ -13,7 +13,7 @@ fn main() {
     let mut recv = ndi::RecvBuilder::new().build().unwrap();
     println!(
         "Connecting to the first source: {}",
-        sources[0].get_name().unwrap_or("[invalid-name]".into())
+        sources[0].get_name()
     );
     recv.connect(&sources[0]);
 
@@ -57,8 +57,8 @@ fn main() {
         if let Ok(video_data) = video_rx.recv().map_err(|e| e.to_string()) {
             println!(
                 "Received video on main thread: {}x{}",
-                video_data.xres(),
-                video_data.yres()
+                video_data.width(),
+                video_data.height()
             );
         }
 

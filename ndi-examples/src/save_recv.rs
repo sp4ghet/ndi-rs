@@ -25,13 +25,13 @@ fn main() {
 
     let frame_vec = unsafe {
         assert!(!frame.p_data().is_null());
-        let size = frame.yres() * frame.line_stride_in_bytes().unwrap();
+        let size = frame.width() * frame.line_stride_in_bytes().unwrap();
         std::slice::from_raw_parts(frame.p_data(), size as _)
     };
     let frame_vec = Vec::from_iter(frame_vec.to_owned());
     let buf = image::ImageBuffer::<image::Rgba<u8>, Vec<_>>::from_vec(
-        frame.xres(),
-        frame.yres(),
+        frame.width(),
+        frame.height(),
         frame_vec,
     )
     .ok_or("Failed to create image")
