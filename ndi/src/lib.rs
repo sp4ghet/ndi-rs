@@ -401,8 +401,8 @@ unsafe impl core::marker::Sync for VideoData {}
 impl Debug for VideoData {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("VideoData")
-            .field("xres", &self.xres())
-            .field("yres", &self.yres())
+            .field("width", &self.width())
+            .field("height", &self.height())
             .field("line_stride_in_bytes", &self.line_stride_in_bytes())
             .field("data_size", &self.data_size_in_bytes())
             .field("fourcc", &self.four_cc())
@@ -462,12 +462,12 @@ impl VideoData {
     /// Note that, because data is internally all considered
     /// in 4:2:2 formats, image width values
     /// should be divisible by two.
-    pub fn xres(&self) -> u32 {
+    pub fn width(&self) -> u32 {
         self.p_instance.xres as _
     }
 
     /// The height of the frame expressed in pixels.
-    pub fn yres(&self) -> u32 {
+    pub fn height(&self) -> u32 {
         self.p_instance.yres as _
     }
 
@@ -503,6 +503,11 @@ impl VideoData {
     /// ```
     pub fn frame_rate_d(&self) -> u32 {
         self.p_instance.frame_rate_D as _
+    }
+
+    /// The framerate of the current frame.
+    pub fn frame_rate(&self) -> f32 {
+        self.p_instance.frame_rate_N as f32 / self.p_instance.frame_rate_D as f32
     }
 
     /// The SDK defines picture aspect ratio (as opposed to pixel aspect ratios).
