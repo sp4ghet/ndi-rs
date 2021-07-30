@@ -102,7 +102,7 @@ impl SendBuilder {
 
 /// A sender struct for sending NDI
 pub struct Send {
-    p_instance: Arc<NDIlib_send_instance_t>,
+    p_instance: Arc<OnDrop<NDIlib_send_instance_t>>,
 }
 
 impl Send {
@@ -117,7 +117,9 @@ impl Send {
         }
 
         Ok(Self {
-            p_instance: Arc::new(p_instance),
+            p_instance: Arc::new(OnDrop::new(p_instance, |s| unsafe {
+                NDIlib_send_destroy(s)
+            })),
         })
     }
 
@@ -129,7 +131,9 @@ impl Send {
         }
 
         Ok(Self {
-            p_instance: Arc::new(p_instance),
+            p_instance: Arc::new(OnDrop::new(p_instance, |s| unsafe {
+                NDIlib_send_destroy(s)
+            })),
         })
     }
 
@@ -140,7 +144,7 @@ impl Send {
         unsafe {
             let p_tally = *tally;
             let is_updated =
-                NDIlib_send_get_tally(*self.p_instance, &mut p_tally.into(), timeout_ms);
+                NDIlib_send_get_tally(**self.p_instance, &mut p_tally.into(), timeout_ms);
             is_updated
         }
     }
@@ -153,10 +157,10 @@ impl Send {
             } else {
                 MaybeUninit::uninit()
             };
-            let frametype = NDIlib_send_capture(*self.p_instance, p_meta.as_mut_ptr(), timeout_ms);
+            let frametype = NDIlib_send_capture(**self.p_instance, p_meta.as_mut_ptr(), timeout_ms);
 
             *meta_data = Some(MetaData::from_binding_send(
-                self.p_instance.clone(),
+                Arc::clone(&self.p_instance),
                 p_meta.assume_init(),
             ));
 
@@ -168,28 +172,29 @@ impl Send {
 
     /// Retrieve the source information for the given sender instance.
     pub fn get_source(&self) -> Source {
-        let instance = unsafe { *NDIlib_send_get_source_name(*self.p_instance) };
-        Source::from_binding(instance)
+        let instance = unsafe { *NDIlib_send_get_source_name(**self.p_instance) };
+        let parent = SourceParent::Send(Arc::clone(&self.p_instance));
+        Source::from_binding(parent, instance)
     }
 
     /// This will add a metadata frame
     pub fn send_metadata(&self, metadata: &MetaData) {
         unsafe {
-            NDIlib_send_send_metadata(*self.p_instance, &metadata.p_instance);
+            NDIlib_send_send_metadata(**self.p_instance, &metadata.p_instance);
         }
     }
 
     /// This will add an audio frame
     pub fn send_audio(&self, audio_data: &AudioData) {
         unsafe {
-            NDIlib_send_send_audio_v3(*self.p_instance, &audio_data.p_instance);
+            NDIlib_send_send_audio_v3(**self.p_instance, &audio_data.p_instance);
         }
     }
 
     /// This will add a video frame
     pub fn send_video(&self, video_data: &VideoData) {
         unsafe {
-            NDIlib_send_send_video_v2(*self.p_instance, &video_data.p_instance);
+            NDIlib_send_send_video_v2(**self.p_instance, &video_data.p_instance);
         }
     }
 
@@ -210,7 +215,7 @@ impl Send {
     /// - Dropping a [`Send`] instance
     pub fn send_video_async(&self, video_data: &VideoData) {
         unsafe {
-            NDIlib_send_send_video_async_v2(*self.p_instance, &video_data.p_instance);
+            NDIlib_send_send_video_async_v2(**self.p_instance, &video_data.p_instance);
         }
     }
 
@@ -220,7 +225,7 @@ impl Send {
     /// which can significantly improve the efficiency if you want to make a lot of sources available on the network.
     /// If you specify a timeout that is not 0 then it will wait until there are connections for this amount of time.
     pub fn get_no_connections(&self, timeout_ms: u32) -> u32 {
-        unsafe { NDIlib_send_get_no_connections(*self.p_instance, timeout_ms) as _ }
+        unsafe { NDIlib_send_get_no_connections(**self.p_instance, timeout_ms) as _ }
     }
 
     // Free the buffers returned by capture for metadata
@@ -229,12 +234,4 @@ impl Send {
     //         NDIlib_send_free_metadata(*self.p_instance, &metadata.p_instance);
     //     }
     // }
-}
-
-impl Drop for Send {
-    fn drop(&mut self) {
-        unsafe {
-            NDIlib_send_destroy(*self.p_instance);
-        }
-    }
 }

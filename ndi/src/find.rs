@@ -1,3 +1,5 @@
+use crate::internal::OnDrop;
+
 use super::*;
 use std::{ffi::CString, thread::yield_now, time::Instant};
 
@@ -84,7 +86,7 @@ impl FindBuilder {
 /// a few seconds to locate all of the sources available, since this requires other running machines to send response
 /// messages.)
 pub struct Find {
-    p_instance: NDIlib_find_instance_t,
+    p_instance: Arc<OnDrop<NDIlib_find_instance_t>>,
 }
 
 unsafe impl core::marker::Send for Find {}
@@ -98,6 +100,9 @@ impl Find {
             return Err(FindCreateError);
         };
 
+        let p_instance = Arc::new(OnDrop::new(p_instance, |s| unsafe {
+            NDIlib_find_destroy(s)
+        }));
         Ok(Self { p_instance })
     }
 
@@ -107,6 +112,9 @@ impl Find {
             return Err(FindCreateError);
         };
 
+        let p_instance = Arc::new(OnDrop::new(p_instance, |s| unsafe {
+            NDIlib_find_destroy(s)
+        }));
         Ok(Self { p_instance })
     }
 
@@ -121,7 +129,7 @@ impl Find {
             }
 
             let p_sources =
-                unsafe { NDIlib_find_get_current_sources(self.p_instance, &mut no_sources) };
+                unsafe { NDIlib_find_get_current_sources(**self.p_instance, &mut no_sources) };
 
             if no_sources != 0 {
                 break p_sources;
@@ -132,15 +140,12 @@ impl Find {
 
         let mut sources: Vec<Source> = vec![];
         for k in 0..no_sources {
-            sources.push(Source::from_binding(unsafe { *p_sources.offset(k as _) }));
+            let parent = SourceParent::Find(Arc::clone(&self.p_instance));
+            sources.push(Source::from_binding(parent, unsafe {
+                *p_sources.offset(k as _)
+            }));
         }
 
         Ok(sources)
-    }
-}
-
-impl Drop for Find {
-    fn drop(&mut self) {
-        unsafe { NDIlib_find_destroy(self.p_instance) };
     }
 }
