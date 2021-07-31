@@ -11,10 +11,7 @@ fn main() {
     let sources = find.current_sources(1000).unwrap();
 
     let mut recv = ndi::RecvBuilder::new().build().unwrap();
-    println!(
-        "Connecting to the first source: {}",
-        sources[0].get_name()
-    );
+    println!("Connecting to the first source: {}", sources[0].get_name());
     recv.connect(&sources[0]);
 
     let recv_arc = Arc::new(recv);

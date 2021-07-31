@@ -14,11 +14,7 @@ fn main() {
 
     println!("Select device:");
     for (i, source) in sources.iter().enumerate() {
-        println!(
-            "  {}: {}",
-            i,
-            source.get_name()
-        );
+        println!("  {}: {}", i, source.get_name());
     }
 
     let stdin = io::stdin();
