@@ -6,7 +6,7 @@
 //! http://ndi.tv/
 //!
 
-use internal::bindings::*;
+use internal::{bindings::*, OnDrop};
 use std::{
     convert::TryFrom,
     ffi::{CStr, CString},
@@ -285,10 +285,18 @@ impl TryFrom<NDIlib_FourCC_audio_type_e> for FourCCAudioType {
     }
 }
 
+#[derive(Clone)]
+enum SourceParent {
+    Find(Arc<OnDrop<NDIlib_find_instance_t>>),
+    Send(Arc<OnDrop<NDIlib_send_instance_t>>),
+    None,
+}
+
 /// A descriptor of a NDI source available on the network.
 #[derive(Clone)]
 pub struct Source {
     p_instance: NDIlib_source_t,
+    parent: SourceParent,
 }
 
 impl Debug for Source {
@@ -300,8 +308,11 @@ impl Debug for Source {
 }
 
 impl Source {
-    fn from_binding(source: NDIlib_source_t) -> Self {
-        Self { p_instance: source }
+    fn from_binding(parent: SourceParent, source: NDIlib_source_t) -> Self {
+        Self {
+            parent,
+            p_instance: source,
+        }
     }
 
     fn new() -> Self {
@@ -312,7 +323,10 @@ impl Source {
                 p_ip_address: null(),
             },
         };
-        Self { p_instance }
+        Self {
+            parent: SourceParent::None,
+            p_instance,
+        }
     }
 
     /// A UTF8 string that provides a user readable name for this source.
@@ -322,18 +336,18 @@ impl Source {
     ///     MACHINE_NAME (NDI_SOURCE_NAME)
     /// If the parameter was passed either as NULL, or an EMPTY string then
     /// the specific IP address and port number from below is used.
-    pub fn get_name(&self) -> Result<String, std::str::Utf8Error> {
+    pub fn get_name(&self) -> String {
         let name_char_ptr: *mut std::os::raw::c_char = self.p_instance.p_ndi_name as _;
         if name_char_ptr.is_null() {
-            return Ok(String::new());
+            return String::new();
         }
         let name = unsafe {
             CStr::from_ptr(name_char_ptr)
                 .to_owned()
-                .to_str()?
+                .to_string_lossy()
                 .to_string()
         };
-        Ok(name)
+        name
     }
 }
 
@@ -385,7 +399,7 @@ impl Into<NDIlib_tally_t> for Tally {
 }
 
 enum VideoParent {
-    Recv(Arc<NDIlib_recv_instance_t>),
+    Recv(Arc<OnDrop<NDIlib_recv_instance_t>>),
     Owned,
 }
 
@@ -401,8 +415,8 @@ unsafe impl core::marker::Sync for VideoData {}
 impl Debug for VideoData {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("VideoData")
-            .field("xres", &self.xres())
-            .field("yres", &self.yres())
+            .field("width", &self.width())
+            .field("height", &self.height())
             .field("line_stride_in_bytes", &self.line_stride_in_bytes())
             .field("data_size", &self.data_size_in_bytes())
             .field("fourcc", &self.four_cc())
@@ -425,7 +439,7 @@ impl Debug for VideoData {
 
 impl VideoData {
     fn from_binding_recv(
-        recv: Arc<NDIlib_recv_instance_t>,
+        recv: Arc<OnDrop<NDIlib_recv_instance_t>>,
         p_instance: NDIlib_video_frame_v2_t,
     ) -> Self {
         Self {
@@ -462,12 +476,12 @@ impl VideoData {
     /// Note that, because data is internally all considered
     /// in 4:2:2 formats, image width values
     /// should be divisible by two.
-    pub fn xres(&self) -> u32 {
+    pub fn width(&self) -> u32 {
         self.p_instance.xres as _
     }
 
     /// The height of the frame expressed in pixels.
-    pub fn yres(&self) -> u32 {
+    pub fn height(&self) -> u32 {
         self.p_instance.yres as _
     }
 
@@ -503,6 +517,11 @@ impl VideoData {
     /// ```
     pub fn frame_rate_d(&self) -> u32 {
         self.p_instance.frame_rate_D as _
+    }
+
+    /// The framerate of the current frame.
+    pub fn frame_rate(&self) -> f32 {
+        self.p_instance.frame_rate_N as f32 / self.p_instance.frame_rate_D as f32
     }
 
     /// The SDK defines picture aspect ratio (as opposed to pixel aspect ratios).
@@ -588,7 +607,7 @@ impl Drop for VideoData {
     fn drop(&mut self) {
         match &self.parent {
             VideoParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_video_v2(**recv, &mut self.p_instance);
+                NDIlib_recv_free_video_v2(***recv, &mut self.p_instance);
             },
             VideoParent::Owned => {}
         }
@@ -596,7 +615,7 @@ impl Drop for VideoData {
 }
 
 enum AudioParent {
-    Recv(Arc<NDIlib_recv_instance_t>),
+    Recv(Arc<OnDrop<NDIlib_recv_instance_t>>),
     Owned,
 }
 
@@ -625,7 +644,7 @@ impl Debug for AudioData {
 
 impl AudioData {
     fn from_binding_recv(
-        recv: Arc<NDIlib_recv_instance_t>,
+        recv: Arc<OnDrop<NDIlib_recv_instance_t>>,
         p_instance: NDIlib_audio_frame_v3_t,
     ) -> Self {
         Self {
@@ -744,7 +763,7 @@ impl Drop for AudioData {
     fn drop(&mut self) {
         match &self.parent {
             AudioParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_audio_v3(**recv, &self.p_instance);
+                NDIlib_recv_free_audio_v3(***recv, &self.p_instance);
             },
             AudioParent::Owned => {}
         }
@@ -752,8 +771,8 @@ impl Drop for AudioData {
 }
 
 enum MetaDataParent {
-    Recv(Arc<NDIlib_recv_instance_t>),
-    Send(Arc<NDIlib_send_instance_t>),
+    Recv(Arc<OnDrop<NDIlib_recv_instance_t>>),
+    Send(Arc<OnDrop<NDIlib_send_instance_t>>),
     Owned,
 }
 
@@ -778,7 +797,7 @@ impl Debug for MetaData {
 
 impl MetaData {
     fn from_binding_recv(
-        recv: Arc<NDIlib_recv_instance_t>,
+        recv: Arc<OnDrop<NDIlib_recv_instance_t>>,
         p_instance: NDIlib_metadata_frame_t,
     ) -> Self {
         Self {
@@ -788,7 +807,7 @@ impl MetaData {
     }
 
     fn from_binding_send(
-        send: Arc<NDIlib_send_instance_t>,
+        send: Arc<OnDrop<NDIlib_send_instance_t>>,
         p_instance: NDIlib_metadata_frame_t,
     ) -> Self {
         Self {
@@ -836,10 +855,10 @@ impl Drop for MetaData {
     fn drop(&mut self) {
         match &self.parent {
             MetaDataParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_metadata(**recv, &mut self.p_instance);
+                NDIlib_recv_free_metadata(***recv, &mut self.p_instance);
             },
             MetaDataParent::Send(send) => unsafe {
-                NDIlib_send_free_metadata(**send, &mut self.p_instance);
+                NDIlib_send_free_metadata(***send, &mut self.p_instance);
             },
             MetaDataParent::Owned => {}
         }

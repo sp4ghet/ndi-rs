@@ -11,10 +11,7 @@ fn main() {
     let sources = find.current_sources(1000).unwrap();
 
     let mut recv = ndi::RecvBuilder::new().build().unwrap();
-    println!(
-        "Connecting to the first source: {}",
-        sources[0].get_name().unwrap_or("[invalid-name]".into())
-    );
+    println!("Connecting to the first source: {}", sources[0].get_name());
     recv.connect(&sources[0]);
 
     let recv_arc = Arc::new(recv);
@@ -57,8 +54,8 @@ fn main() {
         if let Ok(video_data) = video_rx.recv().map_err(|e| e.to_string()) {
             println!(
                 "Received video on main thread: {}x{}",
-                video_data.xres(),
-                video_data.yres()
+                video_data.width(),
+                video_data.height()
             );
         }
 
