@@ -406,7 +406,7 @@ enum VideoParent {
 /// Describes a video frame
 pub struct VideoData {
     p_instance: NDIlib_video_frame_v2_t,
-    parent: VideoParent,
+    _parent: VideoParent,
 }
 
 unsafe impl core::marker::Send for VideoData {}
@@ -444,7 +444,7 @@ impl VideoData {
     ) -> Self {
         Self {
             p_instance,
-            parent: VideoParent::Recv(recv),
+            _parent: VideoParent::Recv(recv),
         }
     }
 
@@ -467,7 +467,7 @@ impl VideoData {
                 p_metadata: null(),
                 timestamp: 0,
             },
-            parent: VideoParent::Owned,
+            _parent: VideoParent::Owned,
         }
     }
 
@@ -603,17 +603,6 @@ impl VideoData {
     }
 }
 
-impl Drop for VideoData {
-    fn drop(&mut self) {
-        match &self.parent {
-            VideoParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_video_v2(***recv, &mut self.p_instance);
-            },
-            VideoParent::Owned => {}
-        }
-    }
-}
-
 enum AudioParent {
     Recv(Arc<OnDrop<NDIlib_recv_instance_t>>),
     Owned,
@@ -622,7 +611,7 @@ enum AudioParent {
 /// An audio frame
 pub struct AudioData {
     p_instance: NDIlib_audio_frame_v3_t,
-    parent: AudioParent,
+    _parent: AudioParent,
 }
 
 unsafe impl core::marker::Send for AudioData {}
@@ -649,7 +638,7 @@ impl AudioData {
     ) -> Self {
         Self {
             p_instance,
-            parent: AudioParent::Recv(recv),
+            _parent: AudioParent::Recv(recv),
         }
     }
 
@@ -669,7 +658,7 @@ impl AudioData {
                 p_metadata: "".as_ptr() as _,
                 timestamp: 0,
             },
-            parent: AudioParent::Owned,
+            _parent: AudioParent::Owned,
         }
     }
 
@@ -759,17 +748,6 @@ impl AudioData {
     }
 }
 
-impl Drop for AudioData {
-    fn drop(&mut self) {
-        match &self.parent {
-            AudioParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_audio_v3(***recv, &self.p_instance);
-            },
-            AudioParent::Owned => {}
-        }
-    }
-}
-
 enum MetaDataParent {
     Recv(Arc<OnDrop<NDIlib_recv_instance_t>>),
     Send(Arc<OnDrop<NDIlib_send_instance_t>>),
@@ -779,7 +757,7 @@ enum MetaDataParent {
 /// The data description for metadata
 pub struct MetaData {
     p_instance: NDIlib_metadata_frame_t,
-    parent: MetaDataParent,
+    _parent: MetaDataParent,
 }
 
 unsafe impl core::marker::Send for MetaData {}
@@ -802,7 +780,7 @@ impl MetaData {
     ) -> Self {
         Self {
             p_instance,
-            parent: MetaDataParent::Recv(recv),
+            _parent: MetaDataParent::Recv(recv),
         }
     }
 
@@ -812,7 +790,7 @@ impl MetaData {
     ) -> Self {
         Self {
             p_instance,
-            parent: MetaDataParent::Send(send),
+            _parent: MetaDataParent::Send(send),
         }
     }
 
@@ -826,7 +804,7 @@ impl MetaData {
         };
         Self {
             p_instance,
-            parent: MetaDataParent::Owned,
+            _parent: MetaDataParent::Owned,
         }
     }
 
@@ -848,20 +826,6 @@ impl MetaData {
         let char_ptr = self.p_instance.p_data;
         let data = unsafe { CStr::from_ptr(char_ptr).to_string_lossy().to_string() };
         data
-    }
-}
-
-impl Drop for MetaData {
-    fn drop(&mut self) {
-        match &self.parent {
-            MetaDataParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_metadata(***recv, &mut self.p_instance);
-            },
-            MetaDataParent::Send(send) => unsafe {
-                NDIlib_send_free_metadata(***send, &mut self.p_instance);
-            },
-            MetaDataParent::Owned => {}
-        }
     }
 }
 
