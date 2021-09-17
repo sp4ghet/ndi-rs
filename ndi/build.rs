@@ -8,7 +8,11 @@ fn get_output_path() -> PathBuf {
 
 #[cfg(target_os = "windows")]
 fn win_link_and_load() {
+    #[cfg(target_arch = "x86_64")]
     println!("cargo:rustc-link-lib=Processing.NDI.Lib.x64");
+    #[cfg(target_arch = "i686")]
+    println!("cargo:rustc-link-lib=Processing.NDI.Lib.x86");
+
     let mut lib_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     lib_path.push("thirdparty\\Windows\\Lib");
     println!(
@@ -18,8 +22,13 @@ fn win_link_and_load() {
 
     // copy dll to OUT_DIR
     let out_path = get_output_path();
-    let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
-        .join("thirdparty\\Windows\\Bin\\Processing.NDI.Lib.x64.dll");
+
+    #[cfg(target_arch = "x86_64")]
+    let dll_path = "thirdparty\\Windows\\Bin\\Processing.NDI.Lib.x64.dll";
+    #[cfg(target_arch = "i686")]
+    let dll_path = "thirdparty\\Windows\\Bin\\Processing.NDI.Lib.x86.dll";
+
+    let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join(dll_path);
     let dst = Path::join(&out_path, "Processing.NDI.Lib.x64.dll");
     std::fs::copy(src, dst).unwrap();
 }
