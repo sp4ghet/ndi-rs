@@ -24,12 +24,14 @@ fn win_link_and_load() {
     let out_path = get_output_path();
 
     #[cfg(target_arch = "x86_64")]
-    let dll_path = "thirdparty\\Windows\\Bin\\Processing.NDI.Lib.x64.dll";
+    let dll_name = "Processing.NDI.Lib.x64.dll";
     #[cfg(target_arch = "i686")]
-    let dll_path = "thirdparty\\Windows\\Bin\\Processing.NDI.Lib.x86.dll";
+    let dll_name = "Processing.NDI.Lib.x86.dll";
+
+    let dll_path = format!("thirdparty\\Windows\\Bin\\{}", dll_name);
 
     let src = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join(dll_path);
-    let dst = Path::join(&out_path, "Processing.NDI.Lib.x64.dll");
+    let dst = Path::join(&out_path, dll_name);
     std::fs::copy(src, dst).unwrap();
 }
 
