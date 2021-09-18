@@ -6,12 +6,14 @@ fn get_output_path() -> PathBuf {
     Path::new(&env::var("OUT_DIR").unwrap()).join("../../../deps")
 }
 
-#[cfg(target_os = "windows")]
 fn win_link_and_load() {
-    #[cfg(target_arch = "x86_64")]
-    println!("cargo:rustc-link-lib=Processing.NDI.Lib.x64");
-    #[cfg(target_arch = "i686")]
-    println!("cargo:rustc-link-lib=Processing.NDI.Lib.x86");
+    let arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
+
+    if arch == "x86_64" {
+        println!("cargo:rustc-link-lib=Processing.NDI.Lib.x64");
+    } else {
+        println!("cargo:rustc-link-lib=Processing.NDI.Lib.x86");
+    }
 
     let mut lib_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     lib_path.push("thirdparty\\Windows\\Lib");
@@ -23,10 +25,11 @@ fn win_link_and_load() {
     // copy dll to OUT_DIR
     let out_path = get_output_path();
 
-    #[cfg(target_arch = "x86_64")]
-    let dll_name = "Processing.NDI.Lib.x64.dll";
-    #[cfg(target_arch = "i686")]
-    let dll_name = "Processing.NDI.Lib.x86.dll";
+    let dll_name = if arch == "x86_64" {
+        "Processing.NDI.Lib.x64.dll"
+    } else {
+        "Processing.NDI.Lib.x86.dll"
+    };
 
     let dll_path = format!("thirdparty\\Windows\\Bin\\{}", dll_name);
 
@@ -35,7 +38,6 @@ fn win_link_and_load() {
     std::fs::copy(src, dst).unwrap();
 }
 
-#[cfg(target_os = "linux")]
 fn lin_link_and_load() {
     println!("cargo:rustc-link-lib=ndi",);
     let mut lib_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -54,9 +56,10 @@ fn lin_link_and_load() {
 }
 
 fn main() {
-    #[cfg(target_os = "windows")]
-    win_link_and_load();
-
-    #[cfg(target_os = "linux")]
-    lin_link_and_load();
+    let os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+    match os.as_str() {
+        "windows" => win_link_and_load(),
+        "linux" => lin_link_and_load(),
+        _ => panic!("Unsupported OS for NDI"),
+    };
 }
