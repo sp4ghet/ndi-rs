@@ -471,6 +471,29 @@ impl VideoData {
         }
     }
 
+    /// creata VideoData from a raw memory buffer, with custom settings
+    pub fn from_buffer(width: i32, height: i32, fourcc: FourCCVideoType, framerate : i32, frame_format: FrameFormatType, timecode: i64, stride:i32, buffer: &mut [u8] ) -> Self {
+        Self {
+            p_instance: NDIlib_video_frame_v2_t {
+                xres: width,
+                yres: height,
+                FourCC: fourcc as _,
+                frame_rate_N: framerate,
+                frame_rate_D: 0,
+                picture_aspect_ratio: width as f32 / height as f32,
+                frame_format_type: frame_format as _,
+                timecode: timecode,
+                p_data: buffer.as_mut_ptr(),
+                __bindgen_anon_1: NDIlib_video_frame_v2_t__bindgen_ty_1 {
+                    line_stride_in_bytes: stride,
+                },
+                p_metadata: null(),
+                timestamp: 0,
+            },
+            parent: VideoParent::Owned,
+        } 
+    }
+
     /// The width of the frame expressed in pixels.
     ///
     /// Note that, because data is internally all considered
