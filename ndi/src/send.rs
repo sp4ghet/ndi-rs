@@ -77,15 +77,18 @@ impl SendBuilder {
             clock_video: true,
             clock_audio: true,
         };
+        
+        let cstr_ndi_name: CString;
+        let cstr_ndi_group: CString;
 
         if let Some(ndi_name) = self.ndi_name {
-            let cstr = CString::new(ndi_name).unwrap();
-            settings.p_ndi_name = cstr.as_ptr();
+            cstr_ndi_name = CString::new(ndi_name).unwrap();
+            settings.p_ndi_name = cstr_ndi_name.as_ptr();
         }
 
         if let Some(groups) = self.groups {
-            let cstr = CString::new(groups).unwrap();
-            settings.p_groups = cstr.as_ptr();
+            cstr_ndi_group = CString::new(groups).unwrap();
+            settings.p_groups = cstr_ndi_group.as_ptr();
         }
 
         if let Some(clock_video) = self.clock_video {
