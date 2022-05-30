@@ -18,6 +18,10 @@ path = "src/data_lifetime.rs"
 name = "save_recv"
 path = "src/save_recv.rs"
 
+[[bin]]
+name = "send"
+path = "src/send.rs"
+
 [dependencies]
-ndi = {path = "../ndi"}
+ndi = { path = "../ndi" }
 image = "0.23"
