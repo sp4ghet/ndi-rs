@@ -480,7 +480,6 @@ impl VideoData {
         framerate_denominator: i32,
         frame_format: FrameFormatType,
         timecode: i64,
-        timestamp: i64,
         stride: i32,
         metadata: Option<&CStr>,
         buffer: &mut [u8],
@@ -506,7 +505,7 @@ impl VideoData {
                 } else {
                     null()
                 },
-                timestamp,
+                timestamp: NDIlib_recv_timestamp_undefined,
             },
             parent: VideoParent::Owned,
         }
