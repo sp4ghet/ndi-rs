@@ -351,7 +351,7 @@ dependencies = [
 
 [[package]]
 name = "ndi"
-version = "0.1.1"
+version = "0.1.2"
 
 [[package]]
 name = "ndi-examples"

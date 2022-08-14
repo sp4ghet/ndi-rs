@@ -25,7 +25,7 @@ fn main() {
 
     let frame_vec = unsafe {
         assert!(!frame.p_data().is_null());
-        let size = frame.width() * frame.line_stride_in_bytes().unwrap();
+        let size = frame.height() * frame.line_stride_in_bytes().unwrap();
         std::slice::from_raw_parts(frame.p_data(), size as _)
     };
     let frame_vec = Vec::from_iter(frame_vec.to_owned());
@@ -38,6 +38,10 @@ fn main() {
     .unwrap();
 
     buf.save("save_recv.png").unwrap();
+
+    unsafe {
+        ndi::cleanup();
+    }
 
     println!("Done");
 }

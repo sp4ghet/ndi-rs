@@ -26,4 +26,8 @@ fn main() {
     thread::sleep(std::time::Duration::from_millis(1000));
 
     println!("Frame received: {}x{}", frame.width(), frame.height());
+
+    unsafe {
+        ndi::cleanup();
+    }
 }
