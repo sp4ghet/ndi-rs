@@ -1,6 +1,6 @@
 [package]
 name = "ndi"
-version = "0.1.1"
+version = "0.1.2"
 description = "NewTek NDI bindings for rust"
 authors = ["sp4ghet <sp4ghet@gmail.com>"]
 homepage = "https://github.com/sp4ghet/ndi-rs"
