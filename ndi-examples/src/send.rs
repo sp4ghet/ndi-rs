@@ -31,7 +31,6 @@ fn main() {
         1,
         ndi::FrameFormatType::Progressive,
         0,
-        0,
         4 * 1920,
         None,
         buf.as_mut_slice(),
