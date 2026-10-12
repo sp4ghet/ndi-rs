@@ -48,6 +48,10 @@ jobs:
       - run: cargo doc --workspace --no-deps --locked
         env:
           RUSTDOCFLAGS: -D warnings
+      - name: Verify binding generation
+        run: |
+          cargo xtask bindgen
+          cargo test -p ndi --locked
 
   audit:
     runs-on: ubuntu-latest
