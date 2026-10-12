@@ -6,6 +6,9 @@
 
 use std::ops::{Deref, DerefMut};
 
+#[cfg(target_os = "macos")]
+mod bindings_macos;
+
 #[cfg(target_os = "windows")]
 mod bindings_windows;
 
@@ -13,6 +16,9 @@ mod bindings_windows;
 mod bindings_linux;
 
 pub mod bindings {
+    #[cfg(target_os = "macos")]
+    pub use super::bindings_macos::*;
+
     #[cfg(target_os = "windows")]
     pub use super::bindings_windows::*;
 
