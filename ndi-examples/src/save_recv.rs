@@ -39,9 +39,7 @@ fn main() {
 
     buf.save("save_recv.png").unwrap();
 
-    unsafe {
-        ndi::cleanup();
-    }
+    // Runtime cleanup is optional. Let all SDK objects drop before process exit.
 
     println!("Done");
 }

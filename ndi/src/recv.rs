@@ -38,8 +38,6 @@ impl Display for RecvPerformance {
 /// exists when the source has an alpha channel, and another when it does not.
 /// See [`FourCCVideoType`] for details on individual FourCC types.
 ///
-
-///
 #[derive(Debug, Clone, Copy)]
 #[allow(non_camel_case_types)]
 pub enum RecvColorFormat {
@@ -94,6 +92,12 @@ pub struct RecvBuilder {
     bandwidth: Option<RecvBandwidth>,
     allow_video_fields: Option<bool>,
     ndi_recv_name: Option<String>,
+}
+
+impl Default for RecvBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl RecvBuilder {
@@ -188,6 +192,12 @@ pub struct RecvQueueSize {
     pub audio_frames: u32,
     /// Number of metadata frames in queue
     pub metadata_frames: u32,
+}
+
+impl Default for RecvQueueSize {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl RecvQueueSize {
@@ -287,23 +297,11 @@ impl Recv {
         meta_data: &mut Option<MetaData>,
         timeout_ms: u32,
     ) -> FrameType {
-        let mut video = if let Some(x) = video_data {
-            mem::MaybeUninit::new(x.p_instance)
-        } else {
-            mem::MaybeUninit::zeroed()
-        };
+        let mut video = mem::MaybeUninit::uninit();
 
-        let mut audio = if let Some(x) = audio_data {
-            mem::MaybeUninit::new(x.p_instance)
-        } else {
-            mem::MaybeUninit::zeroed()
-        };
+        let mut audio = mem::MaybeUninit::uninit();
 
-        let mut metadata = if let Some(x) = meta_data {
-            mem::MaybeUninit::new(x.p_instance)
-        } else {
-            mem::MaybeUninit::zeroed()
-        };
+        let mut metadata = mem::MaybeUninit::uninit();
 
         let response = unsafe {
             NDIlib_recv_capture_v3(
@@ -315,21 +313,21 @@ impl Recv {
             )
         };
 
-        if !video.as_ptr().is_null() {
+        if response == NDIlib_frame_type_e_NDIlib_frame_type_video {
             *video_data = Some(VideoData::from_binding_recv(
                 self.p_instance.clone(),
                 unsafe { video.assume_init() },
             ));
         }
 
-        if !audio.as_ptr().is_null() {
+        if response == NDIlib_frame_type_e_NDIlib_frame_type_audio {
             *audio_data = Some(AudioData::from_binding_recv(
                 self.p_instance.clone(),
                 unsafe { audio.assume_init() },
             ));
         }
 
-        if !metadata.as_ptr().is_null() {
+        if response == NDIlib_frame_type_e_NDIlib_frame_type_metadata {
             *meta_data = Some(MetaData::from_binding_recv(
                 self.p_instance.clone(),
                 unsafe { metadata.assume_init() },
@@ -342,11 +340,7 @@ impl Recv {
     /// Receive video frame
     pub fn capture_video(&self, video_data: &mut Option<VideoData>, timeout_ms: u32) -> FrameType {
         unsafe {
-            let mut video = if let Some(x) = video_data {
-                mem::MaybeUninit::new(x.p_instance)
-            } else {
-                mem::MaybeUninit::zeroed()
-            };
+            let mut video = mem::MaybeUninit::uninit();
 
             let response = NDIlib_recv_capture_v3(
                 **self.p_instance,
@@ -356,7 +350,7 @@ impl Recv {
                 timeout_ms,
             );
 
-            if !video.as_ptr().is_null() {
+            if response == NDIlib_frame_type_e_NDIlib_frame_type_video {
                 *video_data = Some(VideoData::from_binding_recv(
                     self.p_instance.clone(),
                     video.assume_init(),
@@ -370,11 +364,7 @@ impl Recv {
     /// Receive audio frame
     pub fn capture_audio(&self, audio_data: &mut Option<AudioData>, timeout_ms: u32) -> FrameType {
         unsafe {
-            let mut audio = if let Some(x) = audio_data {
-                mem::MaybeUninit::new(x.p_instance)
-            } else {
-                mem::MaybeUninit::zeroed()
-            };
+            let mut audio = mem::MaybeUninit::uninit();
             let response = NDIlib_recv_capture_v3(
                 **self.p_instance,
                 null_mut(),
@@ -383,7 +373,7 @@ impl Recv {
                 timeout_ms,
             );
 
-            if !audio.as_ptr().is_null() {
+            if response == NDIlib_frame_type_e_NDIlib_frame_type_audio {
                 *audio_data = Some(AudioData::from_binding_recv(
                     self.p_instance.clone(),
                     audio.assume_init(),
@@ -396,11 +386,7 @@ impl Recv {
     /// Receive metadata frame
     pub fn capture_metadata(&self, meta_data: &mut Option<MetaData>, timeout_ms: u32) -> FrameType {
         unsafe {
-            let mut metadata = if let Some(x) = meta_data {
-                mem::MaybeUninit::new(x.p_instance)
-            } else {
-                mem::MaybeUninit::zeroed()
-            };
+            let mut metadata = mem::MaybeUninit::uninit();
             let response = NDIlib_recv_capture_v3(
                 **self.p_instance,
                 null_mut(),
@@ -409,7 +395,7 @@ impl Recv {
                 timeout_ms,
             );
 
-            if !metadata.as_ptr().is_null() {
+            if response == NDIlib_frame_type_e_NDIlib_frame_type_metadata {
                 *meta_data = Some(MetaData::from_binding_recv(
                     Arc::clone(&self.p_instance),
                     metadata.assume_init(),
@@ -444,9 +430,8 @@ impl Recv {
         let mut p_total: mem::MaybeUninit<NDIlib_recv_queue_t> = mem::MaybeUninit::uninit();
         unsafe {
             NDIlib_recv_get_queue(**self.p_instance, p_total.as_mut_ptr());
-            let queue = RecvQueueSize::from_binding(p_total.assume_init());
 
-            queue
+            RecvQueueSize::from_binding(p_total.assume_init())
         }
     }
 

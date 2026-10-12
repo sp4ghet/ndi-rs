@@ -1,6 +1,9 @@
 [package]
 name = "ndi-examples"
 version = "0.0.0"
+edition.workspace = true
+rust-version.workspace = true
+publish = false
 
 [[bin]]
 name = "recv"
@@ -24,4 +27,4 @@ path = "src/send.rs"
 
 [dependencies]
 ndi = { path = "../ndi" }
-image = "0.23"
+image = { version = "0.25.10", default-features = false, features = ["png"] }

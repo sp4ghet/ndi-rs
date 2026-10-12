@@ -8,7 +8,7 @@ fn main() {
     println!("Looking for sources");
     let sources = find.current_sources(1000).unwrap();
 
-    if sources.len() == 0 {
+    if sources.is_empty() {
         panic!("No sources found");
     }
 
@@ -81,7 +81,5 @@ fn main() {
 
     println!("Done");
 
-    unsafe {
-        ndi::cleanup();
-    }
+    // Runtime cleanup is optional. Let all SDK objects drop before process exit.
 }

@@ -11,6 +11,12 @@ pub struct FindBuilder {
     extra_ips: Option<String>,
 }
 
+impl Default for FindBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FindBuilder {
     /// Create new builder
     pub fn new() -> Self {

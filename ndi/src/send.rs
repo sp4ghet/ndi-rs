@@ -10,6 +10,12 @@ pub struct SendBuilder {
     clock_audio: Option<bool>,
 }
 
+impl Default for SendBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SendBuilder {
     /// Create new builder instance
     pub fn new() -> Self {
@@ -77,7 +83,7 @@ impl SendBuilder {
             clock_video: true,
             clock_audio: true,
         };
-        
+
         let cstr_ndi_name: CString;
         let cstr_ndi_group: CString;
 
@@ -108,6 +114,9 @@ pub struct Send {
     p_instance: Arc<OnDrop<NDIlib_send_instance_t>>,
 }
 
+// SAFETY: an NDI sender has no thread affinity and its handle stays alive
+// through the Arc. Moving ownership does not permit concurrent access: Send
+// deliberately does not implement Sync.
 unsafe impl std::marker::Send for Send {}
 
 impl Send {
@@ -148,26 +157,23 @@ impl Send {
     pub fn get_tally(&self, tally: &mut Tally, timeout_ms: u32) -> bool {
         unsafe {
             let p_tally = *tally;
-            let is_updated =
-                NDIlib_send_get_tally(**self.p_instance, &mut p_tally.into(), timeout_ms);
-            is_updated
+
+            NDIlib_send_get_tally(**self.p_instance, &mut p_tally.into(), timeout_ms)
         }
     }
 
     /// This allows you to receive metadata from the other end of the connection
     pub fn capture(&self, meta_data: &mut Option<MetaData>, timeout_ms: u32) -> FrameType {
         unsafe {
-            let mut p_meta = if let Some(metadata) = meta_data {
-                MaybeUninit::new(metadata.p_instance)
-            } else {
-                MaybeUninit::uninit()
-            };
+            let mut p_meta = MaybeUninit::uninit();
             let frametype = NDIlib_send_capture(**self.p_instance, p_meta.as_mut_ptr(), timeout_ms);
 
-            *meta_data = Some(MetaData::from_binding_send(
-                Arc::clone(&self.p_instance),
-                p_meta.assume_init(),
-            ));
+            if frametype == NDIlib_frame_type_e_NDIlib_frame_type_metadata {
+                *meta_data = Some(MetaData::from_binding_send(
+                    Arc::clone(&self.p_instance),
+                    p_meta.assume_init(),
+                ));
+            }
 
             let res: FrameType = FrameType::try_from(frametype).unwrap();
 

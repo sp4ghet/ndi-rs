@@ -1,6 +1,11 @@
 [workspace]
+resolver = "2"
 members = [
     "ndi",
     "ndi-examples",
     "xtask",
 ]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.88"

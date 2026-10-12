@@ -67,7 +67,5 @@ fn main() {
         }
     }
 
-    unsafe {
-        ndi::cleanup();
-    }
+    // Runtime cleanup is optional. Let all SDK objects drop before process exit.
 }

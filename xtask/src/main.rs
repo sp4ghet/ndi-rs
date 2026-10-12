@@ -3,6 +3,13 @@ use std::env;
 mod flags;
 
 fn run_bindgen() {
+    // Resolve inputs independently of the shell's working directory.
+    env::set_current_dir(
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap(),
+    )
+    .expect("Unable to enter workspace root");
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
     // the resulting bindings.
@@ -19,6 +26,8 @@ fn run_bindgen() {
         // The input header we would like to generate
         // bindings for.
         .header("ndi/wrapper.h")
+        .rust_target("1.88.0".parse().expect("valid Rust target"))
+        .rust_edition(bindgen::RustEdition::Edition2021)
         .clang_args(["-I", headers].iter())
         .clang_arg("-fdeclspec")
         // Finish the builder and generate the bindings.
@@ -52,6 +61,6 @@ fn main() {
             }
             flags::XtaskCmd::Bindgen(_) => run_bindgen(),
         },
-        Err(e) => println!("Error: {}", e.to_string()),
+        Err(e) => e.exit(),
     }
 }

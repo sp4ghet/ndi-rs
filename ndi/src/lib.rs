@@ -1,9 +1,12 @@
 #![warn(missing_docs)]
 #![warn(unsafe_op_in_unsafe_fn)]
+// The public wrappers provide the SDK-specific Send/Sync guarantees. The raw
+// pointers inside their shared destruction guards cannot express those traits.
+#![allow(clippy::arc_with_non_send_sync)]
 //! NewTek NDI®[^tm] Bindings for rust
 //!
 //! [^tm]: NDI® is a registered trademark of NewTek, Inc.
-//! http://ndi.tv/
+//! <https://ndi.video/>
 //!
 
 use internal::{bindings::*, OnDrop};
@@ -286,6 +289,7 @@ impl TryFrom<NDIlib_FourCC_audio_type_e> for FourCCAudioType {
 }
 
 #[derive(Clone)]
+#[allow(dead_code)] // Handles retain the SDK owner until every source is dropped.
 enum SourceParent {
     Find(Arc<OnDrop<NDIlib_find_instance_t>>),
     Send(Arc<OnDrop<NDIlib_send_instance_t>>),
@@ -296,7 +300,7 @@ enum SourceParent {
 #[derive(Clone)]
 pub struct Source {
     p_instance: NDIlib_source_t,
-    parent: SourceParent,
+    _parent: SourceParent,
 }
 
 impl Debug for Source {
@@ -310,7 +314,7 @@ impl Debug for Source {
 impl Source {
     fn from_binding(parent: SourceParent, source: NDIlib_source_t) -> Self {
         Self {
-            parent,
+            _parent: parent,
             p_instance: source,
         }
     }
@@ -324,7 +328,7 @@ impl Source {
             },
         };
         Self {
-            parent: SourceParent::None,
+            _parent: SourceParent::None,
             p_instance,
         }
     }
@@ -389,11 +393,11 @@ impl From<NDIlib_tally_t> for Tally {
     }
 }
 
-impl Into<NDIlib_tally_t> for Tally {
-    fn into(self) -> NDIlib_tally_t {
+impl From<Tally> for NDIlib_tally_t {
+    fn from(val: Tally) -> Self {
         NDIlib_tally_t {
-            on_preview: self.on_preview,
-            on_program: self.on_program,
+            on_preview: val.on_preview,
+            on_program: val.on_program,
         }
     }
 }
@@ -437,6 +441,12 @@ impl Debug for VideoData {
     }
 }
 
+impl Default for VideoData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl VideoData {
     fn from_binding_recv(
         recv: Arc<OnDrop<NDIlib_recv_instance_t>>,
@@ -472,6 +482,7 @@ impl VideoData {
     }
 
     /// Create VideoData from a raw memory buffer, with custom settings
+    #[allow(clippy::too_many_arguments)] // Mirrors the existing NDI frame descriptor API.
     pub fn from_buffer(
         width: i32,
         height: i32,
@@ -541,7 +552,6 @@ impl VideoData {
     /// # let frame_rate_D = 1 as u32;
     /// let frame_rate = (frame_rate_N as f32) / (frame_rate_D as f32);
     /// ```
-
     pub fn frame_rate_n(&self) -> u32 {
         self.p_instance.frame_rate_N as _
     }
@@ -647,7 +657,7 @@ impl Drop for VideoData {
     fn drop(&mut self) {
         match &self.parent {
             VideoParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_video_v2(***recv, &mut self.p_instance);
+                NDIlib_recv_free_video_v2(***recv, &self.p_instance);
             },
             VideoParent::Owned => {}
         }
@@ -682,6 +692,12 @@ impl Debug for AudioData {
     }
 }
 
+impl Default for AudioData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AudioData {
     fn from_binding_recv(
         recv: Arc<OnDrop<NDIlib_recv_instance_t>>,
@@ -693,8 +709,31 @@ impl AudioData {
         }
     }
 
-    /// Create AudioData from a raw memory buffer, with custom settings
-    pub fn from_buffer(
+    /// Describe caller-owned planar floating-point audio without copying it.
+    ///
+    /// This frame does not free `buffer`. Each channel contains `no_samples`
+    /// contiguous `f32` samples; `stride` is the byte offset between channels.
+    /// `timestamp` is meaningful only for received frames.
+    ///
+    /// # Safety
+    ///
+    /// `sample_rate`, `no_channels`, and `no_samples` must be positive. `buffer`
+    /// must be non-null, aligned for `f32`, and point to initialized storage for
+    /// at least `(no_channels - 1) * stride + no_samples * size_of::<f32>()`
+    /// bytes. `stride` must be a multiple of the alignment of `f32` and at least
+    /// `no_samples * size_of::<f32>()`. These calculations must not overflow.
+    /// The storage must remain valid until the frame is dropped and all sends
+    /// have completed. It must not be mutated while another thread or NDI reads
+    /// it. The caller retains ownership of the storage.
+    ///
+    /// ```compile_fail
+    /// let mut samples = [0.0_f32; 2];
+    /// // Raw-buffer construction requires an unsafe block.
+    /// let frame = ndi::AudioData::from_buffer(
+    ///     48_000, 1, 2, 0, 0, 8, samples.as_mut_ptr().cast(),
+    /// );
+    /// ```
+    pub unsafe fn from_buffer(
         sample_rate: i32,
         no_channels: i32,
         no_samples: i32,
@@ -705,17 +744,17 @@ impl AudioData {
     ) -> Self {
         Self {
             p_instance: NDIlib_audio_frame_v3_t {
-                sample_rate: sample_rate,
-                no_channels: no_channels,
-                no_samples: no_samples,
-                timecode: timecode,
-                FourCC: FourCCAudioType::FLTP as i32,
+                sample_rate,
+                no_channels,
+                no_samples,
+                timecode,
+                FourCC: FourCCAudioType::FLTP as _,
                 p_data: buffer,
                 __bindgen_anon_1: NDIlib_audio_frame_v3_t__bindgen_ty_1 {
                     channel_stride_in_bytes: stride,
                 },
-                p_metadata: "".as_ptr() as _,
-                timestamp: timestamp,
+                p_metadata: null(),
+                timestamp,
             },
             parent: AudioParent::Owned,
         }
@@ -734,7 +773,7 @@ impl AudioData {
                 __bindgen_anon_1: NDIlib_audio_frame_v3_t__bindgen_ty_1 {
                     channel_stride_in_bytes: 0,
                 },
-                p_metadata: "".as_ptr() as _,
+                p_metadata: null(),
                 timestamp: 0,
             },
             parent: AudioParent::Owned,
@@ -923,10 +962,10 @@ impl Drop for MetaData {
     fn drop(&mut self) {
         match &self.parent {
             MetaDataParent::Recv(recv) => unsafe {
-                NDIlib_recv_free_metadata(***recv, &mut self.p_instance);
+                NDIlib_recv_free_metadata(***recv, &self.p_instance);
             },
             MetaDataParent::Send(send) => unsafe {
-                NDIlib_send_free_metadata(***send, &mut self.p_instance);
+                NDIlib_send_free_metadata(***send, &self.p_instance);
             },
             MetaDataParent::Owned => {}
         }
@@ -956,6 +995,11 @@ pub fn initialize() -> Result<(), NotSupported> {
 /// you slightly better performance in some cases.In general it is more "correct" to
 /// call this although it is not required.
 /// This will destroy everything associated with the library so use it with due caution.
+///
+/// # Safety
+///
+/// All NDI objects and captured frames must have been dropped, and no other
+/// thread may be using the runtime. Reinitialize before creating new objects.
 pub unsafe fn cleanup() {
     unsafe { NDIlib_destroy() };
 }
@@ -964,4 +1008,19 @@ pub unsafe fn cleanup() {
 #[allow(non_snake_case)]
 pub fn is_supported_CPU() -> bool {
     unsafe { NDIlib_is_supported_CPU() }
+}
+
+#[cfg(test)]
+mod audio_metadata_tests {
+    use super::*;
+
+    #[test]
+    fn audio_metadata_pointers_are_null_when_absent() {
+        assert!(AudioData::new().p_instance.p_metadata.is_null());
+        let mut samples = [0.0_f32; 2];
+        // SAFETY: one channel, two samples, valid storage until frame drop.
+        let frame =
+            unsafe { AudioData::from_buffer(48_000, 1, 2, 0, 0, 8, samples.as_mut_ptr().cast()) };
+        assert!(frame.p_instance.p_metadata.is_null());
+    }
 }

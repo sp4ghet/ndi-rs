@@ -135,7 +135,7 @@ fn bindgen_test_layout___fsid_t() {
         concat!("Alignment of ", stringify!(__fsid_t))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<__fsid_t>())).__val as *const _ as usize },
+        ::std::mem::offset_of!(__fsid_t, __val),
         0usize,
         concat!(
             "Offset of field: ",
@@ -292,10 +292,7 @@ fn bindgen_test_layout_NDIlib_source_t__bindgen_ty_1() {
         concat!("Alignment of ", stringify!(NDIlib_source_t__bindgen_ty_1))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_source_t__bindgen_ty_1>())).p_url_address as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_source_t__bindgen_ty_1, p_url_address),
         0usize,
         concat!(
             "Offset of field: ",
@@ -305,10 +302,7 @@ fn bindgen_test_layout_NDIlib_source_t__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_source_t__bindgen_ty_1>())).p_ip_address as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_source_t__bindgen_ty_1, p_ip_address),
         0usize,
         concat!(
             "Offset of field: ",
@@ -331,7 +325,7 @@ fn bindgen_test_layout_NDIlib_source_t() {
         concat!("Alignment of ", stringify!(NDIlib_source_t))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_source_t>())).p_ndi_name as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_source_t, p_ndi_name),
         0usize,
         concat!(
             "Offset of field: ",
@@ -382,10 +376,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t__bindgen_ty_1>())).line_stride_in_bytes
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t__bindgen_ty_1, line_stride_in_bytes),
         0usize,
         concat!(
             "Offset of field: ",
@@ -395,10 +386,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t__bindgen_ty_1>())).data_size_in_bytes
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t__bindgen_ty_1, data_size_in_bytes),
         0usize,
         concat!(
             "Offset of field: ",
@@ -421,7 +409,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         concat!("Alignment of ", stringify!(NDIlib_video_frame_v2_t))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).xres as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, xres),
         0usize,
         concat!(
             "Offset of field: ",
@@ -431,7 +419,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).yres as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, yres),
         4usize,
         concat!(
             "Offset of field: ",
@@ -441,7 +429,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).FourCC as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, FourCC),
         8usize,
         concat!(
             "Offset of field: ",
@@ -451,9 +439,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).frame_rate_N as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, frame_rate_N),
         12usize,
         concat!(
             "Offset of field: ",
@@ -463,9 +449,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).frame_rate_D as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, frame_rate_D),
         16usize,
         concat!(
             "Offset of field: ",
@@ -475,10 +459,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).picture_aspect_ratio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, picture_aspect_ratio),
         20usize,
         concat!(
             "Offset of field: ",
@@ -488,10 +469,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).frame_format_type as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, frame_format_type),
         24usize,
         concat!(
             "Offset of field: ",
@@ -501,9 +479,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).timecode as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, timecode),
         32usize,
         concat!(
             "Offset of field: ",
@@ -513,7 +489,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).p_data as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, p_data),
         40usize,
         concat!(
             "Offset of field: ",
@@ -523,9 +499,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).p_metadata as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, p_metadata),
         56usize,
         concat!(
             "Offset of field: ",
@@ -535,9 +509,7 @@ fn bindgen_test_layout_NDIlib_video_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_v2_t>())).timestamp as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_v2_t, timestamp),
         64usize,
         concat!(
             "Offset of field: ",
@@ -572,9 +544,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         concat!("Alignment of ", stringify!(NDIlib_audio_frame_v2_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).sample_rate as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, sample_rate),
         0usize,
         concat!(
             "Offset of field: ",
@@ -584,9 +554,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).no_channels as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, no_channels),
         4usize,
         concat!(
             "Offset of field: ",
@@ -596,9 +564,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).no_samples as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, no_samples),
         8usize,
         concat!(
             "Offset of field: ",
@@ -608,9 +574,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).timecode as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, timecode),
         16usize,
         concat!(
             "Offset of field: ",
@@ -620,7 +584,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).p_data as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, p_data),
         24usize,
         concat!(
             "Offset of field: ",
@@ -630,10 +594,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).channel_stride_in_bytes as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, channel_stride_in_bytes),
         32usize,
         concat!(
             "Offset of field: ",
@@ -643,9 +604,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).p_metadata as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, p_metadata),
         40usize,
         concat!(
             "Offset of field: ",
@@ -655,9 +614,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v2_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v2_t>())).timestamp as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v2_t, timestamp),
         48usize,
         concat!(
             "Offset of field: ",
@@ -705,10 +662,10 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t__bindgen_ty_1>()))
-                .channel_stride_in_bytes as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_audio_frame_v3_t__bindgen_ty_1,
+            channel_stride_in_bytes
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -718,10 +675,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t__bindgen_ty_1>())).data_size_in_bytes
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t__bindgen_ty_1, data_size_in_bytes),
         0usize,
         concat!(
             "Offset of field: ",
@@ -744,9 +698,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         concat!("Alignment of ", stringify!(NDIlib_audio_frame_v3_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).sample_rate as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, sample_rate),
         0usize,
         concat!(
             "Offset of field: ",
@@ -756,9 +708,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).no_channels as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, no_channels),
         4usize,
         concat!(
             "Offset of field: ",
@@ -768,9 +718,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).no_samples as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, no_samples),
         8usize,
         concat!(
             "Offset of field: ",
@@ -780,9 +728,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).timecode as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, timecode),
         16usize,
         concat!(
             "Offset of field: ",
@@ -792,7 +738,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).FourCC as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, FourCC),
         24usize,
         concat!(
             "Offset of field: ",
@@ -802,7 +748,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).p_data as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, p_data),
         32usize,
         concat!(
             "Offset of field: ",
@@ -812,9 +758,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).p_metadata as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, p_metadata),
         48usize,
         concat!(
             "Offset of field: ",
@@ -824,9 +768,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_v3_t>())).timestamp as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_v3_t, timestamp),
         56usize,
         concat!(
             "Offset of field: ",
@@ -856,7 +798,7 @@ fn bindgen_test_layout_NDIlib_metadata_frame_t() {
         concat!("Alignment of ", stringify!(NDIlib_metadata_frame_t))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_metadata_frame_t>())).length as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_metadata_frame_t, length),
         0usize,
         concat!(
             "Offset of field: ",
@@ -866,9 +808,7 @@ fn bindgen_test_layout_NDIlib_metadata_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_metadata_frame_t>())).timecode as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_metadata_frame_t, timecode),
         8usize,
         concat!(
             "Offset of field: ",
@@ -878,7 +818,7 @@ fn bindgen_test_layout_NDIlib_metadata_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_metadata_frame_t>())).p_data as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_metadata_frame_t, p_data),
         16usize,
         concat!(
             "Offset of field: ",
@@ -907,7 +847,7 @@ fn bindgen_test_layout_NDIlib_tally_t() {
         concat!("Alignment of ", stringify!(NDIlib_tally_t))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_tally_t>())).on_program as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_tally_t, on_program),
         0usize,
         concat!(
             "Offset of field: ",
@@ -917,7 +857,7 @@ fn bindgen_test_layout_NDIlib_tally_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_tally_t>())).on_preview as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_tally_t, on_preview),
         1usize,
         concat!(
             "Offset of field: ",
@@ -960,9 +900,7 @@ fn bindgen_test_layout_NDIlib_find_create_t() {
         concat!("Alignment of ", stringify!(NDIlib_find_create_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_find_create_t>())).show_local_sources as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_find_create_t, show_local_sources),
         0usize,
         concat!(
             "Offset of field: ",
@@ -972,7 +910,7 @@ fn bindgen_test_layout_NDIlib_find_create_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_find_create_t>())).p_groups as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_find_create_t, p_groups),
         8usize,
         concat!(
             "Offset of field: ",
@@ -982,9 +920,7 @@ fn bindgen_test_layout_NDIlib_find_create_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_find_create_t>())).p_extra_ips as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_find_create_t, p_extra_ips),
         16usize,
         concat!(
             "Offset of field: ",
@@ -1067,10 +1003,7 @@ fn bindgen_test_layout_NDIlib_recv_create_v3_t() {
         concat!("Alignment of ", stringify!(NDIlib_recv_create_v3_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_v3_t>())).source_to_connect_to as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_v3_t, source_to_connect_to),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1080,9 +1013,7 @@ fn bindgen_test_layout_NDIlib_recv_create_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_v3_t>())).color_format as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_v3_t, color_format),
         16usize,
         concat!(
             "Offset of field: ",
@@ -1092,9 +1023,7 @@ fn bindgen_test_layout_NDIlib_recv_create_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_v3_t>())).bandwidth as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_v3_t, bandwidth),
         20usize,
         concat!(
             "Offset of field: ",
@@ -1104,10 +1033,7 @@ fn bindgen_test_layout_NDIlib_recv_create_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_v3_t>())).allow_video_fields as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_v3_t, allow_video_fields),
         24usize,
         concat!(
             "Offset of field: ",
@@ -1117,9 +1043,7 @@ fn bindgen_test_layout_NDIlib_recv_create_v3_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_v3_t>())).p_ndi_recv_name as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_v3_t, p_ndi_recv_name),
         32usize,
         concat!(
             "Offset of field: ",
@@ -1149,9 +1073,7 @@ fn bindgen_test_layout_NDIlib_recv_performance_t() {
         concat!("Alignment of ", stringify!(NDIlib_recv_performance_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_performance_t>())).video_frames as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_performance_t, video_frames),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1161,9 +1083,7 @@ fn bindgen_test_layout_NDIlib_recv_performance_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_performance_t>())).audio_frames as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_performance_t, audio_frames),
         8usize,
         concat!(
             "Offset of field: ",
@@ -1173,10 +1093,7 @@ fn bindgen_test_layout_NDIlib_recv_performance_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_performance_t>())).metadata_frames as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_performance_t, metadata_frames),
         16usize,
         concat!(
             "Offset of field: ",
@@ -1206,9 +1123,7 @@ fn bindgen_test_layout_NDIlib_recv_queue_t() {
         concat!("Alignment of ", stringify!(NDIlib_recv_queue_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_queue_t>())).video_frames as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_queue_t, video_frames),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1218,9 +1133,7 @@ fn bindgen_test_layout_NDIlib_recv_queue_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_queue_t>())).audio_frames as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_queue_t, audio_frames),
         4usize,
         concat!(
             "Offset of field: ",
@@ -1230,9 +1143,7 @@ fn bindgen_test_layout_NDIlib_recv_queue_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_queue_t>())).metadata_frames as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_queue_t, metadata_frames),
         8usize,
         concat!(
             "Offset of field: ",
@@ -1480,9 +1391,7 @@ fn bindgen_test_layout_NDIlib_recv_recording_time_t() {
         concat!("Alignment of ", stringify!(NDIlib_recv_recording_time_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_recording_time_t>())).no_frames as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_recording_time_t, no_frames),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1492,9 +1401,7 @@ fn bindgen_test_layout_NDIlib_recv_recording_time_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_recording_time_t>())).start_time as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_recording_time_t, start_time),
         8usize,
         concat!(
             "Offset of field: ",
@@ -1504,9 +1411,7 @@ fn bindgen_test_layout_NDIlib_recv_recording_time_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_recording_time_t>())).last_time as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_recording_time_t, last_time),
         16usize,
         concat!(
             "Offset of field: ",
@@ -1544,7 +1449,7 @@ fn bindgen_test_layout_NDIlib_send_create_t() {
         concat!("Alignment of ", stringify!(NDIlib_send_create_t))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_send_create_t>())).p_ndi_name as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_send_create_t, p_ndi_name),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1554,7 +1459,7 @@ fn bindgen_test_layout_NDIlib_send_create_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_send_create_t>())).p_groups as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_send_create_t, p_groups),
         8usize,
         concat!(
             "Offset of field: ",
@@ -1564,9 +1469,7 @@ fn bindgen_test_layout_NDIlib_send_create_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_send_create_t>())).clock_video as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_send_create_t, clock_video),
         16usize,
         concat!(
             "Offset of field: ",
@@ -1576,9 +1479,7 @@ fn bindgen_test_layout_NDIlib_send_create_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_send_create_t>())).clock_audio as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_send_create_t, clock_audio),
         17usize,
         concat!(
             "Offset of field: ",
@@ -1692,9 +1593,7 @@ fn bindgen_test_layout_NDIlib_routing_create_t() {
         concat!("Alignment of ", stringify!(NDIlib_routing_create_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_routing_create_t>())).p_ndi_name as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_routing_create_t, p_ndi_name),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1704,9 +1603,7 @@ fn bindgen_test_layout_NDIlib_routing_create_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_routing_create_t>())).p_groups as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_routing_create_t, p_groups),
         8usize,
         concat!(
             "Offset of field: ",
@@ -1773,10 +1670,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_16s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_16s_t>())).sample_rate as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_16s_t, sample_rate),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1786,10 +1680,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_16s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_16s_t>())).no_channels as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_16s_t, no_channels),
         4usize,
         concat!(
             "Offset of field: ",
@@ -1799,10 +1690,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_16s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_16s_t>())).no_samples as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_16s_t, no_samples),
         8usize,
         concat!(
             "Offset of field: ",
@@ -1812,10 +1700,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_16s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_16s_t>())).timecode as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_16s_t, timecode),
         16usize,
         concat!(
             "Offset of field: ",
@@ -1825,10 +1710,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_16s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_16s_t>())).reference_level
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_16s_t, reference_level),
         24usize,
         concat!(
             "Offset of field: ",
@@ -1838,10 +1720,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_16s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_16s_t>())).p_data as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_16s_t, p_data),
         32usize,
         concat!(
             "Offset of field: ",
@@ -1880,10 +1759,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32s_t>())).sample_rate as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32s_t, sample_rate),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1893,10 +1769,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32s_t>())).no_channels as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32s_t, no_channels),
         4usize,
         concat!(
             "Offset of field: ",
@@ -1906,10 +1779,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32s_t>())).no_samples as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32s_t, no_samples),
         8usize,
         concat!(
             "Offset of field: ",
@@ -1919,10 +1789,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32s_t>())).timecode as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32s_t, timecode),
         16usize,
         concat!(
             "Offset of field: ",
@@ -1932,10 +1799,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32s_t>())).reference_level
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32s_t, reference_level),
         24usize,
         concat!(
             "Offset of field: ",
@@ -1945,10 +1809,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32s_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32s_t>())).p_data as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32s_t, p_data),
         32usize,
         concat!(
             "Offset of field: ",
@@ -1986,10 +1847,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32f_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32f_t>())).sample_rate as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32f_t, sample_rate),
         0usize,
         concat!(
             "Offset of field: ",
@@ -1999,10 +1857,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32f_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32f_t>())).no_channels as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32f_t, no_channels),
         4usize,
         concat!(
             "Offset of field: ",
@@ -2012,10 +1867,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32f_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32f_t>())).no_samples as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32f_t, no_samples),
         8usize,
         concat!(
             "Offset of field: ",
@@ -2025,10 +1877,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32f_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32f_t>())).timecode as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32f_t, timecode),
         16usize,
         concat!(
             "Offset of field: ",
@@ -2038,10 +1887,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_interleaved_32f_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_interleaved_32f_t>())).p_data as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_interleaved_32f_t, p_data),
         24usize,
         concat!(
             "Offset of field: ",
@@ -2144,7 +1990,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         concat!("Alignment of ", stringify!(NDIlib_video_frame_t))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_t>())).xres as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, xres),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2154,7 +2000,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_t>())).yres as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, yres),
         4usize,
         concat!(
             "Offset of field: ",
@@ -2164,7 +2010,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_t>())).FourCC as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, FourCC),
         8usize,
         concat!(
             "Offset of field: ",
@@ -2174,9 +2020,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_t>())).frame_rate_N as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, frame_rate_N),
         12usize,
         concat!(
             "Offset of field: ",
@@ -2186,9 +2030,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_t>())).frame_rate_D as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, frame_rate_D),
         16usize,
         concat!(
             "Offset of field: ",
@@ -2198,10 +2040,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_t>())).picture_aspect_ratio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, picture_aspect_ratio),
         20usize,
         concat!(
             "Offset of field: ",
@@ -2211,9 +2050,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_t>())).frame_format_type as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, frame_format_type),
         24usize,
         concat!(
             "Offset of field: ",
@@ -2223,7 +2060,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_t>())).timecode as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, timecode),
         32usize,
         concat!(
             "Offset of field: ",
@@ -2233,7 +2070,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_video_frame_t>())).p_data as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, p_data),
         40usize,
         concat!(
             "Offset of field: ",
@@ -2243,10 +2080,7 @@ fn bindgen_test_layout_NDIlib_video_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_video_frame_t>())).line_stride_in_bytes as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_video_frame_t, line_stride_in_bytes),
         48usize,
         concat!(
             "Offset of field: ",
@@ -2279,9 +2113,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_t() {
         concat!("Alignment of ", stringify!(NDIlib_audio_frame_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_t>())).sample_rate as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_t, sample_rate),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2291,9 +2123,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_t>())).no_channels as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_t, no_channels),
         4usize,
         concat!(
             "Offset of field: ",
@@ -2303,7 +2133,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_audio_frame_t>())).no_samples as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_audio_frame_t, no_samples),
         8usize,
         concat!(
             "Offset of field: ",
@@ -2313,7 +2143,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_audio_frame_t>())).timecode as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_audio_frame_t, timecode),
         16usize,
         concat!(
             "Offset of field: ",
@@ -2323,7 +2153,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_audio_frame_t>())).p_data as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_audio_frame_t, p_data),
         24usize,
         concat!(
             "Offset of field: ",
@@ -2333,10 +2163,7 @@ fn bindgen_test_layout_NDIlib_audio_frame_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_audio_frame_t>())).channel_stride_in_bytes as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_audio_frame_t, channel_stride_in_bytes),
         32usize,
         concat!(
             "Offset of field: ",
@@ -2384,10 +2211,7 @@ fn bindgen_test_layout_NDIlib_recv_create_t() {
         concat!("Alignment of ", stringify!(NDIlib_recv_create_t))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_t>())).source_to_connect_to as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_t, source_to_connect_to),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2397,9 +2221,7 @@ fn bindgen_test_layout_NDIlib_recv_create_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_t>())).color_format as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_t, color_format),
         16usize,
         concat!(
             "Offset of field: ",
@@ -2409,7 +2231,7 @@ fn bindgen_test_layout_NDIlib_recv_create_t() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_recv_create_t>())).bandwidth as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_recv_create_t, bandwidth),
         20usize,
         concat!(
             "Offset of field: ",
@@ -2419,9 +2241,7 @@ fn bindgen_test_layout_NDIlib_recv_create_t() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_recv_create_t>())).allow_video_fields as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_recv_create_t, allow_video_fields),
         24usize,
         concat!(
             "Offset of field: ",
@@ -2695,9 +2515,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_1() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_1))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_1>())).initialize as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_1, initialize),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2707,10 +2525,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_1>())).NDIlib_initialize as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_1, NDIlib_initialize),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2739,7 +2554,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_2() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_2))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_2>())).destroy as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_2, destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2749,9 +2564,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_2() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_2>())).NDIlib_destroy as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_2, NDIlib_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2781,7 +2594,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_3() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_3))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_3>())).version as *const _ as usize },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_3, version),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2791,9 +2604,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_3() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_3>())).NDIlib_version as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_3, NDIlib_version),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2822,10 +2633,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_4() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_4))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_4>())).is_supported_CPU as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_4, is_supported_CPU),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2835,10 +2643,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_4() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_4>())).NDIlib_is_supported_CPU as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_4, NDIlib_is_supported_CPU),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2875,9 +2680,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_5() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_5))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_5>())).find_create as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_5, find_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2887,10 +2690,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_5() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_5>())).NDIlib_find_create as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_5, NDIlib_find_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2927,9 +2727,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_6() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_6))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_6>())).find_create_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_6, find_create_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2939,10 +2737,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_6() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_6>())).NDIlib_find_create_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_6, NDIlib_find_create_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2973,9 +2768,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_7() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_7))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_7>())).find_destroy as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_7, find_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -2985,10 +2778,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_7() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_7>())).NDIlib_find_destroy as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_7, NDIlib_find_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3029,10 +2819,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_8() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_8))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_8>())).find_get_sources as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_8, find_get_sources),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3042,10 +2829,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_8() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_8>())).NDIlib_find_get_sources as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_8, NDIlib_find_get_sources),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3082,9 +2866,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_9() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_9))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_9>())).send_create as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_9, send_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3094,10 +2876,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_9() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_9>())).NDIlib_send_create as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_9, NDIlib_send_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3128,9 +2907,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_10() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_10))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_10>())).send_destroy as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_10, send_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3140,10 +2917,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_10() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_10>())).NDIlib_send_destroy as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_10, NDIlib_send_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3182,10 +2956,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_11() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_11))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_11>())).send_send_video as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_11, send_send_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3195,10 +2966,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_11() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_11>())).NDIlib_send_send_video as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_11, NDIlib_send_send_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3237,10 +3005,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_12() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_12))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_12>())).send_send_video_async as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_12, send_send_video_async),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3250,10 +3015,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_12() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_12>())).NDIlib_send_send_video_async
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_12, NDIlib_send_send_video_async),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3292,10 +3054,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_13() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_13))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_13>())).send_send_audio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_13, send_send_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3305,10 +3064,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_13() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_13>())).NDIlib_send_send_audio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_13, NDIlib_send_send_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3347,10 +3103,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_14() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_14))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_14>())).send_send_metadata as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_14, send_send_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3360,10 +3113,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_14() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_14>())).NDIlib_send_send_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_14, NDIlib_send_send_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3404,9 +3154,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_15() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_15))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_15>())).send_capture as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_15, send_capture),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3416,10 +3164,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_15() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_15>())).NDIlib_send_capture as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_15, NDIlib_send_capture),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3458,10 +3203,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_16() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_16))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_16>())).send_free_metadata as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_16, send_free_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3471,10 +3213,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_16() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_16>())).NDIlib_send_free_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_16, NDIlib_send_free_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3515,9 +3254,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_17() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_17))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_17>())).send_get_tally as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_17, send_get_tally),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3527,10 +3264,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_17() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_17>())).NDIlib_send_get_tally as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_17, NDIlib_send_get_tally),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3569,10 +3303,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_18() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_18))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_18>())).send_get_no_connections as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_18, send_get_no_connections),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3582,10 +3313,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_18() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_18>())).NDIlib_send_get_no_connections
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_18, NDIlib_send_get_no_connections),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3616,10 +3344,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_19() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_19))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_19>())).send_clear_connection_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_19, send_clear_connection_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3629,10 +3354,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_19() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_19>()))
-                .NDIlib_send_clear_connection_metadata as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_19,
+            NDIlib_send_clear_connection_metadata
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3671,10 +3396,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_20() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_20))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_20>())).send_add_connection_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_20, send_add_connection_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3684,10 +3406,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_20() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_20>())).NDIlib_send_add_connection_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_20,
+            NDIlib_send_add_connection_metadata
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3726,10 +3448,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_21() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_21))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_21>())).send_set_failover as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_21, send_set_failover),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3739,10 +3458,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_21() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_21>())).NDIlib_send_set_failover
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_21, NDIlib_send_set_failover),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3779,9 +3495,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_22() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_22))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_22>())).recv_create_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_22, recv_create_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3791,10 +3505,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_22() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_22>())).NDIlib_recv_create_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_22, NDIlib_recv_create_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3831,9 +3542,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_23() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_23))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_23>())).recv_create as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_23, recv_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3843,10 +3552,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_23() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_23>())).NDIlib_recv_create as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_23, NDIlib_recv_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3877,9 +3583,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_24() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_24))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_24>())).recv_destroy as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_24, recv_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3889,10 +3593,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_24() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_24>())).NDIlib_recv_destroy as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_24, NDIlib_recv_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3937,9 +3638,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_25() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_25))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_25>())).recv_capture as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_25, recv_capture),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3949,10 +3648,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_25() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_25>())).NDIlib_recv_capture as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_25, NDIlib_recv_capture),
         0usize,
         concat!(
             "Offset of field: ",
@@ -3991,10 +3687,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_26() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_26))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_26>())).recv_free_video as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_26, recv_free_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4004,10 +3697,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_26() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_26>())).NDIlib_recv_free_video as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_26, NDIlib_recv_free_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4046,10 +3736,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_27() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_27))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_27>())).recv_free_audio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_27, recv_free_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4059,10 +3746,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_27() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_27>())).NDIlib_recv_free_audio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_27, NDIlib_recv_free_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4101,10 +3785,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_28() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_28))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_28>())).recv_free_metadata as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_28, recv_free_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4114,10 +3795,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_28() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_28>())).NDIlib_recv_free_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_28, NDIlib_recv_free_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4156,10 +3834,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_29() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_29))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_29>())).recv_send_metadata as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_29, recv_send_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4169,10 +3844,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_29() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_29>())).NDIlib_recv_send_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_29, NDIlib_recv_send_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4211,9 +3883,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_30() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_30))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_30>())).recv_set_tally as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_30, recv_set_tally),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4223,10 +3893,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_30() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_30>())).NDIlib_recv_set_tally as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_30, NDIlib_recv_set_tally),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4267,10 +3934,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_31() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_31))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_31>())).recv_get_performance as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_31, recv_get_performance),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4280,10 +3944,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_31() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_31>())).NDIlib_recv_get_performance
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_31, NDIlib_recv_get_performance),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4316,9 +3977,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_32() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_32))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_32>())).recv_get_queue as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_32, recv_get_queue),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4328,10 +3987,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_32() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_32>())).NDIlib_recv_get_queue as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_32, NDIlib_recv_get_queue),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4362,10 +4018,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_33() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_33))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_33>())).recv_clear_connection_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_33, recv_clear_connection_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4375,10 +4028,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_33() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_33>()))
-                .NDIlib_recv_clear_connection_metadata as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_33,
+            NDIlib_recv_clear_connection_metadata
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4417,10 +4070,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_34() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_34))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_34>())).recv_add_connection_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_34, recv_add_connection_metadata),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4430,10 +4080,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_34() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_34>())).NDIlib_recv_add_connection_metadata
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_34,
+            NDIlib_recv_add_connection_metadata
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4466,10 +4116,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_35() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_35))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_35>())).recv_get_no_connections as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_35, recv_get_no_connections),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4479,10 +4126,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_35() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_35>())).NDIlib_recv_get_no_connections
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_35, NDIlib_recv_get_no_connections),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4519,9 +4163,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_36() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_36))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_36>())).routing_create as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_36, routing_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4531,10 +4173,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_36() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_36>())).NDIlib_routing_create as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_36, NDIlib_routing_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4565,10 +4204,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_37() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_37))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_37>())).routing_destroy as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_37, routing_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4578,10 +4214,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_37() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_37>())).NDIlib_routing_destroy as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_37, NDIlib_routing_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4620,9 +4253,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_38() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_38))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_38>())).routing_change as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_38, routing_change),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4632,10 +4263,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_38() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_38>())).NDIlib_routing_change as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_38, NDIlib_routing_change),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4666,9 +4294,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_39() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_39))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_39>())).routing_clear as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_39, routing_clear),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4678,10 +4304,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_39() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_39>())).NDIlib_routing_clear as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_39, NDIlib_routing_clear),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4720,10 +4343,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_40() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_40))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_40>()))
-                .util_send_send_audio_interleaved_16s as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_40,
+            util_send_send_audio_interleaved_16s
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4733,10 +4356,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_40() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_40>()))
-                .NDIlib_util_send_send_audio_interleaved_16s as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_40,
+            NDIlib_util_send_send_audio_interleaved_16s
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4775,10 +4398,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_41() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_41))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_41>())).util_audio_to_interleaved_16s
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_41, util_audio_to_interleaved_16s),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4788,10 +4408,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_41() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_41>()))
-                .NDIlib_util_audio_to_interleaved_16s as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_41,
+            NDIlib_util_audio_to_interleaved_16s
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4830,10 +4450,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_42() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_42))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_42>())).util_audio_from_interleaved_16s
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_42, util_audio_from_interleaved_16s),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4843,10 +4460,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_42() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_42>()))
-                .NDIlib_util_audio_from_interleaved_16s as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_42,
+            NDIlib_util_audio_from_interleaved_16s
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4879,10 +4496,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_43() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_43))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_43>())).find_wait_for_sources as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_43, find_wait_for_sources),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4892,10 +4506,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_43() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_43>())).NDIlib_find_wait_for_sources
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_43, NDIlib_find_wait_for_sources),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4934,10 +4545,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_44() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_44))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_44>())).find_get_current_sources
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_44, find_get_current_sources),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4947,10 +4555,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_44() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_44>())).NDIlib_find_get_current_sources
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_44, NDIlib_find_get_current_sources),
         0usize,
         concat!(
             "Offset of field: ",
@@ -4989,10 +4594,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_45() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_45))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_45>())).util_audio_to_interleaved_32f
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_45, util_audio_to_interleaved_32f),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5002,10 +4604,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_45() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_45>()))
-                .NDIlib_util_audio_to_interleaved_32f as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_45,
+            NDIlib_util_audio_to_interleaved_32f
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5044,10 +4646,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_46() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_46))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_46>())).util_audio_from_interleaved_32f
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_46, util_audio_from_interleaved_32f),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5057,10 +4656,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_46() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_46>()))
-                .NDIlib_util_audio_from_interleaved_32f as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_46,
+            NDIlib_util_audio_from_interleaved_32f
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5099,10 +4698,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_47() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_47))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_47>()))
-                .util_send_send_audio_interleaved_32f as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_47,
+            util_send_send_audio_interleaved_32f
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5112,10 +4711,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_47() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_47>()))
-                .NDIlib_util_send_send_audio_interleaved_32f as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_47,
+            NDIlib_util_send_send_audio_interleaved_32f
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5154,10 +4753,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_48() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_48))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_48>())).recv_free_video_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_48, recv_free_video_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5167,10 +4763,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_48() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_48>())).NDIlib_recv_free_video_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_48, NDIlib_recv_free_video_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5209,10 +4802,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_49() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_49))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_49>())).recv_free_audio_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_49, recv_free_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5222,10 +4812,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_49() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_49>())).NDIlib_recv_free_audio_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_49, NDIlib_recv_free_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5270,10 +4857,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_50() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_50))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_50>())).recv_capture_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_50, recv_capture_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5283,10 +4867,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_50() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_50>())).NDIlib_recv_capture_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_50, NDIlib_recv_capture_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5325,10 +4906,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_51() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_51))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_51>())).send_send_video_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_51, send_send_video_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5338,10 +4916,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_51() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_51>())).NDIlib_send_send_video_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_51, NDIlib_send_send_video_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5380,10 +4955,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_52() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_52))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_52>())).send_send_video_async_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_52, send_send_video_async_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5393,10 +4965,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_52() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_52>())).NDIlib_send_send_video_async_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_52, NDIlib_send_send_video_async_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5435,10 +5004,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_53() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_53))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_53>())).send_send_audio_v2 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_53, send_send_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5448,10 +5014,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_53() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_53>())).NDIlib_send_send_audio_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_53, NDIlib_send_send_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5490,10 +5053,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_54() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_54))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_54>())).util_audio_to_interleaved_16s_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_54, util_audio_to_interleaved_16s_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5503,10 +5063,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_54() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_54>()))
-                .NDIlib_util_audio_to_interleaved_16s_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_54,
+            NDIlib_util_audio_to_interleaved_16s_v2
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5545,10 +5105,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_55() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_55))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_55>())).util_audio_from_interleaved_16s_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_55, util_audio_from_interleaved_16s_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5558,10 +5115,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_55() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_55>()))
-                .NDIlib_util_audio_from_interleaved_16s_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_55,
+            NDIlib_util_audio_from_interleaved_16s_v2
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5600,10 +5157,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_56() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_56))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_56>())).util_audio_to_interleaved_32f_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_56, util_audio_to_interleaved_32f_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5613,10 +5167,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_56() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_56>()))
-                .NDIlib_util_audio_to_interleaved_32f_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_56,
+            NDIlib_util_audio_to_interleaved_32f_v2
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5655,10 +5209,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_57() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_57))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_57>())).util_audio_from_interleaved_32f_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_57, util_audio_from_interleaved_32f_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5668,10 +5219,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_57() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_57>()))
-                .NDIlib_util_audio_from_interleaved_32f_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_57,
+            NDIlib_util_audio_from_interleaved_32f_v2
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5710,10 +5261,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_58() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_58))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_58>())).recv_free_string as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_58, recv_free_string),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5723,10 +5271,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_58() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_58>())).NDIlib_recv_free_string as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_58, NDIlib_recv_free_string),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5757,10 +5302,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_59() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_59))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_59>())).recv_ptz_is_supported as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_59, recv_ptz_is_supported),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5770,10 +5312,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_59() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_59>())).NDIlib_recv_ptz_is_supported
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_59, NDIlib_recv_ptz_is_supported),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5804,10 +5343,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_60() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_60))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_60>())).recv_recording_is_supported
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_60, recv_recording_is_supported),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5817,10 +5353,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_60() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_60>())).NDIlib_recv_recording_is_supported
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_60, NDIlib_recv_recording_is_supported),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5853,10 +5386,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_61() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_61))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_61>())).recv_get_web_control as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_61, recv_get_web_control),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5866,10 +5396,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_61() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_61>())).NDIlib_recv_get_web_control
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_61, NDIlib_recv_get_web_control),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5902,9 +5429,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_62() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_62))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_62>())).recv_ptz_zoom as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_62, recv_ptz_zoom),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5914,10 +5439,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_62() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_62>())).NDIlib_recv_ptz_zoom as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_62, NDIlib_recv_ptz_zoom),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5950,10 +5472,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_63() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_63))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_63>())).recv_ptz_zoom_speed as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_63, recv_ptz_zoom_speed),
         0usize,
         concat!(
             "Offset of field: ",
@@ -5963,10 +5482,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_63() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_63>())).NDIlib_recv_ptz_zoom_speed
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_63, NDIlib_recv_ptz_zoom_speed),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6007,10 +5523,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_64() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_64))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_64>())).recv_ptz_pan_tilt as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_64, recv_ptz_pan_tilt),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6020,10 +5533,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_64() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_64>())).NDIlib_recv_ptz_pan_tilt
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_64, NDIlib_recv_ptz_pan_tilt),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6064,10 +5574,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_65() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_65))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_65>())).recv_ptz_pan_tilt_speed as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_65, recv_ptz_pan_tilt_speed),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6077,10 +5584,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_65() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_65>())).NDIlib_recv_ptz_pan_tilt_speed
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_65, NDIlib_recv_ptz_pan_tilt_speed),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6119,10 +5623,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_66() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_66))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_66>())).recv_ptz_store_preset as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_66, recv_ptz_store_preset),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6132,10 +5633,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_66() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_66>())).NDIlib_recv_ptz_store_preset
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_66, NDIlib_recv_ptz_store_preset),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6176,10 +5674,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_67() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_67))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_67>())).recv_ptz_recall_preset as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_67, recv_ptz_recall_preset),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6189,10 +5684,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_67() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_67>())).NDIlib_recv_ptz_recall_preset
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_67, NDIlib_recv_ptz_recall_preset),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6223,10 +5715,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_68() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_68))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_68>())).recv_ptz_auto_focus as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_68, recv_ptz_auto_focus),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6236,10 +5725,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_68() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_68>())).NDIlib_recv_ptz_auto_focus
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_68, NDIlib_recv_ptz_auto_focus),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6272,9 +5758,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_69() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_69))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_69>())).recv_ptz_focus as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_69, recv_ptz_focus),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6284,10 +5768,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_69() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_69>())).NDIlib_recv_ptz_focus as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_69, NDIlib_recv_ptz_focus),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6320,10 +5801,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_70() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_70))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_70>())).recv_ptz_focus_speed as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_70, recv_ptz_focus_speed),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6333,10 +5811,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_70() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_70>())).NDIlib_recv_ptz_focus_speed
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_70, NDIlib_recv_ptz_focus_speed),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6367,10 +5842,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_71() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_71))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_71>())).recv_ptz_white_balance_auto
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_71, recv_ptz_white_balance_auto),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6380,10 +5852,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_71() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_71>())).NDIlib_recv_ptz_white_balance_auto
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_71, NDIlib_recv_ptz_white_balance_auto),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6414,10 +5883,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_72() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_72))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_72>())).recv_ptz_white_balance_indoor
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_72, recv_ptz_white_balance_indoor),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6427,10 +5893,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_72() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_72>()))
-                .NDIlib_recv_ptz_white_balance_indoor as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_72,
+            NDIlib_recv_ptz_white_balance_indoor
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6461,10 +5927,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_73() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_73))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_73>())).recv_ptz_white_balance_outdoor
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_73, recv_ptz_white_balance_outdoor),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6474,10 +5937,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_73() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_73>()))
-                .NDIlib_recv_ptz_white_balance_outdoor as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_73,
+            NDIlib_recv_ptz_white_balance_outdoor
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6508,10 +5971,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_74() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_74))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_74>())).recv_ptz_white_balance_oneshot
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_74, recv_ptz_white_balance_oneshot),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6521,10 +5981,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_74() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_74>()))
-                .NDIlib_recv_ptz_white_balance_oneshot as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_74,
+            NDIlib_recv_ptz_white_balance_oneshot
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6557,10 +6017,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_75() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_75))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_75>())).recv_ptz_white_balance_manual
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_75, recv_ptz_white_balance_manual),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6570,10 +6027,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_75() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_75>()))
-                .NDIlib_recv_ptz_white_balance_manual as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_75,
+            NDIlib_recv_ptz_white_balance_manual
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6604,10 +6061,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_76() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_76))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_76>())).recv_ptz_exposure_auto as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_76, recv_ptz_exposure_auto),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6617,10 +6071,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_76() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_76>())).NDIlib_recv_ptz_exposure_auto
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_76, NDIlib_recv_ptz_exposure_auto),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6653,10 +6104,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_77() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_77))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_77>())).recv_ptz_exposure_manual
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_77, recv_ptz_exposure_manual),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6666,10 +6114,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_77() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_77>())).NDIlib_recv_ptz_exposure_manual
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_77, NDIlib_recv_ptz_exposure_manual),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6708,10 +6153,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_78() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_78))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_78>())).recv_recording_start as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_78, recv_recording_start),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6721,10 +6163,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_78() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_78>())).NDIlib_recv_recording_start
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_78, NDIlib_recv_recording_start),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6755,10 +6194,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_79() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_79))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_79>())).recv_recording_stop as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_79, recv_recording_stop),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6768,10 +6204,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_79() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_79>())).NDIlib_recv_recording_stop
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_79, NDIlib_recv_recording_stop),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6804,10 +6237,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_80() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_80))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_80>())).recv_recording_set_audio_level
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_80, recv_recording_set_audio_level),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6817,10 +6247,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_80() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_80>()))
-                .NDIlib_recv_recording_set_audio_level as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_80,
+            NDIlib_recv_recording_set_audio_level
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6851,10 +6281,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_81() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_81))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_81>())).recv_recording_is_recording
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_81, recv_recording_is_recording),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6864,10 +6291,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_81() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_81>())).NDIlib_recv_recording_is_recording
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_81, NDIlib_recv_recording_is_recording),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6900,10 +6324,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_82() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_82))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_82>())).recv_recording_get_filename
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_82, recv_recording_get_filename),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6913,10 +6334,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_82() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_82>())).NDIlib_recv_recording_get_filename
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_82, NDIlib_recv_recording_get_filename),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6949,10 +6367,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_83() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_83))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_83>())).recv_recording_get_error
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_83, recv_recording_get_error),
         0usize,
         concat!(
             "Offset of field: ",
@@ -6962,10 +6377,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_83() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_83>())).NDIlib_recv_recording_get_error
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_83, NDIlib_recv_recording_get_error),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7004,10 +6416,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_84() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_84))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_84>())).recv_recording_get_times
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_84, recv_recording_get_times),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7017,10 +6426,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_84() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_84>())).NDIlib_recv_recording_get_times
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_84, NDIlib_recv_recording_get_times),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7057,9 +6463,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_85() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_85))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_85>())).recv_create_v3 as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_85, recv_create_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7069,10 +6473,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_85() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_85>())).NDIlib_recv_create_v3 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_85, NDIlib_recv_create_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7105,9 +6506,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_86() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_86))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_86>())).recv_connect as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_86, recv_connect),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7117,10 +6516,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_86() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_86>())).NDIlib_recv_connect as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_86, NDIlib_recv_connect),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7153,10 +6549,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_87() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_87))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_87>())).framesync_create as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_87, framesync_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7166,10 +6559,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_87() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_87>())).NDIlib_framesync_create as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_87, NDIlib_framesync_create),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7200,10 +6590,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_88() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_88))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_88>())).framesync_destroy as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_88, framesync_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7213,10 +6600,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_88() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_88>())).NDIlib_framesync_destroy
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_88, NDIlib_framesync_destroy),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7261,10 +6645,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_89() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_89))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_89>())).framesync_capture_audio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_89, framesync_capture_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7274,10 +6655,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_89() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_89>())).NDIlib_framesync_capture_audio
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_89, NDIlib_framesync_capture_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7316,10 +6694,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_90() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_90))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_90>())).framesync_free_audio as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_90, framesync_free_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7329,10 +6704,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_90() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_90>())).NDIlib_framesync_free_audio
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_90, NDIlib_framesync_free_audio),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7373,10 +6745,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_91() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_91))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_91>())).framesync_capture_video as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_91, framesync_capture_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7386,10 +6755,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_91() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_91>())).NDIlib_framesync_capture_video
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_91, NDIlib_framesync_capture_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7428,10 +6794,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_92() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_92))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_92>())).framesync_free_video as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_92, framesync_free_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7441,10 +6804,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_92() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_92>())).NDIlib_framesync_free_video
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_92, NDIlib_framesync_free_video),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7483,10 +6843,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_93() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_93))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_93>()))
-                .util_send_send_audio_interleaved_32s as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_93,
+            util_send_send_audio_interleaved_32s
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7496,10 +6856,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_93() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_93>()))
-                .NDIlib_util_send_send_audio_interleaved_32s as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_93,
+            NDIlib_util_send_send_audio_interleaved_32s
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7538,10 +6898,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_94() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_94))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_94>())).util_audio_to_interleaved_32s_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_94, util_audio_to_interleaved_32s_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7551,10 +6908,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_94() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_94>()))
-                .NDIlib_util_audio_to_interleaved_32s_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_94,
+            NDIlib_util_audio_to_interleaved_32s_v2
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7593,10 +6950,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_95() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_95))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_95>())).util_audio_from_interleaved_32s_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_95, util_audio_from_interleaved_32s_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7606,10 +6960,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_95() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_95>()))
-                .NDIlib_util_audio_from_interleaved_32s_v2 as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_95,
+            NDIlib_util_audio_from_interleaved_32s_v2
+        ),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7642,10 +6996,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_96() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_96))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_96>())).send_get_source_name as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_96, send_get_source_name),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7655,10 +7006,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_96() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_96>())).NDIlib_send_get_source_name
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_96, NDIlib_send_get_source_name),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7697,10 +7045,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_97() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_97))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_97>())).send_send_audio_v3 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_97, send_send_audio_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7710,10 +7055,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_97() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_97>())).NDIlib_send_send_audio_v3
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_97, NDIlib_send_send_audio_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7752,10 +7094,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_98() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_98))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_98>())).util_V210_to_P216 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_98, util_V210_to_P216),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7765,10 +7104,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_98() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_98>())).NDIlib_util_V210_to_P216
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_98, NDIlib_util_V210_to_P216),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7807,10 +7143,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_99() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_99))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_99>())).util_P216_to_V210 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_99, util_P216_to_V210),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7820,10 +7153,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_99() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_99>())).NDIlib_util_P216_to_V210
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_99, NDIlib_util_P216_to_V210),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7862,10 +7192,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_100() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_100))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_100>())).routing_get_no_connections
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_100, routing_get_no_connections),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7875,10 +7202,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_100() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_100>())).NDIlib_routing_get_no_connections
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_100, NDIlib_routing_get_no_connections),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7911,10 +7235,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_101() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_101))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_101>())).routing_get_source_name
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_101, routing_get_source_name),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7924,10 +7245,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_101() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_101>())).NDIlib_routing_get_source_name
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_101, NDIlib_routing_get_source_name),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7972,10 +7290,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_102() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_102))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_102>())).recv_capture_v3 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_102, recv_capture_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -7985,10 +7300,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_102() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_102>())).NDIlib_recv_capture_v3 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_102, NDIlib_recv_capture_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8027,10 +7339,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_103() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_103))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_103>())).recv_free_audio_v3 as *const _
-                as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_103, recv_free_audio_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8040,10 +7349,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_103() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_103>())).NDIlib_recv_free_audio_v3
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_103, NDIlib_recv_free_audio_v3),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8088,10 +7394,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_104() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_104))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_104>())).framesync_capture_audio_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_104, framesync_capture_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8101,10 +7404,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_104() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_104>())).NDIlib_framesync_capture_audio_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_104, NDIlib_framesync_capture_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8143,10 +7443,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_105() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_105))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_105>())).framesync_free_audio_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_105, framesync_free_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8156,10 +7453,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_105() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_105>())).NDIlib_framesync_free_audio_v2
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_105, NDIlib_framesync_free_audio_v2),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8192,10 +7486,7 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_106() {
         concat!("Alignment of ", stringify!(NDIlib_v4__bindgen_ty_106))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_106>())).framesync_audio_queue_depth
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(NDIlib_v4__bindgen_ty_106, framesync_audio_queue_depth),
         0usize,
         concat!(
             "Offset of field: ",
@@ -8205,10 +7496,10 @@ fn bindgen_test_layout_NDIlib_v4__bindgen_ty_106() {
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<NDIlib_v4__bindgen_ty_106>())).NDIlib_framesync_audio_queue_depth
-                as *const _ as usize
-        },
+        ::std::mem::offset_of!(
+            NDIlib_v4__bindgen_ty_106,
+            NDIlib_framesync_audio_queue_depth
+        ),
         0usize,
         concat!(
             "Offset of field: ",

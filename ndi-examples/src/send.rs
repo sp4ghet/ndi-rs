@@ -7,16 +7,15 @@ fn main() {
         .ndi_name("MySender".to_string())
         .build()
         .unwrap();
-    let sender_name = "MySender".to_string();
 
     const NUM_BYTES: usize = 4 * 1920 * 1080;
     let mut buf = vec![0_u8; NUM_BYTES];
     // linear gradient along x
-    for i in 0..NUM_BYTES {
+    for (i, byte) in buf.iter_mut().enumerate() {
         let channel = i % 4;
         let pos = i / 4;
         let x = pos % 1920;
-        buf[i] = if channel == 3 {
+        *byte = if channel == 3 {
             255_u8
         } else {
             (x * 255 / 1920) as _
@@ -38,29 +37,24 @@ fn main() {
 
     println!("Made video data");
 
-    let find = ndi::FindBuilder::new().build().unwrap();
-    let sources = find.current_sources(1000).unwrap();
-
+    let source = send.get_source();
     let mut recv = ndi::RecvBuilder::new()
         .color_format(ndi::RecvColorFormat::RGBX_RGBA)
         .build()
         .unwrap();
-
-    let mut idx = 0;
-    for (i, source) in sources.iter().enumerate() {
-        if source.get_name() == sender_name {
-            idx = i;
-        }
-    }
-    recv.connect(&sources[idx]);
-
-    println!("Source: {}", sources[idx].get_name());
+    recv.connect(&source);
+    println!("Source: {}", source.get_name());
 
     let num_connected_to_sender = send.get_no_connections(1000);
     println!("Receivers on sender: {}", num_connected_to_sender);
 
     let mut video_data = None;
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(15);
     loop {
+        assert!(
+            std::time::Instant::now() < deadline,
+            "timed out receiving the sent frame"
+        );
         send.send_video(&video_data_send);
         let res = recv.capture_video(&mut video_data, 1000);
         if res == ndi::FrameType::Video {
@@ -96,11 +90,9 @@ fn main() {
     .ok_or("Failed to create image")
     .unwrap();
 
-    buf.save("save_recv.png").unwrap();
+    buf.save("send.png").unwrap();
 
-    unsafe {
-        ndi::cleanup();
-    }
+    // Runtime cleanup is optional. Let all SDK objects drop before process exit.
 
     println!("Done");
 }
