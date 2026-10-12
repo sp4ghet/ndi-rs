@@ -693,6 +693,34 @@ impl AudioData {
         }
     }
 
+    /// Create AudioData from a raw memory buffer, with custom settings
+    pub fn from_buffer(
+        sample_rate: i32,
+        no_channels: i32,
+        no_samples: i32,
+        timecode: i64,
+        timestamp: i64,
+        stride: i32,
+        buffer: *mut u8,
+    ) -> Self {
+        Self {
+            p_instance: NDIlib_audio_frame_v3_t {
+                sample_rate: sample_rate,
+                no_channels: no_channels,
+                no_samples: no_samples,
+                timecode: timecode,
+                FourCC: FourCCAudioType::FLTP as i32,
+                p_data: buffer,
+                __bindgen_anon_1: NDIlib_audio_frame_v3_t__bindgen_ty_1 {
+                    channel_stride_in_bytes: stride,
+                },
+                p_metadata: "".as_ptr() as _,
+                timestamp: timestamp,
+            },
+            parent: AudioParent::Owned,
+        }
+    }
+
     /// Create new instance of AudioData
     pub fn new() -> Self {
         Self {
