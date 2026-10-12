@@ -108,6 +108,8 @@ pub struct Send {
     p_instance: Arc<OnDrop<NDIlib_send_instance_t>>,
 }
 
+unsafe impl std::marker::Send for Send {}
+
 impl Send {
     /// Create a new instance with default parameters
     ///
